@@ -1,0 +1,166 @@
+//----------VARIANT-----------//
+
+.variant-section {
+  h1 {
+    position: relative;
+    margin-bottom: 30px;
+    width: 100%;
+    &::after {
+      content: "";
+      position: absolute;
+      min-height: 0.1rem;
+      width: 100%;
+      background-color: rgb(216, 216, 216);
+      bottom: 0;
+      left: 0;
+    }
+  }
+}
+
+.variant-container {
+}
+
+.variant-container_1 {
+  h3 {
+    margin-bottom: 20px;
+  }
+}
+
+.option-column {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #b9b9b9;
+  border-radius: 8px;
+  align-items: center;
+}
+
+.option-row_1 {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.option-row_2 {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.option-row_element {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  & div {
+    display: flex;
+    align-items: center;
+    border: 1px solid #b9b9b9;
+    background-color: #fff;
+    padding-right: 4px;
+    border-radius: 8px;
+    input {
+      border: none;
+    }
+
+    svg {
+      &:hover {
+        cursor: pointer;
+        color: red;
+      }
+    }
+  }
+}
+
+.variant-container_2 {
+  margin-top: 30px;
+  h3 {
+    margin-bottom: 10px;
+  }
+}
+
+.option-column_remove {
+  display: flex;
+  height: fit-content;
+  background-color: transparent;
+  border: none;
+  svg {
+    height: 20px;
+    width: 20px;
+    &:hover {
+      cursor: pointer;
+      color: red;
+    }
+  }
+}
+
+.variant-table {
+  & table {
+    width: 100%;
+  }
+  span {
+    font-size: 1.4rem;
+  }
+}
+
+thead {
+  tr {
+    background-color: var(--color-primary-1);
+  }
+
+  th {
+    border: 1px solid #b9b9b9;
+    border-radius: 8px;
+    &.option-name {
+      padding: 0 6px;
+      font-weight: 600;
+    }
+  }
+
+  th:last-child {
+    visibility: hidden;
+  }
+}
+
+th {
+  &.typical {
+    color: var(--color-text-gray);
+  }
+
+  &.option-value {
+    padding: 8px 0;
+    font-weight: 500;
+  }
+}
+
+td {
+  vertical-align: middle;
+
+  &.value {
+    padding: 8px 0;
+    input {
+      width: 100%;
+    }
+  }
+}
+
+.variant-btn_remove {
+  display: flex;
+  height: fit-content;
+  background-color: transparent;
+  border: none;
+  padding-left: 2px;
+  svg {
+    height: 12px;
+    width: 12px;
+    &:hover {
+      cursor: pointer;
+      color: red;
+    }
+  }
+}
+
+.variant-btn_remove:hover th {
+  background-color: red;
+}

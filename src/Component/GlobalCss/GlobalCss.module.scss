@@ -1,0 +1,70 @@
+@import "normalize.css";
+
+/* src/styles/_css-variables.scss hoặc src/styles/global-vars.css */
+
+:root {
+  // Primary Colors
+  --color-primary-1: #ecfae5;
+  --color-primary-2: #ddf6d2;
+  --color-primary-3: #cae8bd;
+  --color-primary-4: #b0db9c;
+
+  // Text Colors
+  --color-text-primary: #333333;
+  --color-text-gray: #818988;
+  --color-text-light: #ffffff;
+
+  // Background Colors
+  --color-bg-light: #f8f9fa;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: "Arial", sans-serif;
+  font-size: 62.5%;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+ul,
+ol {
+  list-style: none; /* Loại bỏ dấu chấm/số mặc định */
+}
+
+a {
+  color: inherit; /* Kế thừa màu chữ từ cha */
+  background-color: transparent; /* Loại bỏ background mặc định trên một số trình duyệt */
+  text-decoration: none; /* Loại bỏ gạch chân mặc định */
+}
+
+img {
+  display: block; /* Tránh khoảng trắng dưới ảnh */
+  max-width: 100%; /* Đảm bảo ảnh không tràn ra ngoài */
+  height: auto;
+}
+
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  border: none;
+  outline: none;
+}
