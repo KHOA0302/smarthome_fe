@@ -1,0 +1,149 @@
+.service-section {
+  margin-bottom: 60px;
+  h1 {
+    position: relative;
+    margin-bottom: 30px;
+    width: 100%;
+    border-bottom: 1px solid rgb(188, 188, 188);
+  }
+}
+
+.service-wrapper {
+}
+
+.service-container {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid rgb(179, 179, 179);
+  margin-bottom: 16px;
+}
+
+.service-name {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+
+  input {
+    font-weight: 700;
+    font-size: 1.6rem;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  button {
+    display: flex;
+    height: fit-content;
+    background-color: transparent;
+    outline: none;
+    border: none;
+
+    &:hover svg {
+      color: red;
+    }
+    & svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.service-item {
+}
+
+.service-item_row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+
+  overflow: hidden;
+  border: 1px solid rgb(179, 179, 179);
+  & div:first-child {
+    width: 100%;
+  }
+}
+
+.service-item_column {
+  display: flex;
+  justify-content: space-between;
+
+  &:first-child {
+    padding: 8px 0 8px 8px;
+    align-items: center;
+    gap: 12px;
+  }
+
+  button {
+    display: flex;
+    height: fit-content;
+    background-color: transparent;
+    outline: none;
+    border: none;
+
+    &:hover svg {
+      color: red;
+    }
+    & svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.item-info {
+  display: flex;
+  gap: 20px;
+
+  & div {
+    display: flex;
+    flex-direction: column;
+
+    &:first-child {
+      flex: 10;
+      select {
+        width: 100%;
+      }
+    }
+
+    &:last-child {
+      flex: 1;
+    }
+  }
+}
+
+.item-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  span {
+    height: fit-content;
+    overflow: hidden;
+    font-size: 0;
+    padding: 0 12px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+  }
+
+  &:first-child {
+    background-color: rgb(23, 170, 170);
+  }
+
+  &:last-child {
+    background-color: rgb(135, 225, 9);
+  }
+
+  &.hover span {
+    font-size: 1.2rem;
+  }
+
+  &.color:first-child {
+    background-color: rgb(152, 251, 251);
+  }
+  &.color:last-child {
+    background-color: rgb(227, 252, 191);
+  }
+}

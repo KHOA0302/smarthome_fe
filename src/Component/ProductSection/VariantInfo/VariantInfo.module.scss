@@ -1,19 +1,12 @@
 //----------VARIANT-----------//
 
 .variant-section {
+  margin-bottom: 60px;
   h1 {
     position: relative;
     margin-bottom: 30px;
     width: 100%;
-    &::after {
-      content: "";
-      position: absolute;
-      min-height: 0.1rem;
-      width: 100%;
-      background-color: rgb(216, 216, 216);
-      bottom: 0;
-      left: 0;
-    }
+    border-bottom: 1px solid rgb(188, 188, 188);
   }
 }
 
@@ -45,7 +38,7 @@
 .option-row_2 {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 2;
 }
 
 .option-row_element {
@@ -152,8 +145,9 @@ td {
   border: none;
   padding-left: 2px;
   svg {
-    height: 12px;
-    width: 12px;
+    height: 16px;
+    width: 16px;
+    margin: 0 4px;
     &:hover {
       cursor: pointer;
       color: red;
@@ -161,6 +155,20 @@ td {
   }
 }
 
-.variant-btn_remove:hover th {
-  background-color: red;
+tbody {
+  tr {
+    background-color: inherit;
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      background-color: var(--color-primary-2);
+    }
+
+    &.hoverActive {
+      background-color: rgb(255, 221, 221);
+    }
+
+    &.remove {
+      background-color: rgb(255, 186, 186);
+    }
+  }
 }

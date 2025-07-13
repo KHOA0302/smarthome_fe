@@ -2,7 +2,9 @@ import { useState } from "react";
 import { TrashIcon } from "../../icons";
 import styles from "./ProductSection.module.scss";
 import classNames from "classnames/bind";
-import VariantInfo from "./BaseInfo";
+import VariantInfo from "./VariantInfo";
+import BaseInfo from "./BaseInfo";
+import ServiceInfo from "./ServiceInfo";
 
 const cx = classNames.bind(styles);
 
@@ -12,14 +14,19 @@ function ProductSection() {
     brand: "",
     category: "",
     des: "",
+    imgs: [],
   });
 
-  const [productVariant, setProductVariant] = useState([
+  const [productOption, setProductOption] = useState([
     {
       optionId: "",
       optionValue: [""],
     },
   ]);
+
+  const [productVariant, setProductVariant] = useState([]);
+
+  const [productService, setProductService] = useState([]);
 
   const [productAttribute, setProductAttribute] = useState([
     {
@@ -41,73 +48,20 @@ function ProductSection() {
   return (
     <form onSubmit={handleSubmit}>
       <div className={cx("product-form")}>
-        <section className={cx("basic-section")}>
-          <h1>Thông tin cơ bản</h1>
-          <div className={cx("basic-container")}>
-            <div className={cx("basic-container_1")}>
-              <div className={cx("basic-sub_container_1")}>
-                <div>
-                  <label htmlFor="productName">Tên sản phẩm</label>
-                  <input
-                    type="text"
-                    id="productName"
-                    name="name"
-                    placeholder="Nhập tên sản phẩm..."
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="brand">Hãng</label>
-                  <select id="brand" name="brand-select">
-                    <option value="">-- Vui lòng chọn một tùy chọn --</option>
-                    <option value="apple">APPLE</option>
-                    <option value="lg">LG</option>
-                    <option value="sony">SONY</option>
-                  </select>
-                </div>
-              </div>
-              <div className={cx("basic-sub_container_2")}>
-                <div>
-                  <label htmlFor="category">Danh mục</label>
-                  <select id="category" name="category-select">
-                    <option value="">-- Vui lòng chọn một tùy chọn --</option>
-                    <option value="tv">Tivi</option>
-                    <option value="tulanh">Tủ lạnh</option>
-                    <option value="maygiac">Máy Giặc</option>
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="avatar">Ảnh đại diện</label>
-                  <input
-                    type="file"
-                    id="avatar"
-                    name="avatar"
-                    multiple
-                    accept="image/*"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-            <div className={cx("basic-container_2")}>
-              <div>
-                <label htmlFor="description">Mô tả</label>
-                <textarea
-                  name="product-description"
-                  id="description"
-                  rows="5"
-                  cols="50"
-                  placeholder="Nhập mô tả chi tiết sản phẩm..."
-                ></textarea>
-              </div>
-            </div>
-          </div>
-        </section>
-
+        <BaseInfo productBase={productBase} setProductBase={setProductBase} />
         <VariantInfo
+          productOption={productOption}
+          setProductOption={setProductOption}
           productVariant={productVariant}
           setProductVariant={setProductVariant}
           productName={productBase.name}
+          productCategory={productBase.category}
+        />
+
+        <ServiceInfo
+          productService={productService}
+          setProductService={setProductService}
+          productCategory={productBase.category}
         />
 
         <section className={cx("attribute-section")}></section>
