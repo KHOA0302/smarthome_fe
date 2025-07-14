@@ -9,6 +9,12 @@
 }
 
 .service-wrapper {
+  // display: grid;
+  // grid-template-columns: 1fr 1fr;
+  // gap: 16px;
+}
+
+.service-blank {
 }
 
 .service-container {
@@ -118,6 +124,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  transition: all 0.2s ease-in-out;
 
   span {
     height: fit-content;
@@ -126,6 +133,13 @@
     padding: 0 12px;
     transition: all 0.2s ease-in-out;
     cursor: pointer;
+  }
+
+  &.color:first-child {
+    background-color: rgb(152, 251, 251);
+  }
+  &.color:last-child {
+    background-color: rgb(227, 252, 191);
   }
 
   &:first-child {
@@ -138,12 +152,5 @@
 
   &.hover span {
     font-size: 1.2rem;
-  }
-
-  &.color:first-child {
-    background-color: rgb(152, 251, 251);
-  }
-  &.color:last-child {
-    background-color: rgb(227, 252, 191);
   }
 }

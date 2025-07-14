@@ -42,7 +42,6 @@ function ProductSection() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(123);
   };
 
   return (
@@ -62,6 +61,7 @@ function ProductSection() {
           productService={productService}
           setProductService={setProductService}
           productCategory={productBase.category}
+          productVariant={productVariant}
         />
 
         <section className={cx("attribute-section")}></section>
