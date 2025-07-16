@@ -42,6 +42,7 @@ function ServiceInfo({
     const ps = productVariant.map((pv, id) => {
       return {
         SKU: pv.sku,
+        variantName: pv.variantName,
         packageServices: [],
         disable: true,
       };
@@ -378,7 +379,7 @@ function ServiceInfo({
 
     return (
       <div className={cx("service-blank")} key={id}>
-        <h3>Tên biến thể (SKU): {ps.SKU}</h3> {a}
+        <h3>Tên biến thể: {ps.variantName}</h3> {a}
         <button type="button" onClick={() => handleAddPackage(id)}>
           <span>Thêm gói dịch vụ</span>
         </button>

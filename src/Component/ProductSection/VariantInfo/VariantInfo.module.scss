@@ -117,6 +117,10 @@ thead {
 }
 
 th {
+  &.extra-width {
+    width: 30%;
+  }
+
   &.typical {
     color: var(--color-text-gray);
   }

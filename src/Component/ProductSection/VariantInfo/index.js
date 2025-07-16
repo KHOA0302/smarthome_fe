@@ -43,14 +43,16 @@ function VariantInfo({
     }
   }, [productCategory]);
 
+  //generate variant from option
   useEffect(() => {
-    const uniqueSuffix = `${uuidv4().substring(0, 8)}-${Date.now()
-      .toString()
-      .slice(-6)}`;
     const variants = optionValueGeneratedCombinations.map((combination, id) => {
+      const uniqueSuffix = `${uuidv4().substring(0, 8)}-${Date.now()
+        .toString()
+        .slice(-6)}`;
       return {
         optionNames,
         combination,
+        variantName: productName + combination.join(" "),
         sku: productName + "_" + combination.join("_") + "-" + uniqueSuffix,
         price: "",
         quantity: "",
@@ -169,12 +171,12 @@ function VariantInfo({
   const handleSetProductVariant = (e, variantId) => {
     let newProductVariant;
     switch (e.target.name) {
-      case "sku":
+      case "name":
         newProductVariant = productVariant.map((pv, id) => {
           if (id === variantId) {
             return {
               ...pv,
-              sku: e.target.value,
+              variantName: e.target.value,
             };
           }
           return pv;
@@ -344,8 +346,8 @@ function VariantInfo({
                           </th>
                         );
                       })}
-                      <th className={cx("typical")}>
-                        <span>SKU</span>
+                      <th className={cx("typical", "extra-width")}>
+                        <span>Tên</span>
                       </th>
                       <th className={cx("typical")}>
                         <span>Giá</span>
@@ -380,10 +382,9 @@ function VariantInfo({
                           <td className={cx("value")}>
                             <input
                               required
-                              name="sku"
+                              name="name"
                               type="text"
-                              value={variant.sku}
-                              disabled
+                              value={variant.variantName}
                               onChange={(e) => handleSetProductVariant(e, id)}
                             />
                           </td>

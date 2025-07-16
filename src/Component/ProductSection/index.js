@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { TrashIcon } from "../../icons";
 import styles from "./ProductSection.module.scss";
 import classNames from "classnames/bind";
 import VariantInfo from "./VariantInfo";
@@ -10,7 +9,6 @@ import {
   uploadMultipleImagesToFirebase,
 } from "../../utils/firebaseUpload";
 import productServiceApi from "../../api/productService";
-import { v4 as uuidv4 } from "uuid";
 
 const cx = classNames.bind(styles);
 
@@ -125,7 +123,7 @@ function ProductSection() {
 
       console.log(finalProductData);
 
-      fetchProductAdd();
+      // fetchProductAdd();
 
       // *** LƯU Ý VỚI ẢNH VARIANT ***
       // Nếu mỗi variant có ảnh riêng (như giao diện bạn đã đưa, có nút "Choose File" cho ảnh biến thể)
