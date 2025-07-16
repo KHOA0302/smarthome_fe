@@ -3,6 +3,7 @@ import { DotIcon, TrashIcon, TrexIcon } from "../../../icons";
 import styles from "./VariantInfo.module.scss";
 import classNames from "classnames/bind";
 import { optionService } from "../../../api/optionService";
+import { v4 as uuidv4 } from "uuid";
 
 const cx = classNames.bind(styles);
 
@@ -41,6 +42,25 @@ function VariantInfo({
       fetchOptionFilter();
     }
   }, [productCategory]);
+
+  useEffect(() => {
+    const uniqueSuffix = `${uuidv4().substring(0, 8)}-${Date.now()
+      .toString()
+      .slice(-6)}`;
+    const variants = optionValueGeneratedCombinations.map((combination, id) => {
+      return {
+        optionNames,
+        combination,
+        sku: productName + "_" + combination.join("_") + "-" + uniqueSuffix,
+        price: "",
+        quantity: "",
+        img: "",
+        isRemove: false,
+      };
+    });
+
+    setProductVariant([...variants]);
+  }, [productOption]);
 
   const handleAddOptionForm = (e) => {
     setProductOption([
@@ -165,9 +185,13 @@ function VariantInfo({
       case "price":
         newProductVariant = productVariant.map((pv, id) => {
           if (id === variantId) {
+            const priceNumber = e.target.value.replace(/\D/g, "");
+            const formattedValue = new Intl.NumberFormat("vi-VN").format(
+              parseInt(priceNumber, 10)
+            );
             return {
               ...pv,
-              price: e.target.value,
+              price: formattedValue,
             };
           }
           return pv;
@@ -218,22 +242,6 @@ function VariantInfo({
 
     setProductVariant([...newProductVariant]);
   };
-
-  useEffect(() => {
-    const variants = optionValueGeneratedCombinations.map((combination, id) => {
-      return {
-        optionNames,
-        combination,
-        sku: productName + "_" + combination.join("_"),
-        price: "",
-        quantity: "",
-        img: "",
-        isRemove: false,
-      };
-    });
-
-    setProductVariant([...variants]);
-  }, [productOption]);
 
   const options = productOption.map((option, id) => {
     const mapOptionId = id;
@@ -375,6 +383,7 @@ function VariantInfo({
                               name="sku"
                               type="text"
                               value={variant.sku}
+                              disabled
                               onChange={(e) => handleSetProductVariant(e, id)}
                             />
                           </td>
@@ -391,7 +400,7 @@ function VariantInfo({
                             <input
                               required
                               name="quantity"
-                              type="text"
+                              type="number"
                               value={variant.quantity}
                               onChange={(e) => handleSetProductVariant(e, id)}
                             />

@@ -55,7 +55,7 @@ function ServiceInfo({
       packageName: "",
       packageItem: [
         {
-          category_id: productCategory,
+          category_id: "",
           serviceId: "",
           serviceName: "",
           price: "",
@@ -156,6 +156,9 @@ function ServiceInfo({
         newPackageServices[pkSId].packageItem[itemId].serviceId =
           e.target.value;
 
+        newPackageServices[pkSId].packageItem[itemId].category_id =
+          e.target.selectedOptions[0].dataset.categoryId;
+
         return {
           ...ps,
           packageServices: [...newPackageServices],
@@ -248,6 +251,7 @@ function ServiceInfo({
                 value={pkS.packageName}
                 id={pkSId}
                 onChange={(e) => handleChangePackageName(e, id, pkSId)}
+                required
               />
             </div>
 
@@ -272,11 +276,16 @@ function ServiceInfo({
                             handleChangeServiceSelect(e, id, pkSId, itemId)
                           }
                           value={item.serviceId}
+                          required
                         >
                           <option value="">--Chọn 1 dịch vụ--</option>
                           {serviceFilter.map((sf, sfId) => {
                             return (
-                              <option value={sf.service_id} key={sfId}>
+                              <option
+                                value={sf.service_id}
+                                key={sfId}
+                                data-category-id={sf.category_id}
+                              >
                                 {sf.service_name}
                               </option>
                             );
@@ -293,6 +302,7 @@ function ServiceInfo({
                           onChange={(e) =>
                             handlePriceChange(e, id, pkSId, itemId)
                           }
+                          required
                         />
                       </div>
                     </div>
@@ -367,7 +377,7 @@ function ServiceInfo({
     });
 
     return (
-      <div className={cx("service-blank")}>
+      <div className={cx("service-blank")} key={id}>
         <h3>Tên biến thể (SKU): {ps.SKU}</h3> {a}
         <button type="button" onClick={() => handleAddPackage(id)}>
           <span>Thêm gói dịch vụ</span>
