@@ -1,8 +1,18 @@
 .product-form {
   width: 100%;
-  background-color: var(--color-bg-light);
-  padding: 16px;
-  border-radius: 8px;
+  & section {
+    background-color: var(--color-bg-light);
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+
+    & h1 {
+      position: relative;
+      margin-bottom: 30px;
+      width: 100%;
+      border-bottom: 1px solid rgb(188, 188, 188);
+    }
+  }
   input,
   select {
     border-radius: 8px;

@@ -7,6 +7,10 @@ import { BiAddToQueue } from "react-icons/bi";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { RxDot } from "react-icons/rx";
 import { DiMozilla } from "react-icons/di";
+import { HiMiniArrowTurnDownRight } from "react-icons/hi2";
+import { RiArrowUpWideLine } from "react-icons/ri";
+import { HiMiniPlusSmall } from "react-icons/hi2";
+import { HiMiniMinusSmall } from "react-icons/hi2";
 export {
   BiAddToQueue as AddIcon,
   IoBarChartOutline as ChartIcon,
@@ -17,4 +21,8 @@ export {
   FaRegTrashAlt as TrashIcon,
   RxDot as DotIcon,
   DiMozilla as TrexIcon,
+  HiMiniArrowTurnDownRight as ArrowRightIcon,
+  RiArrowUpWideLine as ArrowDownIcon,
+  HiMiniPlusSmall as PlusIcon,
+  HiMiniMinusSmall as MinusIcon,
 };
