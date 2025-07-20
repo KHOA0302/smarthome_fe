@@ -16,13 +16,8 @@ export const uploadImageToFirebase = async (file, type, identifier) => {
   if (!file) {
     throw new Error("Không có file để tải lên.");
   }
-  if (!["basic", "variant", "des"].includes(type)) {
-    throw new Error(
-      "Loại ảnh không hợp lệ. Phải là 'basic', 'variant', hoặc 'des'."
-    );
-  }
-  if (!identifier) {
-    throw new Error("Cần cung cấp một định danh (identifier) cho thư mục con.");
+  if (!["basic", "variant", "des", "brand"].includes(type)) {
+    throw new Error("Loại ảnh không hợp lệ.");
   }
 
   const fileExtension = file.name.split(".").pop();
@@ -31,7 +26,7 @@ export const uploadImageToFirebase = async (file, type, identifier) => {
     .toString(36)
     .substring(2, 15)}.${fileExtension}`;
 
-  // Xây dựng đường dẫn đầy đủ: product/{type}/{identifier}/{uniqueFileName}
+  // Xây dựng đường dẫn đầy đủ: product/{type}/{uniqueFileName}
   const fullPath = `product/${type}/${uniqueFileName}`;
   const storageRef = ref(storage, fullPath);
 

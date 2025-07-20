@@ -1,35 +1,17 @@
 import { useEffect, useState } from "react";
-import { brandService } from "../../../api/brandService";
 import styles from "./BaseInfo.module.scss";
 import classNames from "classnames/bind";
 import { categoryService } from "../../../api/categoryService";
+import { useProductInfoFormGetContext } from "../../../Pages/Admin/ProductInfoForm";
 
 const cx = classNames.bind(styles);
 function BaseInfo({ productBase, setProductBase }) {
-  const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { brands, setBrands } = useProductInfoFormGetContext();
 
   useEffect(() => {
-    const fetchBrands = async () => {
-      try {
-        const response = await brandService.getAllBrands();
-
-        if (response.data && response.data.data) {
-          setBrands(response.data.data);
-        } else {
-          setError(response.data.message || "Không có dữ liệu brands.");
-        }
-        setLoading(false);
-      } catch (err) {
-        console.error("Lỗi khi fetch brands:", err);
-
-        setError(err.message || "Đã xảy ra lỗi khi tải thương hiệu.");
-        setLoading(false);
-      }
-    };
-
     const fetchCategory = async () => {
       try {
         const response = await categoryService.getAllCategories();
@@ -48,7 +30,6 @@ function BaseInfo({ productBase, setProductBase }) {
     };
 
     fetchCategory();
-    fetchBrands();
   }, []);
 
   const handleChange = (e) => {

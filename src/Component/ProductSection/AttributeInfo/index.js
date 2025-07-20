@@ -55,11 +55,13 @@ function AttributeInfo({
           specifications: [
             { attributeId: attr.attribute_id, attributeValue: "" },
           ],
+          isRemove: false,
         };
       });
       const newGroup = {
         ...group,
         attributes: [...newAttribute],
+        isRemove: false,
       };
 
       return newGroup;
@@ -68,7 +70,7 @@ function AttributeInfo({
     setProductAttribute(groups);
   }, [groupFilter]);
 
-  const changeGroupExpand = (groupId) => {
+  const handleGroupExpand = (groupId) => {
     let newExpendGroup;
     if (expendGroups.includes(groupId)) {
       newExpendGroup = expendGroups.filter((expG, i) => expG !== groupId);
@@ -78,22 +80,118 @@ function AttributeInfo({
     setExpendGroups([...newExpendGroup]);
   };
 
+  const handleGroupRemove = (mapId) => {
+    const newGroups = [...productAttribute];
+    newGroups[mapId].isRemove = !productAttribute[mapId].isRemove;
+    setProductAttribute([...newGroups]);
+  };
+
+  const handleAttributeRemove = (groupId, attrMapId) => {
+    const newGroups = productAttribute.map((pa, id) => {
+      if (pa.group_id === groupId) {
+        const newAttributes = [...pa.attributes];
+        newAttributes[attrMapId].isRemove = !pa.attributes[attrMapId].isRemove;
+
+        return {
+          ...pa,
+          attributes: newAttributes,
+        };
+      }
+
+      return pa;
+    });
+
+    setProductAttribute([...newGroups]);
+  };
+
+  const handleAddSpecificationInput = (groupId, attrMapId) => {
+    const newGroups = productAttribute.map((pa, id) => {
+      if (pa.group_id === groupId) {
+        const newAttributes = [...pa.attributes];
+        const newSpecifications = [
+          ...newAttributes[attrMapId].specifications,
+          {
+            attributeId: newAttributes[attrMapId].attribute_id,
+            attributeValue: "",
+          },
+        ];
+
+        newAttributes[attrMapId].specifications = [...newSpecifications];
+
+        return {
+          ...pa,
+          attributes: newAttributes,
+        };
+      }
+      return pa;
+    });
+
+    setProductAttribute([...newGroups]);
+  };
+
+  const handleRemoveSpecificationInput = (groupId, attrMapId) => {
+    const newGroups = productAttribute.map((pa, id) => {
+      if (pa.group_id === groupId) {
+        const newAttributes = [...pa.attributes];
+        const newSpecifications = [...newAttributes[attrMapId].specifications];
+        const firstEmptyIndex = newSpecifications.findIndex(
+          (spe) => spe.attributeValue === ""
+        );
+
+        if (newSpecifications.length > 1 && firstEmptyIndex !== -1) {
+          newSpecifications.splice(firstEmptyIndex, 1);
+        }
+
+        newAttributes[attrMapId].specifications = [...newSpecifications];
+        return {
+          ...pa,
+          attributes: newAttributes,
+        };
+      }
+      return pa;
+    });
+    setProductAttribute([...newGroups]);
+  };
+
+  const handleChangeSpecValue = (e, groupId, attrMapId, specMapId) => {
+    const newGroups = productAttribute.map((pa, id) => {
+      if (pa.group_id === groupId) {
+        const newAttributes = [...pa.attributes];
+        const newSpecifications = [...newAttributes[attrMapId].specifications];
+        newSpecifications[specMapId].attributeValue = e.target.value;
+        newAttributes[attrMapId].specifications = newSpecifications;
+
+        return {
+          ...pa,
+          attributes: [...newAttributes],
+        };
+      }
+      return pa;
+    });
+
+    setProductAttribute([...newGroups]);
+  };
+
   const groupsHtml = productAttribute.map((pa, id) => {
     return (
-      <div className={cx("attribute-group")}>
+      <div className={cx("attribute-group")} key={id}>
         <div className={cx("attribute-group-container")}>
-          <div>
+          <div className={cx({ remove: pa.isRemove })}>
             <span>Tên GROUP</span>
             <h4>{pa.group_name}</h4>
             <button
               className={cx("expand-btn")}
               type="button"
-              onClick={() => changeGroupExpand(pa.group_id)}
+              onClick={() => handleGroupExpand(pa.group_id)}
             >
               <ArrowDownIcon />
             </button>
           </div>
-          <button className={cx("attribute-group-remove_btn")} type="button">
+          <button
+            className={cx("attribute-group-remove_btn")}
+            type="button"
+            onClick={() => handleGroupRemove(id)}
+          >
             <TrashIcon />
           </button>
         </div>
@@ -104,9 +202,13 @@ function AttributeInfo({
         >
           {pa.attributes.map((attr, i) => {
             return (
-              <div className={cx("attribute-value-container")}>
+              <div className={cx("attribute-value-container")} key={i}>
                 <ArrowRightIcon />
-                <div className={cx("attribute-value-container_blank")}>
+                <div
+                  className={cx("attribute-value-container_blank", {
+                    remove: attr.isRemove,
+                  })}
+                >
                   <div className={cx("attribute-value-container_wrapper")}>
                     <div>
                       <span>{attr.attribute_name}</span>
@@ -116,20 +218,35 @@ function AttributeInfo({
                       {attr.specifications.map((specification, speId) => {
                         return (
                           <input
+                            key={speId}
                             type="text"
-                            id="attribute-value"
+                            id={"attribute-value-" + i + "-" + id + "-" + speId}
                             placeholder="Nhập thông số..."
-                            required
+                            onChange={(e) =>
+                              handleChangeSpecValue(e, pa.group_id, i, speId)
+                            }
+                            value={specification.attributeValue}
+                            required={!pa.isRemove && !attr.isRemove}
                           />
                         );
                       })}
                     </div>
                   </div>
                   <div>
-                    <button type="button">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleAddSpecificationInput(pa.group_id, i)
+                      }
+                    >
                       <PlusIcon />
                     </button>
-                    <button type="button">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleRemoveSpecificationInput(pa.group_id, i)
+                      }
+                    >
                       <MinusIcon />
                     </button>
                   </div>
@@ -137,6 +254,7 @@ function AttributeInfo({
                 <button
                   className={cx("attribute-value-remove_btn")}
                   type="button"
+                  onClick={() => handleAttributeRemove(pa.group_id, i)}
                 >
                   <TrashIcon />
                 </button>

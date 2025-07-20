@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import styles from "./ProductSection.module.scss";
 import classNames from "classnames/bind";
 import VariantInfo from "./VariantInfo";
@@ -80,12 +80,26 @@ function ProductSection() {
         (ps, id) => ps.packageServices.length > 0
       );
 
+      const updateAttributes = productAttribute
+        .filter((pa) => !pa.isRemove)
+        .map((pa) => {
+          if (!pa.isRemove) {
+            const newAttributes = pa.attributes.filter(
+              (attr, i) => !attr.isRemove
+            );
+            return {
+              ...pa,
+              newAttributes,
+            };
+          }
+        });
+
       const finalProductData = {
         basic: updatedProductBase,
         options: productOption,
         variants: updatedVariants,
         services: updateServices,
-        attributes: productAttribute,
+        attributes: updateAttributes,
       };
 
       const fetchProductAdd = async () => {
@@ -99,8 +113,6 @@ function ProductSection() {
         }
         setLoading(false);
       };
-
-      console.log(finalProductData);
 
       fetchProductAdd();
     } catch (error) {
@@ -140,4 +152,4 @@ function ProductSection() {
   );
 }
 
-export default ProductSection;
+export default memo(ProductSection);

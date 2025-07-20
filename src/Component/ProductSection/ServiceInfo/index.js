@@ -52,23 +52,27 @@ function ServiceInfo({
   }, [productVariant]);
 
   const handleAddPackage = (mapIdSku) => {
-    const packageService = {
-      packageName: "",
-      packageItem: [
-        {
-          category_id: "",
-          serviceId: "",
-          serviceName: "",
-          price: "",
-          selectable: true,
-          atLeastOne: false,
-        },
-      ],
-      default: false,
-    };
-
     const newProductService = productService.map((ps, id) => {
       if (id === mapIdSku) {
+        const displayOrder =
+          ps.packageServices.length > 0
+            ? ps.packageServices[ps.packageServices.length - 1].displayOrder +
+              100000
+            : 100000;
+        const packageService = {
+          packageName: "",
+          packageItem: [
+            {
+              category_id: "",
+              serviceId: "",
+              serviceName: "",
+              price: "",
+              selectable: true,
+              atLeastOne: false,
+            },
+          ],
+          displayOrder: displayOrder,
+        };
         return {
           ...ps,
           packageServices: [...ps.packageServices, packageService],
