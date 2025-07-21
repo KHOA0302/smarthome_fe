@@ -6,31 +6,10 @@ import { useProductInfoFormGetContext } from "../../../Pages/Admin/ProductInfoFo
 
 const cx = classNames.bind(styles);
 function BaseInfo({ productBase, setProductBase }) {
-  const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { brands, setBrands } = useProductInfoFormGetContext();
-
-  useEffect(() => {
-    const fetchCategory = async () => {
-      try {
-        const response = await categoryService.getAllCategories();
-        if (response.data && response.data.data) {
-          setCategories(response.data.data);
-        } else {
-          setError(response.data.message || "Không có dữ liệu categories.");
-        }
-        setLoading(false);
-      } catch (err) {
-        console.error("Lỗi khi fetch categories:", err);
-
-        setError(err.message || "Đã xảy ra lỗi khi tải danh mục.");
-        setLoading(false);
-      }
-    };
-
-    fetchCategory();
-  }, []);
+  const { brands, setBrands, categories, setCategories } =
+    useProductInfoFormGetContext();
 
   const handleChange = (e) => {
     let newProduct;

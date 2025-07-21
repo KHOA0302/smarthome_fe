@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import styles from "./BrandSection.module.scss";
 import classNames from "classnames/bind";
 import { brandService } from "../../api/brandService";
@@ -25,13 +25,22 @@ function BrandSection() {
     let newBrand;
     switch (e.target.name) {
       case "brand-name":
-        if (brands.some((a) => a.brand_name === e.target.value.toLowerCase())) {
+        if (
+          brands.some(
+            (a) =>
+              a.brand_name.toLowerCase().trim() ===
+              e.target.value.toLowerCase().trim()
+          )
+        ) {
           newBrand = {
             ...brand,
             name: "",
           };
           const newBrandsModified = brandsModified.map((b) => {
-            if (b.brand_name === e.target.value.toLowerCase()) {
+            if (
+              b.brand_name.toLowerCase().trim() ===
+              e.target.value.toLowerCase().trim()
+            ) {
               b.isExist = true;
             } else {
               b.isExist = false;
@@ -74,7 +83,7 @@ function BrandSection() {
         const res = await brandService.createBrand(updateBrands);
 
         if (res.status === 201) {
-          const allBrands = (await res).data.data.allBrands;
+          const allBrands = res.data.data.allBrands;
           setBrands(allBrands);
           setBrand({ name: "", file: "" });
         }
@@ -129,4 +138,4 @@ function BrandSection() {
   );
 }
 
-export default BrandSection;
+export default memo(BrandSection);

@@ -6,6 +6,7 @@ import styles from "./ProductInfoForm.module.scss";
 import classNames from "classnames/bind";
 import { brandService } from "../../../api/brandService";
 import { ContextComponent, useGetContext } from "../../../hooks/useGetContext";
+import { categoryService } from "../../../api/categoryService";
 
 const cx = classNames.bind(styles);
 
@@ -20,6 +21,7 @@ function ProductInfoForm() {
     "brand-category-current"
   );
   const [brands, setBrands] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchBrands = async () => {
@@ -33,6 +35,20 @@ function ProductInfoForm() {
         console.error("Lỗi khi fetch brands:", err);
       }
     };
+
+    const fetchCategory = async () => {
+      try {
+        const response = await categoryService.getAllCategories();
+
+        if (response.data && response.data.data) {
+          setCategories(response.data.data);
+        }
+      } catch (err) {
+        console.error("Lỗi khi fetch categories:", err);
+      }
+    };
+
+    fetchCategory();
     fetchBrands();
   }, []);
 
@@ -43,6 +59,8 @@ function ProductInfoForm() {
   const contextValue = {
     brands,
     setBrands,
+    categories,
+    setCategories,
   };
 
   return (

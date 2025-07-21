@@ -16,7 +16,7 @@ export const uploadImageToFirebase = async (file, type, identifier) => {
   if (!file) {
     throw new Error("Không có file để tải lên.");
   }
-  if (!["basic", "variant", "des", "brand"].includes(type)) {
+  if (!["basic", "variant", "des", "brand", "category"].includes(type)) {
     throw new Error("Loại ảnh không hợp lệ.");
   }
 
