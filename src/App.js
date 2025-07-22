@@ -17,6 +17,7 @@ import ProductInfoForm from "./Pages/Admin/ProductInfoForm";
 import ProductManagement from "./Pages/Admin/ProductManagement";
 import Statistic from "./Pages/Admin/Statistic";
 import InvoiceManagement from "./Pages/Admin/InvoiceManagement";
+import ProductDetails from "./Component/ProductDetails";
 
 const ROLE_ADMIN = 1;
 const ROLE_CUSTOMER = 2;
@@ -58,7 +59,16 @@ function App() {
           path="/customer/*"
           element={<ProtectedRoute allowedRoles={[ROLE_CUSTOMER]} />}
         >
-          <Route path="*" element={<CustomerLayout />} />
+          <Route path="*" element={<CustomerLayout />}>
+            <Route path="dashboard" element={<DashBoard />} />
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route
+              path="product/:product_id/variant/:variant_id"
+              element={<ProductDetails />}
+            />
+
+            <Route path="*" element={<NotFound />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<NotFound />} />

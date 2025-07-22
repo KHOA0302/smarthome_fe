@@ -270,77 +270,7 @@ function AttributeInfo({
     <section className={cx("attribute-section")}>
       <div className={cx("attribute-wrapper")}>
         <h1>Thông số kĩ thuật</h1>
-        <div className={cx("attribute-container")}>
-          {/* <div className={cx("attribute-group")}>
-            <div className={cx("attribute-group-container")}>
-              <div>
-                <span>Tên GROUP </span>
-                <h4>Công nghệ màn hình</h4>
-                <button className={cx("expand-btn")} type="button">
-                  <ArrowDownIcon />
-                </button>
-              </div>
-              <button
-                className={cx("attribute-group-remove_btn")}
-                type="button"
-              >
-                <TrashIcon />
-              </button>
-            </div>
-            <div className={cx("attribute-value")}>
-              <div className={cx("attribute-value-container")}>
-                <ArrowRightIcon />
-                <div className={cx("attribute-value-container_blank")}>
-                  <div className={cx("attribute-value-container_wrapper")}>
-                    <div>
-                      <select id="attribute">
-                        <option value="">--Chọn thông số---</option>
-                      </select>
-                    </div>
-                    <div>
-                      <input
-                        type="text"
-                        id="attribute-value"
-                        placeholder="Nhập thông số..."
-                        required
-                      />
-                      <input
-                        type="text"
-                        id="attribute-value"
-                        placeholder="Nhập thông số..."
-                        required
-                      />
-                      <input
-                        type="text"
-                        id="attribute-value"
-                        placeholder="Nhập thông số..."
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <button type="button">
-                      <PlusIcon />
-                    </button>
-                    <button type="button">
-                      <MinusIcon />
-                    </button>
-                  </div>
-                </div>
-                <button
-                  className={cx("attribute-value-remove_btn")}
-                  type="button"
-                >
-                  <TrashIcon />
-                </button>
-              </div>
-
-              <button type="button">Thêm thông số</button>
-            </div>
-          </div> */}
-
-          {groupsHtml}
-        </div>
+        <div className={cx("attribute-container")}>{groupsHtml}</div>
       </div>
     </section>
   );
