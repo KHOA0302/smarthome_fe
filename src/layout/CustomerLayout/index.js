@@ -9,15 +9,7 @@ import Footer from "../../Component/Footer";
 const cx = classNames.bind(styles);
 
 function CustomerLayout() {
-  return (
-    <div className={cx("wrapper")}>
-      <Header />
-      <div className={cx("container")}>
-        <Outlet />
-      </div>
-      <Footer />
-    </div>
-  );
+  return <Outlet />;
 }
 
 export default CustomerLayout;

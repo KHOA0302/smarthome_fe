@@ -41,20 +41,57 @@ const productReducer = (state, action) => {
       };
     case "FETCH_ERROR":
       return { ...state, loading: false, error: action.payload };
-    case "SET_SELECTED_VARIANT":
-      const newSelectedVariant = action.payload;
-      const updatedAllOptions = state.allOptions.map((option) => ({
-        ...option,
-        optionValues: option.optionValues.map((value) => ({
-          ...value,
-          selected: newSelectedVariant.optionValueIds.includes(value.valueId),
-        })),
-      }));
+    case "SET_OPTION_VALUE":
+      const { newAllOptions, newSelectedVariant } = action.payload;
 
       return {
         ...state,
+        allOptions: [...newAllOptions],
         selectedVariant: newSelectedVariant,
-        allOptions: updatedAllOptions, // Cập nhật lại allOptions để hiển thị trạng thái 'selected' đúng
+      };
+    case "SET_SERVICE_PACKAGE":
+      const packageId = action.payload;
+      const newServicePackages = state.servicePackages.map((_package) => {
+        // const newItems = _package.items.map((item) => {
+        //   return {
+        //     ...item,
+        //     selected: true,
+        //   };
+        // });
+
+        return {
+          ..._package,
+          selected: _package.packageId === packageId,
+        };
+      });
+      return {
+        ...state,
+        servicePackages: [...newServicePackages],
+      };
+    case "SET_SERVICE_PACKAGE_ITEM":
+      const { _packageId, itemId } = action.payload;
+      const _newServicePackages = state.servicePackages.map((_package) => {
+        if (_package.packageId === _packageId) {
+          const newItems = _package.items.map((item) => {
+            if (item.itemId === itemId) {
+              return {
+                ...item,
+                selected: !item.selected,
+              };
+            }
+            return item;
+          });
+
+          return {
+            ..._package,
+            items: newItems,
+          };
+        }
+        return _package;
+      });
+      return {
+        ...state,
+        servicePackages: [..._newServicePackages],
       };
     default:
       return state;

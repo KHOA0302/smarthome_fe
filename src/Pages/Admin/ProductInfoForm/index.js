@@ -5,7 +5,7 @@ import ProductSection from "../../../Component/ProductSection";
 import styles from "./ProductInfoForm.module.scss";
 import classNames from "classnames/bind";
 import { brandService } from "../../../api/brandService";
-import { ContextComponent, useGetContext } from "../../../hooks/useGetContext";
+import { useGetContext } from "../../../hooks/useGetContext";
 import { categoryService } from "../../../api/categoryService";
 
 const cx = classNames.bind(styles);
@@ -17,9 +17,7 @@ export const useProductInfoFormGetContext = () => {
 };
 
 function ProductInfoForm() {
-  const [currentSection, setCurrentSection] = useState(
-    "brand-category-current"
-  );
+  const [currentSection, setCurrentSection] = useState("product-current");
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
 

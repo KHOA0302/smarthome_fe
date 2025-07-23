@@ -11,6 +11,11 @@ import { HiMiniArrowTurnDownRight } from "react-icons/hi2";
 import { RiArrowUpWideLine } from "react-icons/ri";
 import { HiMiniPlusSmall } from "react-icons/hi2";
 import { HiMiniMinusSmall } from "react-icons/hi2";
+import { GoCheckCircle } from "react-icons/go";
+import { RiVipCrownFill } from "react-icons/ri";
+import { FcAdvance } from "react-icons/fc";
+import { FaCheckSquare } from "react-icons/fa";
+import { LuBadgeX } from "react-icons/lu";
 
 export {
   BiAddToQueue as AddIcon,
@@ -26,4 +31,9 @@ export {
   RiArrowUpWideLine as ArrowDownIcon,
   HiMiniPlusSmall as PlusIcon,
   HiMiniMinusSmall as MinusIcon,
+  GoCheckCircle as CircleCheckIcon,
+  RiVipCrownFill as CrownIcon,
+  FcAdvance as SpecialArrowIcon,
+  FaCheckSquare as CheckBoxIcon,
+  LuBadgeX as ExistIcon,
 };

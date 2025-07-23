@@ -4,6 +4,7 @@ import styles from "./VariantInfo.module.scss";
 import classNames from "classnames/bind";
 import { optionService } from "../../../api/optionService";
 import { v4 as uuidv4 } from "uuid";
+import { formatNumber } from "../../../utils/formatNumber";
 
 const cx = classNames.bind(styles);
 
@@ -191,9 +192,10 @@ function VariantInfo({
             const formattedValue = new Intl.NumberFormat("vi-VN").format(
               parseInt(priceNumber, 10)
             );
+
             return {
               ...pv,
-              price: formattedValue,
+              price: formatNumber(e.target.value),
             };
           }
           return pv;

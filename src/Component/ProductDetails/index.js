@@ -4,13 +4,24 @@ import { useEffect, useReducer, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { initialState, productReducer } from "./productReducer";
 import productService from "../../api/productService";
-import { ArrowDownIcon, ArrowRightIcon } from "../../icons";
+import {
+  ArrowDownIcon,
+  ArrowRightIcon,
+  CheckBoxIcon,
+  CircleCheckIcon,
+  CrownIcon,
+  ExistIcon,
+  SpecialArrowIcon,
+} from "../../icons";
 import banner from "../../images/girl.png";
+import { formatNumber } from "../../utils/formatNumber";
 
 const cx = classNames.bind(styles);
 function ProductDetails() {
   const { product_id, variant_id } = useParams();
   const [state, dispatch] = useReducer(productReducer, initialState);
+  const navigate = useNavigate();
+  const [showModalCover, setShowModalCover] = useState(false);
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -44,9 +55,56 @@ function ProductDetails() {
     displayImg,
   } = state;
 
+  const handleOPtionValueChange = (optionId, valueId) => {
+    const newAllOptions = allOptions.map((option) => {
+      if (option.optionId === optionId) {
+        const newOptionValues = option.optionValues.map((value) => {
+          return {
+            ...value,
+            selected: value.valueId === valueId,
+          };
+        });
+
+        return {
+          ...option,
+          optionValues: [...newOptionValues],
+        };
+      }
+      return option;
+    });
+
+    const selectedValueIds = [];
+
+    newAllOptions.forEach((option) => {
+      option.optionValues.forEach((optionValue) => {
+        if (optionValue.selected) {
+          selectedValueIds.push(optionValue.valueId);
+        }
+      });
+    });
+
+    selectedValueIds.sort((a, b) => a - b);
+
+    const newSelectedVariant = allVariants.filter((variant, id) => {
+      return variant.optionValueIds.every(
+        (value, index) => value === selectedValueIds[index]
+      );
+    })[0];
+
+    if (newSelectedVariant && newSelectedVariant.variantId !== variant_id) {
+      dispatch({
+        type: "SET_OPTION_VALUE",
+        payload: { newAllOptions, newSelectedVariant },
+      });
+      navigate(
+        `/product/${product_id}/variant/${newSelectedVariant.variantId}`
+      );
+    }
+  };
+
   const specificationsHtml = groupAttributes?.map((group, id) => {
     return (
-      <div className={cx("attribute-wrapper")}>
+      <div className={cx("attribute-wrapper")} key={id}>
         <div className={cx("attribute-container")}>
           <div className={cx("attribute-group")}>
             <span>{group.groupName}</span>
@@ -55,16 +113,16 @@ function ProductDetails() {
             </button>
           </div>
           <div className={cx("attribute-items")}>
-            {group.attributes.map((attribute, id) => {
+            {group.attributes.map((attribute, attributeMapId) => {
               return (
-                <div className={cx("attribute-item")}>
+                <div className={cx("attribute-item")} key={attributeMapId}>
                   <div>
                     <ArrowRightIcon />
                     <span>{attribute.attributeName}:</span>
                   </div>
                   <ul>
-                    {attribute.attributeValues.map((av, id) => {
-                      return <li>{av}</li>;
+                    {attribute.attributeValues.map((av, valueMapId) => {
+                      return <li key={valueMapId}>{av}</li>;
                     })}
                   </ul>
                 </div>
@@ -75,6 +133,22 @@ function ProductDetails() {
       </div>
     );
   });
+
+  const handleChangePackage = (packageId) => {
+    dispatch({
+      type: "SET_SERVICE_PACKAGE",
+      payload: packageId,
+    });
+    console.log(123);
+  };
+
+  const changeServicePackageItems = (e, packageId, itemId) => {
+    e.stopPropagation();
+    dispatch({
+      type: "SET_SERVICE_PACKAGE_ITEM",
+      payload: { _packageId: packageId, itemId },
+    });
+  };
 
   return (
     <div className={cx("wrapper")}>
@@ -111,6 +185,7 @@ function ProductDetails() {
             </div>
             <div className={cx("product-guarantees")}>
               <span>Smarthome xin đảm bảo</span>
+              <span>{loading ? " loading" : " done"}</span>
             </div>
             <div>
               <div className={cx("product-specifications")}>
@@ -135,7 +210,16 @@ function ProductDetails() {
                     <ul>
                       {option.optionValues.map((ov, i) => {
                         return (
-                          <li className={cx({ selected: ov.selected })} key={i}>
+                          <li
+                            className={cx({ selected: ov.selected })}
+                            key={i}
+                            onClick={() =>
+                              handleOPtionValueChange(
+                                option.optionId,
+                                ov.valueId
+                              )
+                            }
+                          >
                             {ov.valueName}
                           </li>
                         );
@@ -161,6 +245,8 @@ function ProductDetails() {
                       className={cx("variant-service_package", {
                         selected: sPackage.selected,
                       })}
+                      onClick={() => handleChangePackage(sPackage.packageId)}
+                      key={id}
                     >
                       <div className={cx("variant-package_name")}>
                         <div>
@@ -168,11 +254,14 @@ function ProductDetails() {
                             type="radio"
                             name="package"
                             checked={sPackage.selected}
+                            onChange={() =>
+                              handleChangePackage(sPackage.packageId)
+                            }
                           />
                           <span>{sPackage.packageName}</span>
                         </div>
                         <span className={cx("total-price")}>
-                          {totalPrice + "đ"}
+                          {formatNumber(totalPrice) + "đ"}
                         </span>
                       </div>
                       <div className={cx("variant-service_items")}>
@@ -184,27 +273,117 @@ function ProductDetails() {
                                   atLeastOne: item.atLeastOne,
                                   selected: item.selected,
                                 })}
+                                key={i}
                               >
-                                <div>
-                                  {item.atLeastOne ? (
-                                    <span>👑</span>
-                                  ) : (
-                                    <span>☑️</span>
-                                  )}
+                                <div
+                                  className={cx("variant-service_item-icons")}
+                                >
+                                  <div
+                                    className={cx("variant-service_item-icon")}
+                                  >
+                                    {item.atLeastOne ? (
+                                      <CrownIcon />
+                                    ) : (
+                                      <CircleCheckIcon />
+                                    )}
+                                  </div>
 
                                   <span>{item.itemName}</span>
                                 </div>
-                                {/* <span
-                                className={cx("variant-service-item_price")}
-                              >
-                                {item.itemPriceImpact > 0 &&
-                                  item.itemPriceImpact + "đ"}
-                              </span> */}
                               </div>
                             );
                           }
                         })}
+                        {showModalCover &&
+                          sPackage.selected &&
+                          sPackage.items.length > 1 && (
+                            <div
+                              className={cx("service-overplay")}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                              }}
+                            >
+                              <div className={cx("service-overplay-wrapper")}>
+                                <div className={cx("service-overplay-name")}>
+                                  <span>{sPackage.packageName}</span>
+                                  <button
+                                    onClick={() =>
+                                      setShowModalCover(!showModalCover)
+                                    }
+                                  >
+                                    <ExistIcon />
+                                  </button>
+                                </div>
+                                <div
+                                  className={cx("service-overplay-container")}
+                                >
+                                  <ul>
+                                    {sPackage.items.map((item) => {
+                                      return (
+                                        <li key={item.imgId}>
+                                          <div>
+                                            {item.selectable ? (
+                                              <input
+                                                type="checkbox"
+                                                id={item.itemId}
+                                                disabled={!item.selectable}
+                                                checked={item.selected}
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                }}
+                                                onChange={(e) =>
+                                                  changeServicePackageItems(
+                                                    e,
+                                                    sPackage.packageId,
+                                                    item.itemId
+                                                  )
+                                                }
+                                              />
+                                            ) : (
+                                              <CheckBoxIcon />
+                                            )}
+                                            <span
+                                              className={cx({
+                                                atLeastOne: item.atLeastOne,
+                                              })}
+                                            >
+                                              {item.itemName}
+                                            </span>
+                                          </div>
+                                          <span>
+                                            {formatNumber(item.itemPriceImpact)}
+                                            đ
+                                          </span>
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                </div>
+                                <div className={cx("service-overplay-bottom")}>
+                                  <div>
+                                    <span>Tổng tiền</span>
+                                    <span>{formatNumber(totalPrice)}đ</span>
+                                  </div>
+                                  <button>Xác nhận</button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                       </div>
+                      {sPackage.selected && sPackage.items.length > 1 && (
+                        <button
+                          className={cx(
+                            "variant-service_package-item-edit_btn"
+                          )}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowModalCover(!showModalCover);
+                          }}
+                        >
+                          <span>Thay đổi dịch vụ</span>
+                          <SpecialArrowIcon />
+                        </button>
+                      )}
                     </div>
                   );
                 })}
