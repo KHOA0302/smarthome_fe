@@ -1,13 +1,12 @@
 @import "normalize.css";
-
-/* src/styles/_css-variables.scss hoặc src/styles/global-vars.css */
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
 
 :root {
   // Primary Colors
-  --color-primary-1: #ecfae5;
-  --color-primary-2: #ddf6d2;
-  --color-primary-3: #cae8bd;
-  --color-primary-4: #b0db9c;
+  --color-primary-1: #f1f8fe;
+  --color-primary-2: #2881eb;
+  --color-primary-3: #1f3c88;
+  --color-primary-4: #121756;
 
   // Text Colors
   --color-text-primary: #333333;
@@ -23,12 +22,14 @@
 
 * {
   box-sizing: border-box;
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
   margin: 0;
   padding: 0;
 }
 
 html {
-  font-family: "Arial", sans-serif;
   font-size: 62.5%;
   color: var(--color-text-primary);
   line-height: 1.5;

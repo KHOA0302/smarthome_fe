@@ -1,7 +1,6 @@
-import ProductDetails from "../../Component/ProductDetails";
 import styles from "./CommonLayout.module.scss";
 import classNames from "classnames/bind";
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Header from "../../Component/Header";
 import Footer from "../../Component/Footer";
 

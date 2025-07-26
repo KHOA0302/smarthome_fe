@@ -52,16 +52,17 @@ const productReducer = (state, action) => {
     case "SET_SERVICE_PACKAGE":
       const packageId = action.payload;
       const newServicePackages = state.servicePackages.map((_package) => {
-        // const newItems = _package.items.map((item) => {
-        //   return {
-        //     ...item,
-        //     selected: true,
-        //   };
-        // });
+        const newItems = _package.items.map((item) => {
+          return {
+            ...item,
+            selected: true,
+          };
+        });
 
         return {
           ..._package,
           selected: _package.packageId === packageId,
+          items: [...newItems],
         };
       });
       return {

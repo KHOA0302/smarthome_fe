@@ -16,6 +16,9 @@ import { RiVipCrownFill } from "react-icons/ri";
 import { FcAdvance } from "react-icons/fc";
 import { FaCheckSquare } from "react-icons/fa";
 import { LuBadgeX } from "react-icons/lu";
+import { IoEarthOutline } from "react-icons/io5";
+import { CiDeliveryTruck } from "react-icons/ci";
+import { PiMoneyWavy } from "react-icons/pi";
 
 export {
   BiAddToQueue as AddIcon,
@@ -36,4 +39,7 @@ export {
   FcAdvance as SpecialArrowIcon,
   FaCheckSquare as CheckBoxIcon,
   LuBadgeX as ExistIcon,
+  IoEarthOutline as EarthIcon,
+  CiDeliveryTruck as TruckIcon,
+  PiMoneyWavy as MoneyIcon,
 };

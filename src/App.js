@@ -17,9 +17,10 @@ import ProductInfoForm from "./Pages/Admin/ProductInfoForm";
 import ProductManagement from "./Pages/Admin/ProductManagement";
 import Statistic from "./Pages/Admin/Statistic";
 import InvoiceManagement from "./Pages/Admin/InvoiceManagement";
-import ProductDetails from "./Component/ProductDetails";
 import CommonLayout from "./layout/CommonLayout";
+import ProductDetails from "./Pages/ProductDetails";
 import { Dashboard as CustomerDashboard } from "./Pages/Customer";
+import Cart from "./Pages/Cart";
 
 const ROLE_ADMIN = 1;
 const ROLE_CUSTOMER = 2;
@@ -47,18 +48,6 @@ function App() {
         </Route>
 
         <Route path="*" element={<CommonLayout />}>
-          <Route
-            path="customer/*"
-            element={<ProtectedRoute allowedRoles={[ROLE_CUSTOMER]} />}
-          >
-            <Route path="*" element={<CustomerLayout />}>
-              <Route path="dashboard" element={<CustomerDashboard />} />
-              <Route index element={<Navigate to="dashboard" replace />} />
-
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Route>
-
           <Route exact path="" element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
@@ -67,6 +56,20 @@ function App() {
             path="product/:product_id/variant/:variant_id"
             element={<ProductDetails />}
           />
+          <Route path="cart" element={<Cart />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+
+        <Route
+          path="customer/*"
+          element={<ProtectedRoute allowedRoles={[ROLE_CUSTOMER]} />}
+        >
+          <Route path="*" element={<CustomerLayout />}>
+            <Route path="dashboard" element={<CustomerDashboard />} />
+            <Route index element={<Navigate to="dashboard" replace />} />
+
+            <Route path="*" element={<NotFound />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<NotFound />} />

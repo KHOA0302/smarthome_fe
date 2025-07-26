@@ -1,4 +1,5 @@
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
 const axiosClient = axios.create({
   baseURL: "http://localhost:8080",
@@ -13,6 +14,15 @@ axiosClient.interceptors.request.use(
     const token = localStorage.getItem("jwt_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      localStorage.removeItem("guest_session_id");
+    } else {
+      let guestSessionId = localStorage.getItem("guest_session_id");
+
+      if (!guestSessionId) {
+        guestSessionId = uuidv4();
+        localStorage.setItem("guest_session_id", guestSessionId);
+      }
+      config.headers["X-Session-ID"] = guestSessionId;
     }
     return config;
   },

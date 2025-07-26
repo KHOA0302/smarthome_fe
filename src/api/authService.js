@@ -24,6 +24,10 @@ const authService = {
     return userInfo ? JSON.parse(userInfo) : null;
   },
 
+  getUserInfo: () => {
+    return axiosClient.get("/auth/user-info");
+  },
+
   googleSign: (token) => {
     return axiosClient.post("/auth/google", { token });
   },
