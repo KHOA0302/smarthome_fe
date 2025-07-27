@@ -39,14 +39,16 @@ function ServiceInfo({
   }, [productCategory]);
 
   useEffect(() => {
-    const ps = productVariant.map((pv, id) => {
-      return {
-        SKU: pv.sku,
-        variantName: pv.variantName,
-        packageServices: [],
-        disable: true,
-      };
-    });
+    const ps = productVariant
+      .filter((pv, id) => !pv.isRemove)
+      .map((pv) => {
+        return {
+          SKU: pv.sku,
+          variantName: pv.variantName,
+          packageServices: [],
+          disable: true,
+        };
+      });
 
     setProductService([...ps]);
   }, [productVariant]);

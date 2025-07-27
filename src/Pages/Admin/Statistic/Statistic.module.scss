@@ -1,0 +1,63 @@
+.wrapper {
+  width: 100%;
+}
+
+.blank {
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  padding: 20px;
+  background-color: white;
+}
+
+.statistic-top {
+  display: flex;
+  width: 100%;
+  gap: 40px;
+
+  .revenue {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #1bb052;
+    padding: 16px;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.8rem;
+    align-items: center;
+    gap: 12px;
+
+    span:nth-child(2) {
+      font-size: 3rem;
+      font-weight: 800;
+    }
+  }
+
+  .product {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #1bb052;
+    padding: 16px;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.8rem;
+    align-items: center;
+    gap: 12px;
+    span:nth-child(2) {
+      font-size: 3rem;
+      font-weight: 800;
+    }
+  }
+
+  & div {
+    &.decrease {
+      background-color: tomato;
+    }
+    &.increase {
+      background-color: #1bb052;
+    }
+  }
+}

@@ -383,7 +383,7 @@ function VariantInfo({
                           })}
                           <td className={cx("value")}>
                             <input
-                              required
+                              required={!variant.isRemove}
                               name="name"
                               type="text"
                               value={variant.variantName}
@@ -392,7 +392,7 @@ function VariantInfo({
                           </td>
                           <td className={cx("value")}>
                             <input
-                              required
+                              required={!variant.isRemove}
                               name="price"
                               type="text"
                               value={variant.price}
@@ -401,7 +401,7 @@ function VariantInfo({
                           </td>
                           <td className={cx("value")}>
                             <input
-                              required
+                              required={!variant.isRemove}
                               name="quantity"
                               type="number"
                               value={variant.quantity}
@@ -410,7 +410,7 @@ function VariantInfo({
                           </td>
                           <td className={cx("value")}>
                             <input
-                              required
+                              required={!variant.isRemove}
                               name="img"
                               type="file"
                               onChange={(e) => handleSetProductVariant(e, id)}

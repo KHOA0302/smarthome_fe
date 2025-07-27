@@ -42,8 +42,10 @@
 
   &.active {
     background-color: var(--color-primary-2);
+    color: white;
     padding-left: 1.6rem;
     border-left: 1rem solid var(--color-primary-4);
+    font-weight: 700;
   }
 
   svg {

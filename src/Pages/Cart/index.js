@@ -6,12 +6,17 @@ import classNames from "classnames/bind";
 import { formatNumber } from "../../utils/formatNumber";
 import { ExistIcon, MoneyIcon, TruckIcon } from "../../icons";
 import authService from "../../api/authService";
+import orderService from "../../api/orderService";
 
 const cx = classNames.bind(styles);
 function Cart() {
   const [showCover, setShowCover] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [userInfo, setUserInfo] = useState({});
+  const [orderInfo, setOrderInfo] = useState({
+    cartId: "",
+    method: "traditional",
+  });
 
   useEffect(() => {
     const fetchCartItem = async () => {
@@ -19,6 +24,7 @@ function Cart() {
         const res = await cartService.getCartItem();
         if (res.status === 200) {
           setCartItems(res.data.cartItems);
+          setOrderInfo((prev) => ({ ...prev, cartId: res.data.cartId }));
         }
       } catch (error) {
         console.error("there no cart");
@@ -48,6 +54,16 @@ function Cart() {
       fetchUserInfo();
     }
   }, [showCover]);
+
+  const handleCreateOrder = () => {
+    const fetchCreateOrder = async () => {
+      try {
+        const res = await orderService.createOrder(orderInfo);
+      } catch (error) {}
+    };
+
+    fetchCreateOrder();
+  };
 
   return (
     <div className={cx("wrapper")}>
@@ -104,7 +120,14 @@ function Cart() {
           <div className={cx("cart-cover-payment")}>
             <span>Hình thức thanh toán </span>
             <div className={cx("cart-cover-payment-method")}>
-              <input type="radio" name="payment" checked />
+              <input
+                type="radio"
+                name="payment"
+                checked={"traditional" === orderInfo.method}
+                onChange={() =>
+                  setOrderInfo((prev) => ({ ...prev, method: "traditional" }))
+                }
+              />
               <div>
                 <MoneyIcon />
                 <span>Thanh toán khi nhận hàng</span>
@@ -131,7 +154,12 @@ function Cart() {
               </div>
             </div>
           </div>
-          <button className={cx("cart-cover-approve")}>Xác nhận</button>
+          <button
+            className={cx("cart-cover-approve")}
+            onClick={handleCreateOrder}
+          >
+            Xác nhận
+          </button>
         </div>
       </div>
     </div>

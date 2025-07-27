@@ -56,8 +56,9 @@ function ProductSection() {
       };
 
       const updatedVariants = await Promise.all(
-        productVariant.map(async (variant) => {
-          if (!variant.isRemove) {
+        productVariant
+          .filter((variant) => !variant.isRemove)
+          .map(async (variant) => {
             if (variant.img && variant.img instanceof File) {
               const variantIdentifier =
                 variant.sku ||
@@ -72,8 +73,7 @@ function ProductSection() {
             }
 
             return { ...variant };
-          }
-        })
+          })
       );
 
       const updateServices = productService.filter(
@@ -83,15 +83,13 @@ function ProductSection() {
       const updateAttributes = productAttribute
         .filter((pa) => !pa.isRemove)
         .map((pa) => {
-          if (!pa.isRemove) {
-            const newAttributes = pa.attributes.filter(
-              (attr, i) => !attr.isRemove
-            );
-            return {
-              ...pa,
-              newAttributes,
-            };
-          }
+          const newAttributes = pa.attributes.filter(
+            (attr, i) => !attr.isRemove
+          );
+          return {
+            ...pa,
+            newAttributes,
+          };
         });
 
       const finalProductData = {
