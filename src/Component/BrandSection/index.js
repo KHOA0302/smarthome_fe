@@ -71,27 +71,24 @@ function BrandSection() {
     }
   };
 
-  const handlePost = (e) => {
+  const fetchCreateBrand = async (e) => {
     e.preventDefault();
-    const fetchCreateBrand = async () => {
-      try {
-        const updateBrands = {
-          brand_name: brand.name,
-          logo_url: await uploadImageToFirebase(brand.img, "brand"),
-        };
+    try {
+      const updateBrands = {
+        brand_name: brand.name,
+        logo_url: await uploadImageToFirebase(brand.img, "brand"),
+      };
 
-        const res = await brandService.createBrand(updateBrands);
+      const res = await brandService.createBrand(updateBrands);
 
-        if (res.status === 201) {
-          const allBrands = res.data.data.allBrands;
-          setBrands(allBrands);
-          setBrand({ name: "", file: "" });
-        }
-      } catch (err) {
-        console.error("Lỗi khi tạo brand:", err);
+      if (res.status === 201) {
+        const allBrands = res.data.data.allBrands;
+        setBrands(allBrands);
+        setBrand({ name: "", file: "" });
       }
-    };
-    fetchCreateBrand();
+    } catch (err) {
+      console.error("Lỗi khi tạo brand:", err);
+    }
   };
 
   const brandsHtml = brandsModified.map((b, id) => {
@@ -104,7 +101,7 @@ function BrandSection() {
   });
 
   return (
-    <form>
+    <form onSubmit={fetchCreateBrand}>
       <div className={cx("brand-form")}>
         <div className={cx("brand-wrapper")}>
           <div>
@@ -124,14 +121,13 @@ function BrandSection() {
                   type="file"
                   name="brand-img"
                   onChange={handleChangBrand}
+                  required
                 />
               </div>
               <div className={cx("brands-exist")}>{brandsHtml}</div>
             </div>
           </div>
-          <button type="submit" onClick={handlePost}>
-            Gửi
-          </button>
+          <button type="submit">Gửi</button>
         </div>
       </div>
     </form>

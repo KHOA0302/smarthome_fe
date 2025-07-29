@@ -7,6 +7,10 @@ import classNames from "classnames/bind";
 import { brandService } from "../../../api/brandService";
 import { useGetContext } from "../../../hooks/useGetContext";
 import { categoryService } from "../../../api/categoryService";
+import OptionSection from "../../../Component/OptionSection";
+
+import ServiceSection from "../../../Component/ServiceSection";
+import SpecificationSection from "../../../Component/SpecificationSection";
 
 const cx = classNames.bind(styles);
 
@@ -17,7 +21,7 @@ export const useProductInfoFormGetContext = () => {
 };
 
 function ProductInfoForm() {
-  const [currentSection, setCurrentSection] = useState("product-current");
+  const [currentSection, setCurrentSection] = useState("specification-current");
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -71,6 +75,12 @@ function ProductInfoForm() {
           <button onClick={() => handleChangeSection("brand-category-current")}>
             Hãng / Danh mục
           </button>
+          <button onClick={() => handleChangeSection("option-service-current")}>
+            Option / Dịch vụ
+          </button>
+          <button onClick={() => handleChangeSection("specification-current")}>
+            Thông số kĩ thuật
+          </button>
         </nav>
         <div className={cx("container", { [currentSection]: true })}>
           <div className={cx("product")}>
@@ -81,6 +91,15 @@ function ProductInfoForm() {
             <BrandSection />
 
             <CategorySection />
+          </div>
+
+          <div className={cx("option-package_service")}>
+            <ServiceSection />
+            <OptionSection />
+          </div>
+
+          <div className={cx("specification")}>
+            <SpecificationSection />
           </div>
         </div>
       </div>

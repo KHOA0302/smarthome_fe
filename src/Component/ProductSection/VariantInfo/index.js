@@ -110,7 +110,7 @@ function VariantInfo({
   };
 
   const handleInputOptionValueChange = (e, id, mapOptionId) => {
-    const newProductVariant = productOption.map((option, index) => {
+    const newProductOption = productOption.map((option, index) => {
       if (index === mapOptionId) {
         const newOptionValues = [...option.optionValue];
         newOptionValues[id] = e.target.value;
@@ -123,7 +123,7 @@ function VariantInfo({
       return option;
     });
 
-    setProductOption(newProductVariant);
+    setProductOption(newProductOption);
   };
 
   const handleOptionVariantChange = (e, id) => {

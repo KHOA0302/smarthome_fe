@@ -19,6 +19,9 @@ import { LuBadgeX } from "react-icons/lu";
 import { IoEarthOutline } from "react-icons/io5";
 import { CiDeliveryTruck } from "react-icons/ci";
 import { PiMoneyWavy } from "react-icons/pi";
+import { AiFillAppstore } from "react-icons/ai";
+import { MdFilterList } from "react-icons/md";
+import { MdFilterListOff } from "react-icons/md";
 
 export {
   BiAddToQueue as AddIcon,
@@ -42,4 +45,7 @@ export {
   IoEarthOutline as EarthIcon,
   CiDeliveryTruck as TruckIcon,
   PiMoneyWavy as MoneyIcon,
+  AiFillAppstore as QuarterIcon,
+  MdFilterList as FilterIcon,
+  MdFilterListOff as FilterOffIcon,
 };

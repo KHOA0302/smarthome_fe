@@ -3,12 +3,11 @@ import styles from "./CategorySection.module.scss";
 import classNames from "classnames/bind";
 import { uploadImageToFirebase } from "../../utils/firebaseUpload";
 import { useProductInfoFormGetContext } from "../../Pages/Admin/ProductInfoForm";
-import { TrashIcon } from "../../icons";
 import { categoryService } from "../../api/categoryService";
 const cx = classNames.bind(styles);
 
 function CategorySection() {
-  const { __, _, categories, setCategories } = useProductInfoFormGetContext();
+  const { categories, setCategories } = useProductInfoFormGetContext();
   const [category, setCategory] = useState({
     name: "",
     slogan: "",
@@ -101,39 +100,35 @@ function CategorySection() {
     );
   });
 
-  const handlePost = async (e) => {
+  const fetchCreateCategory = async (e) => {
     e.preventDefault();
+    try {
+      const updateCategory = {
+        ...category,
+        icon: await uploadImageToFirebase(category.icon, "category"),
+        banner: await uploadImageToFirebase(category.banner, "category"),
+        displayOrder: categories[categories.length - 1].display_order + 100000,
+      };
 
-    const fetchCreateCategory = async () => {
-      try {
-        const updateCategory = {
-          ...category,
-          icon: await uploadImageToFirebase(category.icon, "category"),
-          banner: await uploadImageToFirebase(category.banner, "category"),
-          displayOrder:
-            categories[categories.length - 1].display_order + 100000,
-        };
+      const res = await categoryService.createCategory(updateCategory);
 
-        const res = await categoryService.createCategory(updateCategory);
-
-        if (res.status === 201) {
-          const allCategories = res.data.data.allCategories;
-          setCategories(allCategories);
-          setCategory({
-            name: "",
-            slogan: "",
-            icon: "",
-            banner: "",
-          });
-        }
-      } catch (err) {
-        console.error("Lỗi khi tạo category:", err);
+      if (res.status === 201) {
+        const allCategories = res.data.data.allCategories;
+        setCategories(allCategories);
+        setCategory({
+          name: "",
+          slogan: "",
+          icon: "",
+          banner: "",
+        });
       }
-    };
-    fetchCreateCategory();
+    } catch (err) {
+      console.error("Lỗi khi tạo category:", err);
+    }
   };
+
   return (
-    <form>
+    <form onSubmit={fetchCreateCategory}>
       <div className={cx("category-form")}>
         <div className={cx("category-wrapper")}>
           <div>
@@ -150,11 +145,13 @@ function CategorySection() {
                       placeholder="Nhập tên danh mục..."
                       value={category.name}
                       onChange={handleChangCategory}
+                      required
                     />
                     <input
                       type="file"
                       name="icon"
                       onChange={handleChangCategory}
+                      required
                     />
                   </div>
                 </div>
@@ -180,9 +177,7 @@ function CategorySection() {
               <div className={cx("categories-exist")}>{categoryHtml}</div>
             </div>
           </div>
-          <button type="submit" onClick={handlePost}>
-            Gửi
-          </button>
+          <button type="submit">Gửi</button>
         </div>
       </div>
     </form>

@@ -116,6 +116,8 @@ function ProductDetails() {
     }
   };
 
+  console.log(groupAttributes);
+
   const specificationsHtml = groupAttributes?.map((group, id) => {
     return (
       <div className={cx("attribute-wrapper")} key={id}>

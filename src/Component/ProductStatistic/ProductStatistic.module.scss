@@ -1,0 +1,29 @@
+.wrapper {
+  margin-top: 20px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.chart {
+  flex: 2;
+  padding: 20px;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  h3 {
+    span {
+      font-weight: 800;
+    }
+  }
+}
+
+.order {
+  flex: 1;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
