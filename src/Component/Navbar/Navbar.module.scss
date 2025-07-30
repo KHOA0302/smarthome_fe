@@ -1,4 +1,5 @@
 .wrapper {
+  position: relative;
   min-width: 20%;
   height: 100vh;
   background-color: #fff;
@@ -30,7 +31,6 @@
 }
 
 .navbar-item {
-  position: relative;
   display: block;
   padding-left: 0;
   border-left: 0 solid var(--color-primary-4);
@@ -61,4 +61,26 @@
   margin-left: 20px;
   height: 100%;
   padding: 1.2rem 0;
+}
+
+.log-out-btn {
+  position: absolute;
+  bottom: 0;
+  transform: translateX(-50%);
+  margin-bottom: 20px;
+  background-color: var(--color-primary-3);
+  color: white;
+  font-weight: 800;
+  font-size: 1.6rem;
+  border: none;
+  outline: none;
+  padding: 4px 8px;
+  scale: 1;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  border-radius: 8px;
+  &:hover {
+    scale: 1.08;
+  }
+  left: 50%;
 }

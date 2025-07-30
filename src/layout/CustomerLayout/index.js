@@ -1,15 +1,31 @@
 import styles from "./CustomerLayout.module.scss";
 import classNames from "classnames/bind";
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
-import NotFound from "../../Pages/NotFound";
-import { Dashboard } from "../../Pages/Customer";
-import Header from "../../Component/Header";
-import Footer from "../../Component/Footer";
+import { Outlet } from "react-router-dom";
+
+import Navbar from "../../Component/Navbar";
+import { InvoiceIcon, UserInfoIcon } from "../../icons";
 
 const cx = classNames.bind(styles);
 
+const navItems = [
+  {
+    name: "Dasboard",
+    icon: UserInfoIcon,
+    route: "/customer/dashboard",
+  },
+  // {
+  //   name: "Đơn hàng hàng",
+  //   icon: InvoiceIcon,
+  //   route: "/customer",
+  // },
+];
 function CustomerLayout() {
-  return <Outlet />;
+  return (
+    <div className={cx("wrapper")}>
+      <Navbar navItems={navItems} />
+      <Outlet />
+    </div>
+  );
 }
 
 export default CustomerLayout;

@@ -1,48 +1,14 @@
-import styles from "./AdminNavbar.module.scss";
+import styles from "./Navbar.module.scss";
 import classNames from "classnames/bind";
-import {
-  AddIcon,
-  ChartIcon,
-  EditIcon,
-  InvoiceIcon,
-  UserInfoIcon,
-} from "../../icons";
+
 import zaku from "../../images/zaku.png";
-import { NavLink } from "react-router-dom";
+import { NavLink, replace, useNavigate } from "react-router-dom";
+import authService from "../../api/authService";
 
 const cx = classNames.bind(styles);
 
-const navItems = [
-  {
-    name: "Dasboard",
-    icon: UserInfoIcon,
-    route: "/admin/dashboard",
-  },
-  {
-    name: "Thêm sản phẩm",
-    icon: AddIcon,
-    route: "/admin/add-product",
-  },
-  {
-    name: "Thống kê đơn hàng",
-    icon: ChartIcon,
-    route: "/admin/statistic",
-  },
-  {
-    name: "Chỉnh sửa sản phẩm",
-    icon: EditIcon,
-    route: "/admin/edit-product",
-  },
-  {
-    name: "Quản lý đơn hàng",
-    icon: InvoiceIcon,
-    route: "/admin/invoice",
-  },
-];
-
-function AdminNavbar() {
-  const admin = JSON.parse(localStorage.getItem("user_info"));
-  console.log(admin);
+function Navbar({ navItems }) {
+  const navigate = useNavigate();
   return (
     <nav className={cx("wrapper")}>
       <h1>SmartHome</h1>
@@ -71,8 +37,18 @@ function AdminNavbar() {
           );
         })}
       </div>
+      <button
+        className={cx("log-out-btn")}
+        onClick={() => {
+          authService.logout();
+          navigate("/", { replace: true });
+        }}
+        type="button"
+      >
+        Đăng xuất
+      </button>
     </nav>
   );
 }
 
-export default AdminNavbar;
+export default Navbar;

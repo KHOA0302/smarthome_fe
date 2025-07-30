@@ -47,6 +47,7 @@ function ProductDetails() {
         );
 
         const data = response.data;
+        console.log(data);
         dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (error) {
         console.error("Error fetching product details:", error);

@@ -22,7 +22,8 @@ import { PiMoneyWavy } from "react-icons/pi";
 import { AiFillAppstore } from "react-icons/ai";
 import { MdFilterList } from "react-icons/md";
 import { MdFilterListOff } from "react-icons/md";
-
+import { FaTruckFast } from "react-icons/fa6";
+import { AiOutlineFileDone } from "react-icons/ai";
 export {
   BiAddToQueue as AddIcon,
   IoBarChartOutline as ChartIcon,
@@ -48,4 +49,6 @@ export {
   AiFillAppstore as QuarterIcon,
   MdFilterList as FilterIcon,
   MdFilterListOff as FilterOffIcon,
+  FaTruckFast as FastTruckIcon,
+  AiOutlineFileDone as OrderDoneIcon,
 };

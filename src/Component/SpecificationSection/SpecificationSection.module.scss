@@ -13,7 +13,12 @@
 .attribute-container {
 }
 
+.attribute-group-wrapper {
+  display: flex;
+}
+
 .attribute-group {
+  flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -67,4 +72,17 @@
   .attribute-item:not(:last-child) {
     border-bottom: 0.8px solid var(--color-border);
   }
+}
+
+.blank {
+  display: flex;
+  gap: 20px;
+}
+
+.groups-exist {
+  flex: 1;
+}
+
+.groups-new {
+  flex: 1;
 }
