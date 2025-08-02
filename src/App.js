@@ -13,7 +13,7 @@ import CustomerLayout from "./layout/CustomerLayout";
 import NotFound from "./Pages/NotFound";
 import Register from "./Pages/Auth/Register";
 import { DashBoard as AdminDashboard } from "./Pages/Admin";
-import ProductInfoForm from "./Pages/Admin/ProductInfoForm";
+import ProductAdd from "./Pages/Admin/ProductAdd";
 import ProductManagement from "./Pages/Admin/ProductManagement";
 import Statistic from "./Pages/Admin/Statistic";
 import InvoiceManagement from "./Pages/Admin/InvoiceManagement";
@@ -21,6 +21,7 @@ import CommonLayout from "./layout/CommonLayout";
 import ProductDetails from "./Pages/ProductDetails";
 import { Dashboard as CustomerDashboard } from "./Pages/Customer";
 import Cart from "./Pages/Cart";
+import ProductEdit from "./Pages/Admin/ProductEdit";
 
 const ROLE_ADMIN = 1;
 const ROLE_CUSTOMER = 2;
@@ -36,8 +37,9 @@ function App() {
           <Route path="*" element={<AdminLayout />}>
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="add-product" element={<ProductInfoForm />} />
+            <Route path="add-product" element={<ProductAdd />} />
             <Route path="edit-product" element={<ProductManagement />} />
+            <Route path="edit-product/:productId" element={<ProductEdit />} />
 
             <Route path="statistic" element={<Statistic />} />
 

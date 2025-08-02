@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from "react";
 import styles from "./CategorySection.module.scss";
 import classNames from "classnames/bind";
 import { uploadImageToFirebase } from "../../utils/firebaseUpload";
-import { useProductInfoFormGetContext } from "../../Pages/Admin/ProductInfoForm";
+import { useProductInfoFormGetContext } from "../../Pages/Admin/ProductAdd";
 import { categoryService } from "../../api/categoryService";
 const cx = classNames.bind(styles);
 

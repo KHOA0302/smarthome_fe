@@ -20,7 +20,7 @@ export const useProductInfoFormGetContext = () => {
   return useGetContext(ProductInfoFormContext);
 };
 
-function ProductInfoForm() {
+function ProductAdd() {
   const [currentSection, setCurrentSection] = useState("specification-current");
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -107,4 +107,4 @@ function ProductInfoForm() {
   );
 }
 
-export default ProductInfoForm;
+export default ProductAdd;

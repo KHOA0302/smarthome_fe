@@ -11,6 +11,10 @@ const serviceService = {
       serviceName,
     });
   },
+
+  editService: () => {
+    return axiosClient.post("/service-package/edit", {});
+  },
 };
 
 export { serviceService };

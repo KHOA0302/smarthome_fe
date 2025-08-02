@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./SpecificationSection.module.scss";
 import classNames from "classnames/bind";
-import { useProductInfoFormGetContext } from "../../Pages/Admin/ProductInfoForm";
+import { useProductInfoFormGetContext } from "../../Pages/Admin/ProductAdd";
 import { attributeService } from "../../api/attributeService";
 import {
   ArrowDownIcon,

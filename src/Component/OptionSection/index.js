@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./OptionSection.module.scss";
 import classNames from "classnames/bind";
-import { useProductInfoFormGetContext } from "../../Pages/Admin/ProductInfoForm";
+import { useProductInfoFormGetContext } from "../../Pages/Admin/ProductAdd";
 import { optionService } from "../../api/optionService";
 import { FilterIcon, FilterOffIcon } from "../../icons";
 const cx = classNames.bind(styles);

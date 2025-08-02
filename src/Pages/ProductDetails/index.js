@@ -41,7 +41,7 @@ function ProductDetails() {
     const fetchProductData = async () => {
       dispatch({ type: "FETCH_START" });
       try {
-        const response = await productService.getProductDetails(
+        const response = await productService.getProductVariantDetails(
           product_id,
           variant_id
         );

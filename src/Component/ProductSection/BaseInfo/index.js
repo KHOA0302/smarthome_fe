@@ -1,15 +1,10 @@
-import { useEffect, useState } from "react";
 import styles from "./BaseInfo.module.scss";
 import classNames from "classnames/bind";
-import { categoryService } from "../../../api/categoryService";
-import { useProductInfoFormGetContext } from "../../../Pages/Admin/ProductInfoForm";
+import { useProductInfoFormGetContext } from "../../../Pages/Admin/ProductAdd";
 
 const cx = classNames.bind(styles);
 function BaseInfo({ productBase, setProductBase }) {
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const { brands, setBrands, categories, setCategories } =
-    useProductInfoFormGetContext();
+  const { brands, categories } = useProductInfoFormGetContext();
 
   const handleChange = (e) => {
     let newProduct;

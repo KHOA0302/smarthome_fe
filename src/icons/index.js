@@ -24,6 +24,9 @@ import { MdFilterList } from "react-icons/md";
 import { MdFilterListOff } from "react-icons/md";
 import { FaTruckFast } from "react-icons/fa6";
 import { AiOutlineFileDone } from "react-icons/ai";
+import { SiTicktick } from "react-icons/si";
+import { LuCircleSlash2 } from "react-icons/lu";
+
 export {
   BiAddToQueue as AddIcon,
   IoBarChartOutline as ChartIcon,
@@ -51,4 +54,6 @@ export {
   MdFilterListOff as FilterOffIcon,
   FaTruckFast as FastTruckIcon,
   AiOutlineFileDone as OrderDoneIcon,
+  SiTicktick as SelectableIcon,
+  LuCircleSlash2 as UnSelectableIcon,
 };

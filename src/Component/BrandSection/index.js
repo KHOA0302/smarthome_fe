@@ -3,7 +3,7 @@ import styles from "./BrandSection.module.scss";
 import classNames from "classnames/bind";
 import { brandService } from "../../api/brandService";
 import { uploadImageToFirebase } from "../../utils/firebaseUpload";
-import { useProductInfoFormGetContext } from "../../Pages/Admin/ProductInfoForm";
+import { useProductInfoFormGetContext } from "../../Pages/Admin/ProductAdd";
 const cx = classNames.bind(styles);
 
 function BrandSection() {

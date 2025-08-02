@@ -40,14 +40,9 @@ function ProductSection() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const productIdentifier =
-        productBase.name.replace(/\s+/g, "_").toLowerCase() ||
-        `new_product_${Date.now()}`;
-
       const baseImageUrls = await uploadMultipleImagesToFirebase(
         productBase.imgs,
-        "basic",
-        productIdentifier
+        "basic"
       );
 
       const updatedProductBase = {
@@ -60,13 +55,9 @@ function ProductSection() {
           .filter((variant) => !variant.isRemove)
           .map(async (variant) => {
             if (variant.img && variant.img instanceof File) {
-              const variantIdentifier =
-                variant.sku ||
-                `${productIdentifier}_${variant.combination.join("-")}`;
               const variantImageUrl = await uploadImageToFirebase(
                 variant.img,
-                "variant",
-                variantIdentifier
+                "variant"
               );
 
               return { ...variant, img: variantImageUrl };

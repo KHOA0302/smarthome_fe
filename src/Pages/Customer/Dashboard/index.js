@@ -255,7 +255,11 @@ function Dashboard() {
             </div>
           </div>
 
-          {activeSetting.length >= 1 && <button type="submit">LƯU</button>}
+          {activeSetting.length >= 1 && (
+            <button type="submit" className={cx("submit-btn")}>
+              LƯU
+            </button>
+          )}
         </form>
       </div>
     </div>
