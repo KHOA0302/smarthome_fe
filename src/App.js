@@ -22,6 +22,7 @@ import ProductDetails from "./Pages/ProductDetails";
 import { Dashboard as CustomerDashboard } from "./Pages/Customer";
 import Cart from "./Pages/Cart";
 import ProductEdit from "./Pages/Admin/ProductEdit";
+import Order from "./Pages/Customer/Order";
 
 const ROLE_ADMIN = 1;
 const ROLE_CUSTOMER = 2;
@@ -51,6 +52,7 @@ function App() {
 
         <Route path="*" element={<CommonLayout />}>
           <Route exact path="" element={<Home />} />
+          <Route exact path="home" element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="unauthorized" element={<Unauthorized />} />
@@ -63,13 +65,13 @@ function App() {
         </Route>
 
         <Route
-          path="customer/*"
+          path="/customer/*"
           element={<ProtectedRoute allowedRoles={[ROLE_CUSTOMER]} />}
         >
           <Route path="*" element={<CustomerLayout />}>
             <Route path="dashboard" element={<CustomerDashboard />} />
             <Route index element={<Navigate to="dashboard" replace />} />
-
+            <Route path="order" element={<Order />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Route>

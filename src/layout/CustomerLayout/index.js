@@ -13,11 +13,11 @@ const navItems = [
     icon: UserInfoIcon,
     route: "/customer/dashboard",
   },
-  // {
-  //   name: "Đơn hàng hàng",
-  //   icon: InvoiceIcon,
-  //   route: "/customer",
-  // },
+  {
+    name: "Đơn hàng hàng",
+    icon: InvoiceIcon,
+    route: "/customer/order",
+  },
 ];
 function CustomerLayout() {
   return (

@@ -10,7 +10,7 @@ const productService = {
   },
 
   getProductDetails: (productId) => {
-    return axiosClient.post("/product/details", { productId });
+    return axiosClient.get(`/product/details/${productId}`);
   },
 
   getAllProducts: () => {
@@ -23,6 +23,28 @@ const productService = {
 
   editVariants: (productId, variants) => {
     return axiosClient.post("/product/edit-variants", { productId, variants });
+  },
+
+  editService: (productId, servicePackages) => {
+    return axiosClient.put("/product/edit-service", {
+      productId,
+      servicePackages,
+    });
+  },
+
+  editSpecifications: (productId, attributeGroups) => {
+    return axiosClient.put("/product/edit-specifications", {
+      productId,
+      attributeGroups,
+    });
+  },
+
+  getTopSale: (limit) => {
+    return axiosClient.get(`/product/get-top-sale/${limit}`);
+  },
+
+  getLatest: (limit) => {
+    return axiosClient.get(`/product/get-latest-product/${limit}`);
   },
 };
 

@@ -13,7 +13,7 @@ const serviceService = {
   },
 
   editService: () => {
-    return axiosClient.post("/service-package/edit", {});
+    return axiosClient.put("/service-package/update", {});
   },
 };
 

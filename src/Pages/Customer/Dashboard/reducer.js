@@ -26,7 +26,18 @@ const reducer = (state, action) => {
       };
     case "FETCH_ERROR":
       return { ...state, loading: false, error: action.payload };
-
+    case "EDIT-PHONE":
+      const phone = action.payload;
+      return {
+        ...state,
+        phoneNumber: phone,
+      };
+    case "EDIT-NAME":
+      const name = action.payload;
+      return {
+        ...state,
+        name: name,
+      };
     case "EDIT-PROVINCE":
       const newProvince = action.payload;
       return {
@@ -35,6 +46,7 @@ const reducer = (state, action) => {
       };
     case "EDIT-DISTRICT":
       const newDistrict = action.payload;
+      console.log(newDistrict);
       return {
         ...state,
         district: newDistrict,
@@ -48,7 +60,7 @@ const reducer = (state, action) => {
       };
     case "SET-PROVINCE-SEARCH-DATA":
       const provinceSearchData = action.payload;
-      console.log(provinceSearchData);
+
       return {
         ...state,
         provinceSearchData: [...provinceSearchData],

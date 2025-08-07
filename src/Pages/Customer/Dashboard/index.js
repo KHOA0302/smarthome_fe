@@ -89,14 +89,13 @@ function Dashboard() {
   };
 
   const handleChangeProvince = (e) => {
+    dispatch({ type: "EDIT-PROVINCE", payload: e.target.value });
     const provinceSearchData = searchProvinces(provinces, e.target.value);
-
     dispatch({ type: "SET-PROVINCE-SEARCH-DATA", payload: provinceSearchData });
   };
 
-  console.log(state);
-
   const handleChangeDistrict = (e) => {
+    dispatch({ type: "EDIT-DISTRICT", payload: e.target.value });
     if (state.provinceSearchData.length === 1) {
       const districtSearchData = searchProvinces(
         state.provinceSearchData[0].districts,
@@ -142,7 +141,14 @@ function Dashboard() {
               <div className={cx("user-name")}>
                 <label>Tên</label>
                 {activeSetting.includes("on") ? (
-                  <input value={state.name} required />
+                  <input
+                    name="name"
+                    value={state.name}
+                    onChange={(e) =>
+                      handleEditUser(e.target.value, "EDIT-NAME")
+                    }
+                    required
+                  />
                 ) : (
                   <span>{state.name}</span>
                 )}
@@ -151,7 +157,15 @@ function Dashboard() {
               <div className={cx("user-phone")}>
                 <label>Sđt</label>
                 {activeSetting.includes("on") ? (
-                  <input value={state.phoneNumber} required />
+                  <input
+                    name="phone"
+                    type="number"
+                    value={state.phoneNumber}
+                    onChange={(e) =>
+                      handleEditUser(e.target.value, "EDIT-PHONE")
+                    }
+                    required
+                  />
                 ) : (
                   <span>{state.phoneNumber}</span>
                 )}
@@ -176,11 +190,12 @@ function Dashboard() {
                 <div className={cx("user-province")}>
                   {activeSetting.includes("bottom") ? (
                     <input
-                      // value={state.province}
+                      value={state.province}
                       name="province"
                       onChange={handleChangeProvince}
                       onFocus={() => setOnFocus("province")}
                       onBlur={() => setOnFocus("")}
+                      autocomplete="off"
                     />
                   ) : (
                     <span>{state.province}</span>
@@ -210,11 +225,12 @@ function Dashboard() {
                 <div className={cx("user-district")}>
                   {activeSetting.includes("bottom") ? (
                     <input
-                      // value={state.district}
+                      value={state.district}
                       name="district"
                       onChange={handleChangeDistrict}
                       onFocus={() => setOnFocus("district")}
                       onBlur={() => setOnFocus("")}
+                      autocomplete="off"
                     />
                   ) : (
                     <span>{state.district}</span>

@@ -8,6 +8,7 @@ import ProductInfoEdit from "../../../Component/ProductInfoEdit";
 import ProductImgsEdit from "../../../Component/ProductImgEdit";
 import VariantEdit from "../../../Component/VariantEdit";
 import ServiceEdit from "../../../Component/ServiceEdit";
+import SpecificationEdit from "../../../Component/SpecificationEdit";
 const cx = classNames.bind(styles);
 function ProductEdit() {
   const [state, dispatch] = useReducer(reducer, initState);
@@ -39,8 +40,6 @@ function ProductEdit() {
     attributeGroups,
   } = state;
 
-  console.log(productInfo);
-
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
@@ -51,6 +50,10 @@ function ProductEdit() {
           category_id={productInfo.category_id}
           servicePackages={servicePackages}
           variants={variants}
+          dispatch={dispatch}
+        />
+        <SpecificationEdit
+          attributeGroups={attributeGroups}
           dispatch={dispatch}
         />
       </div>

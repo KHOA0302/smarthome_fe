@@ -15,8 +15,13 @@ import {
 } from "../../icons";
 import banner from "../../images/girl.png";
 import { formatNumber } from "../../utils/formatNumber";
-import authService from "../../api/authService";
+
 import cartService from "../../api/cartService";
+
+import {
+  useCartItemQuant,
+  useCartItemQuantContext,
+} from "../../layout/CommonLayout";
 
 const cx = classNames.bind(styles);
 function ProductDetails() {
@@ -190,6 +195,8 @@ function ProductDetails() {
     return () => clearTimeout(timer);
   }, [isOverQuantity]);
 
+  const { setCartItemQuant } = useCartItemQuantContext();
+
   const handleAddCart = () => {
     const optionValuesChoose = allOptions.map((option) => {
       const newOptionValues = option.optionValues.filter(
@@ -221,6 +228,18 @@ function ProductDetails() {
     const fetchCreateCartItem = async () => {
       try {
         const res = await cartService.createCartItem(cartItems);
+
+        if (res.status === 200) {
+          const resCar = await cartService.getCartItem();
+          if (resCar.status === 200) {
+            setCartItemQuant(
+              resCar.data.cartItems.reduce(
+                (number, item) => item.quantity + number,
+                0
+              )
+            );
+          }
+        }
       } catch (error) {
         setIsOverQuantity(true);
         console.error(error.response.data.message);

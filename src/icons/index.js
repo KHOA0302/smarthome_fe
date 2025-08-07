@@ -26,6 +26,13 @@ import { FaTruckFast } from "react-icons/fa6";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { SiTicktick } from "react-icons/si";
 import { LuCircleSlash2 } from "react-icons/lu";
+import { PiShoppingCartSimpleBold } from "react-icons/pi";
+import { LuSearch } from "react-icons/lu";
+import { IoIosArrowDropleft } from "react-icons/io";
+import { IoIosArrowDropright } from "react-icons/io";
+import { GoDotFill } from "react-icons/go";
+import { BsGithub } from "react-icons/bs";
+import { GrInstagram } from "react-icons/gr";
 
 export {
   BiAddToQueue as AddIcon,
@@ -56,4 +63,11 @@ export {
   AiOutlineFileDone as OrderDoneIcon,
   SiTicktick as SelectableIcon,
   LuCircleSlash2 as UnSelectableIcon,
+  PiShoppingCartSimpleBold as CartIcon,
+  LuSearch as SearchIcon,
+  IoIosArrowDropleft as ArrowCircleLeftIcon,
+  IoIosArrowDropright as ArrowCircleRightIcon,
+  GoDotFill as DotBigIcon,
+  BsGithub as GithubIcon,
+  GrInstagram as InstagramIcon,
 };

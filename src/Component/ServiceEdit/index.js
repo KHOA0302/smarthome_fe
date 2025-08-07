@@ -4,6 +4,7 @@ import styles from "./ServiceEdit.module.scss";
 import classNames from "classnames/bind";
 import { serviceService } from "../../api/serviceService";
 import { SelectableIcon, TrashIcon, UnSelectableIcon } from "../../icons";
+import productService from "../../api/productService";
 const cx = classNames.bind(styles);
 function ServiceEdit({ category_id, servicePackages, variants, dispatch }) {
   const [serviceFilter, setServiceFilter] = useState([]);
@@ -46,8 +47,16 @@ function ServiceEdit({ category_id, servicePackages, variants, dispatch }) {
     dispatch({ type: type, payload: payload });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const res = await productService.editService(servicePackages);
+      if (res.status === 200) {
+        console.log("sussed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
     console.log(servicePackages);
   };
 
@@ -217,7 +226,10 @@ function ServiceEdit({ category_id, servicePackages, variants, dispatch }) {
                                         />
                                       ) : (
                                         <span>
-                                          {formatNumber(item.itemPriceImpact)}đ
+                                          {formatNumber(
+                                            parseInt(item.itemPriceImpact)
+                                          )}
+                                          đ
                                         </span>
                                       )}
                                     </div>

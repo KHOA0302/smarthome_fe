@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import { v4 } from "uuid";
 
 const initState = {
   productInfo: {},
@@ -39,6 +39,25 @@ const reducer = (state, action) => {
         };
       });
 
+      const updateAttributeGroups = attributeGroups.map((group) => {
+        return {
+          ...group,
+          attributes: group.attributes.map((attribute) => {
+            return {
+              ...attribute,
+              attributeValues: [
+                ...attribute.attributeValues.map((value) => {
+                  return {
+                    ...value,
+                    isRemove: false,
+                  };
+                }),
+              ],
+            };
+          }),
+        };
+      });
+
       return {
         ...state,
         loading: false,
@@ -62,7 +81,7 @@ const reducer = (state, action) => {
           }),
         ],
         servicePackages: [...updateServicePackages],
-        attributeGroups,
+        attributeGroups: [...updateAttributeGroups],
       };
     case "FETCH_ERROR":
       return { ...state, loading: false, error: action.payload };
@@ -182,12 +201,12 @@ const reducer = (state, action) => {
       const addNewPackage = {
         variant_id: addVariantId,
         packageName: "",
-        packageId: uuidv4(),
+        packageId: v4(),
         items: [
           {
             atLeastOne: false,
             isRemove: false,
-            itemId: uuidv4(),
+            itemId: v4(),
             itemName: "",
             itemPriceImpact: 0,
             selectable: true,
@@ -208,7 +227,7 @@ const reducer = (state, action) => {
           const newItem = {
             atLeastOne: false,
             isRemove: false,
-            itemId: uuidv4(),
+            itemId: v4(),
             itemName: "",
             itemPriceImpact: 0,
             selectable: true,
@@ -395,6 +414,130 @@ const reducer = (state, action) => {
         ...state,
         servicePackages: [...editPriceNewServicePackages],
       };
+    case "ADD_SPECIFICATION":
+      const { addSpecGroupId, addSpecAttributeId } = action.payload;
+
+      const addSpecNewAttributeGroups = state.attributeGroups.map((group) => {
+        if (group.groupId === addSpecGroupId) {
+          const newAttributes = group.attributes.map((attribute) => {
+            if (attribute.attributeId === addSpecAttributeId) {
+              const newAttributeValue = {
+                attributeValueId: v4(),
+                attributeValueName: "",
+              };
+
+              return {
+                ...attribute,
+                attributeValues: [
+                  ...attribute.attributeValues,
+                  newAttributeValue,
+                ],
+              };
+            }
+            return attribute;
+          });
+          return {
+            ...group,
+            attributes: [...newAttributes],
+          };
+        }
+        return group;
+      });
+
+      return {
+        ...state,
+        attributeGroups: [...addSpecNewAttributeGroups],
+      };
+    case "DELETE_SPECIFICATION":
+      const { deleteSpecGroupId, deleteSpecAttributeId, deleteSpecValueId } =
+        action.payload;
+
+      const deleteSpecNewAttributeGroups = state.attributeGroups.map(
+        (group) => {
+          if (group.groupId === deleteSpecGroupId) {
+            const newAttributes = group.attributes.map((attribute) => {
+              if (attribute.attributeId === deleteSpecAttributeId) {
+                const newAttributeValues = attribute.attributeValues.map(
+                  (value) => {
+                    if (value.attributeValueId === deleteSpecValueId) {
+                      return {
+                        ...value,
+                        isRemove: !value.isRemove,
+                      };
+                    }
+                    return value;
+                  }
+                );
+
+                return {
+                  ...attribute,
+                  attributeValues: [...newAttributeValues],
+                };
+              }
+
+              return attribute;
+            });
+            return {
+              ...group,
+              attributes: [...newAttributes],
+            };
+          }
+          return group;
+        }
+      );
+
+      return {
+        ...state,
+        attributeGroups: [...deleteSpecNewAttributeGroups],
+      };
+
+    case "CHANGE_VALUE_SPECIFICATION":
+      const {
+        changeValueGroupId,
+        changeValueAttributeId,
+        changeValueItemId,
+        changeValue,
+      } = action.payload;
+
+      const changeValueNewAttributeGroups = state.attributeGroups.map(
+        (group) => {
+          if (group.groupId === changeValueGroupId) {
+            const newAttributes = group.attributes.map((attribute) => {
+              if (attribute.attributeId === changeValueAttributeId) {
+                const newAttributeValues = attribute.attributeValues.map(
+                  (value) => {
+                    if (value.attributeValueId === changeValueItemId) {
+                      return {
+                        ...value,
+                        attributeValueName: changeValue,
+                      };
+                    }
+                    return value;
+                  }
+                );
+
+                return {
+                  ...attribute,
+                  attributeValues: [...newAttributeValues],
+                };
+              }
+              return attribute;
+            });
+
+            return {
+              ...group,
+              attributes: [...newAttributes],
+            };
+          }
+
+          return group;
+        }
+      );
+      return {
+        ...state,
+        attributeGroups: [...changeValueNewAttributeGroups],
+      };
+
     default:
       return state;
   }

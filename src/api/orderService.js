@@ -4,8 +4,8 @@ const orderService = {
   createOrder: (data) => {
     return axiosClient.post("/order/create-order", data);
   },
-  getOrder: (orderStatus) => {
-    return axiosClient.post("/order/get-order", { orderStatus });
+  getOrderAdmin: (orderStatus) => {
+    return axiosClient.post("/order/get-order-admin", { orderStatus });
   },
   getOrderQuarterlyRevenue: () => {
     return axiosClient.get("/order/get-quarterly-revenue");

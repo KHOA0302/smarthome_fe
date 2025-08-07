@@ -1,0 +1,45 @@
+.wrapper {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.container {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.event {
+  width: 100%;
+  padding: 50px 10px 10px 10px;
+  background-image: url(../../../src/images/fire.png);
+  background-size: contain;
+}
+
+.title {
+  width: 100%;
+  border-radius: 8px;
+  text-align: center;
+  background-color: var(--color-primary-3);
+  padding: 30px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  h1 {
+    font-weight: 700;
+    font-size: 4rem;
+    color: white;
+  }
+  button {
+    font-size: 2rem;
+    font-weight: 800;
+    width: fit-content;
+    padding: 4px 8px;
+    margin-top: 16px;
+    background-color: darkorange;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+  }
+}

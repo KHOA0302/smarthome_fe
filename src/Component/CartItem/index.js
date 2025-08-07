@@ -1,18 +1,20 @@
-import { useEffect } from "react";
 import styles from "./CartItem.module.scss";
 import classNames from "classnames/bind";
 import { formatNumber } from "../../utils/formatNumber";
-import { ArrowRightIcon, EarthIcon, TrashIcon } from "../../icons";
+import { ArrowRightIcon, TrashIcon } from "../../icons";
 import { useNavigate } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
-function CartItem({ cartItem }) {
+function CartItem({
+  cartItem,
+  handleDecreaseItem,
+  handleIncreaseItem,
+  handleDeleteItem,
+}) {
   const { variant, services, options } = cartItem;
   const navigate = useNavigate();
-  useEffect(() => {
-    console.log(cartItem);
-  }, []);
+
   const handleNavigator = (productId, variantId) => {
     navigate(`/product/${productId}/variant/${variantId}`);
   };
@@ -59,13 +61,17 @@ function CartItem({ cartItem }) {
             </div>
           </div>
           <div className={cx("cart-item-bottom")}>
-            <button>
+            <button onClick={() => handleDeleteItem(cartItem.cartItemId)}>
               <TrashIcon />
             </button>
             <div className={cx("cart-item-quantity")}>
-              <button>-</button>
+              <button onClick={() => handleDecreaseItem(cartItem.cartItemId)}>
+                -
+              </button>
               <input value={cartItem.quantity} name="quantity" />
-              <button>+</button>
+              <button onClick={() => handleIncreaseItem(cartItem.cartItemId)}>
+                +
+              </button>
             </div>
           </div>
         </div>
