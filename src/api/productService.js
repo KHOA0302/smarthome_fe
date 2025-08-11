@@ -1,3 +1,4 @@
+import axios from "axios";
 import axiosClient from "./axiosClient";
 
 const productService = {
@@ -45,6 +46,13 @@ const productService = {
 
   getLatest: (limit) => {
     return axiosClient.get(`/product/get-latest-product/${limit}`);
+  },
+
+  getProductByFilter: ({ categoryId, brandId }) => {
+    return axiosClient.post("/product/get-product-by-filter", {
+      categoryId,
+      brandId,
+    });
   },
 };
 

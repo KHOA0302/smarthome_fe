@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import BrandSection from "../../../Component/BrandSection";
 import CategorySection from "../../../Component/CategorySection";
 import ProductSection from "../../../Component/ProductSection";
-import styles from "./ProductInfoForm.module.scss";
+import styles from "./ProductAdd.module.scss";
 import classNames from "classnames/bind";
 import { brandService } from "../../../api/brandService";
 import { useGetContext } from "../../../hooks/useGetContext";
@@ -21,7 +21,7 @@ export const useProductInfoFormGetContext = () => {
 };
 
 function ProductAdd() {
-  const [currentSection, setCurrentSection] = useState("specification-current");
+  const [currentSection, setCurrentSection] = useState("product-current");
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -69,16 +69,34 @@ function ProductAdd() {
     <ProductInfoFormContext.Provider value={contextValue}>
       <div className={cx("wrapper")}>
         <nav className={cx("navbar")}>
-          <button onClick={() => handleChangeSection("product-current")}>
+          <button
+            className={cx({ active: currentSection === "product-current" })}
+            onClick={() => handleChangeSection("product-current")}
+          >
             Sản phẩm
           </button>
-          <button onClick={() => handleChangeSection("brand-category-current")}>
+          <button
+            className={cx({
+              active: currentSection === "brand-category-current",
+            })}
+            onClick={() => handleChangeSection("brand-category-current")}
+          >
             Hãng / Danh mục
           </button>
-          <button onClick={() => handleChangeSection("option-service-current")}>
+          <button
+            className={cx({
+              active: currentSection === "option-service-current",
+            })}
+            onClick={() => handleChangeSection("option-service-current")}
+          >
             Option / Dịch vụ
           </button>
-          <button onClick={() => handleChangeSection("specification-current")}>
+          <button
+            className={cx({
+              active: currentSection === "specification-current",
+            })}
+            onClick={() => handleChangeSection("specification-current")}
+          >
             Thông số kĩ thuật
           </button>
         </nav>

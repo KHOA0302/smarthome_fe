@@ -28,6 +28,7 @@ const productReducer = (state, action) => {
         ...state,
         loading: false,
         productDetails: {
+          ...base,
           productId: base.productId,
           productName: base.productName,
           productImages: base.productImages,

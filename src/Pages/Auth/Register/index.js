@@ -1,8 +1,12 @@
+import styles from "./Register.module.scss";
+import classNames from "classnames/bind";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import authService from "../../../api/authService";
 import { GoogleLogin } from "@react-oauth/google";
-
+import banner from "../../../images/household-electric-devices.jpg";
+import { EyeCloseIcon, EyeOpenIcon } from "../../../icons";
+const cx = classNames.bind(styles);
 function Register() {
   const [formData, setFormData] = useState({
     email: "",
@@ -14,7 +18,7 @@ function Register() {
   const [error, setError] = useState("");
 
   const [loading, setLoading] = useState(false);
-
+  const [showPass, setShowPass] = useState([]);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -49,7 +53,7 @@ function Register() {
 
       if (res.status === 201) {
         console.log(data.message);
-        console.log(data.user); 
+        console.log(data.user);
         navigate("/login", { replace: true });
       } else if (res.status === 200) {
         console.log(data.message);
@@ -95,76 +99,118 @@ function Register() {
   };
 
   return (
-    <div>
-      <div>
-        <h2>Đăng ký tài khoản</h2>
-        {error && <p>{error}</p>}
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Nhập địa chỉ email của bạn"
-            />
-          </div>
-          <div>
-            <label htmlFor="fullName">Họ và Tên:</label>
-            <input
-              type="text"
-              id="fullName"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              required
-              placeholder="Nhập họ và tên đầy đủ"
-            />
-          </div>
-          <div>
-            <label htmlFor="password">Mật khẩu:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Nhập mật khẩu"
-            />
-          </div>
-          <div>
-            <label htmlFor="confirmPassword">Xác nhận mật khẩu:</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              placeholder="Nhập lại mật khẩu"
-            />
-          </div>
-          <button type="submit" disabled={loading}>
-            {loading ? "Đang đăng ký..." : "Đăng ký"}
-          </button>
-        </form>
-
-        <div>
-          <span>Hoặc</span>
+    <div className={cx("wrapper")}>
+      <div className={cx("container")}>
+        <div className={cx("banner")}>
+          <img src={banner} />
         </div>
-
-        <GoogleLogin
-          onSuccess={handleGoogleSubmit}
-          onError={handleGoogleFailure}
-        />
-
-        <p>
-          Đã có tài khoản? <Link to="/login">Đăng nhập ngay</Link>
-        </p>
+        <div className={cx("form-wrapper")}>
+          <h2>Đăng ký</h2>
+          {error && <p>{error}</p>}
+          <form onSubmit={handleSubmit}>
+            <div className={cx("email")}>
+              <label htmlFor="email">email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                placeholder="Nhập email..."
+              />
+            </div>
+            <div className={cx("full-name")}>
+              <label htmlFor="fullName">fullname</label>
+              <input
+                type="text"
+                id="fullName"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                required
+                placeholder="Nhập tên..."
+              />
+            </div>
+            <div className={cx("password")}>
+              <label htmlFor="password">password</label>
+              <div>
+                <input
+                  type={showPass.includes("password") ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  placeholder="Nhập mật khẩu..."
+                />
+                <button
+                  type="button"
+                  className={cx({ show: showPass.includes("password") })}
+                  onClick={() =>
+                    showPass.includes("password")
+                      ? setShowPass((prev) => [
+                          ...prev.filter((s) => s !== "password"),
+                        ])
+                      : setShowPass((prev) => [...prev, "password"])
+                  }
+                >
+                  {showPass.includes("password") ? (
+                    <EyeOpenIcon />
+                  ) : (
+                    <EyeCloseIcon />
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className={cx("conform-password")}>
+              <label htmlFor="confirmPassword">confirm-password</label>
+              <div>
+                <input
+                  type={
+                    showPass.includes("confirmPassword") ? "text" : "password"
+                  }
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  placeholder="Nhập lại mật khẩu..."
+                />
+                <button
+                  type="button"
+                  className={cx({ show: showPass.includes("confirmPassword") })}
+                  onClick={() =>
+                    showPass.includes("confirmPassword")
+                      ? setShowPass((prev) => [
+                          ...prev.filter((s) => s !== "confirmPassword"),
+                        ])
+                      : setShowPass((prev) => [...prev, "confirmPassword"])
+                  }
+                >
+                  {showPass.includes("confirmPassword") ? (
+                    <EyeOpenIcon />
+                  ) : (
+                    <EyeCloseIcon />
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className={cx("regis-btn")}>
+              <button type="submit" disabled={loading}>
+                {loading ? "Đang đăng ký..." : "Đăng ký"}
+              </button>
+              <span> or </span>
+              <GoogleLogin
+                onSuccess={handleGoogleSubmit}
+                onError={handleGoogleFailure}
+              />
+            </div>
+          </form>
+          <p>
+            Đã có tài khoản? <Link to="/login">Đăng nhập ngay</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

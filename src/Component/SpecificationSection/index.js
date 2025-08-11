@@ -91,8 +91,6 @@ function GroupsSpec({ groups, setGroups, specModified }) {
     setGroups([...newGroupsValue]);
   };
 
-  console.log(groups);
-
   const handleGroupValueChange = (e, groupMapId) => {
     const newGroupsValue = groups.map((group, id) => {
       if (id === groupMapId) {
@@ -153,13 +151,17 @@ function GroupsSpec({ groups, setGroups, specModified }) {
                       <ArrowDownIcon />
                     </button>
                   </div>
-                  <button type="button" onClick={() => handleDelateGroup(id)}>
+                  <button
+                    type="button"
+                    className={cx("remove-group-btn")}
+                    onClick={() => handleDelateGroup(id)}
+                  >
                     <TrashIcon />
                   </button>
                 </div>
 
                 <div
-                  className={cx("attribute-items", {
+                  className={cx("attribute-items", "new", {
                     expend: expendGroups.includes(id),
                   })}
                 >
@@ -168,18 +170,20 @@ function GroupsSpec({ groups, setGroups, specModified }) {
                       return (
                         <div className={cx("attribute-item")} key={i}>
                           <ArrowRightIcon />
-                          <input
-                            value={attribute.attributeName}
-                            onChange={(e) => handleItemValueChange(e, id, i)}
-                            name="item"
-                            placeholder="Nhập thông số kĩ thuật..."
-                            required
-                          />
+                          <div className={cx("item-content")}>
+                            <input
+                              value={attribute.attributeName}
+                              onChange={(e) => handleItemValueChange(e, id, i)}
+                              name="item"
+                              placeholder="Nhập thông số kĩ thuật..."
+                              required
+                            />
+                          </div>
                         </div>
                       );
                     })}
                   </div>
-                  <div>
+                  <div className={cx("items-control-btn")}>
                     <button type="button" onClick={() => handleAddItem(id)}>
                       <PlusIcon />
                     </button>
@@ -192,11 +196,17 @@ function GroupsSpec({ groups, setGroups, specModified }) {
             </div>
           );
         })}
-        <button onClick={handleAddGroup} type="button">
+        <button
+          onClick={handleAddGroup}
+          type="button"
+          className={cx("add-groups-btn")}
+        >
           Thêm nhóm
         </button>
       </div>
-      <button type="submit">Submit</button>
+      <button type="submit" className={cx("submit")}>
+        Submit
+      </button>
     </div>
   );
 }
@@ -306,7 +316,7 @@ function SpecificationSection() {
     <form onSubmit={fetchCreateGroupSpec}>
       <div className={cx("wrapper")}>
         <div className={cx("container")}>
-          <div>
+          <div className={cx("select-wrapper")}>
             <select
               onChange={(e) => setCurrentCate(e.target.value)}
               value={currentCate}

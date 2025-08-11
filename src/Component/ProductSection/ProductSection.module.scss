@@ -1,5 +1,13 @@
+.form {
+  padding: 10px;
+}
+
 .product-form {
   width: 100%;
+  padding: 20px;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  border-radius: 8px;
   & section {
     background-color: var(--color-bg-light);
     padding: 16px;
@@ -22,4 +30,16 @@
   textarea {
     height: 100px;
   }
+}
+
+.submit {
+  margin: 12px;
+  color: white;
+  font-weight: 800;
+  font-size: 1.6rem;
+  padding: 6px 52px;
+  background-color: darkorange;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }

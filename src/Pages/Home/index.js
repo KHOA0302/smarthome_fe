@@ -6,9 +6,16 @@ import Products from "../../Component/Products";
 import productService from "../../api/productService";
 import DiscountEventAnnouncement from "../../Component/DiscountEventAnnouncement";
 import Brands from "../../Component/Brands";
+import { useLocation } from "react-router";
+import { useEffect } from "react";
 const cx = classNames.bind(styles);
 
 function Home() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>

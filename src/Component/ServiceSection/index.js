@@ -102,7 +102,9 @@ function ServiceSection() {
                 </button>
               </div>
 
-              <button type="submit">Gửi</button>
+              <button type="submit" className={cx("submit")}>
+                Gửi
+              </button>
             </div>
             <div className={cx("service-exist")}>
               <ul>

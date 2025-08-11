@@ -22,8 +22,12 @@ const navItems = [
 function CustomerLayout() {
   return (
     <div className={cx("wrapper")}>
-      <Navbar navItems={navItems} />
-      <Outlet />
+      <div className={cx("container-side_bar")}>
+        <Navbar navItems={navItems} />
+      </div>
+      <div className={cx("container-content")}>
+        <Outlet />
+      </div>
     </div>
   );
 }

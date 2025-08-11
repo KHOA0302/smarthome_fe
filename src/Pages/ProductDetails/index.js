@@ -1,7 +1,7 @@
 import styles from "./ProductDetails.module.scss";
 import classNames from "classnames/bind";
 import { useEffect, useReducer, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import { initialState, productReducer } from "./productReducer";
 import productService from "../../api/productService";
 import {
@@ -18,10 +18,7 @@ import { formatNumber } from "../../utils/formatNumber";
 
 import cartService from "../../api/cartService";
 
-import {
-  useCartItemQuant,
-  useCartItemQuantContext,
-} from "../../layout/CommonLayout";
+import { useCartItemQuantContext } from "../../layout/CommonLayout";
 
 const cx = classNames.bind(styles);
 function ProductDetails() {
@@ -31,6 +28,12 @@ function ProductDetails() {
   const [showModalCover, setShowModalCover] = useState(false);
   const [expendGroups, setExpendGroups] = useState([]);
   const [isOverQuantity, setIsOverQuantity] = useState(false);
+
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   const handleGroupExpand = (groupId) => {
     let newExpendGroup;
@@ -52,7 +55,7 @@ function ProductDetails() {
         );
 
         const data = response.data;
-        console.log(data);
+
         dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (error) {
         console.error("Error fetching product details:", error);
@@ -74,6 +77,8 @@ function ProductDetails() {
     groupAttributes,
     displayImg,
   } = state;
+
+  console.log(productDetails);
 
   const handleOPtionValueChange = (optionId, valueId) => {
     const newAllOptions = allOptions.map((option) => {
@@ -121,8 +126,6 @@ function ProductDetails() {
       );
     }
   };
-
-  console.log(groupAttributes);
 
   const specificationsHtml = groupAttributes?.map((group, id) => {
     return (
@@ -253,7 +256,46 @@ function ProductDetails() {
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
         <div>
-          <span>Máy giặc</span> {">"} <span>Máy giặc Aqua</span>
+          <Link
+            to="/"
+            style={{
+              color: "#959595ff",
+              cursor: "pointer",
+            }}
+          >
+            Home
+          </Link>
+          <span
+            style={{
+              fontSize: "2.4rem",
+            }}
+          >
+            {" › "}
+          </span>
+          <Link
+            to={`/product-list/${productDetails?.category.categoryName
+              .trim()
+              .replace(/ /g, "_")}/${
+              productDetails?.category.categoryId
+            }?page=1`}
+            style={{
+              color: "#959595ff",
+              cursor: "pointer",
+            }}
+          >
+            {productDetails?.category.categoryName}
+          </Link>
+          <span
+            style={{
+              fontSize: "2.4rem",
+            }}
+          >
+            {" › "}
+          </span>
+          <span>
+            {productDetails?.category.categoryName}{" "}
+            {productDetails?.brand.brandName}
+          </span>
         </div>
         <div className={cx("variant-name")}>
           <span>{selectedVariant?.variantName}</span>
@@ -332,179 +374,211 @@ function ProductDetails() {
 
             <div className={cx("variant-service-wrapper")}>
               <div className={cx("variant-service-blank")}>
-                <div className={cx("variant-service")}>
-                  <span>Các gói dịch vụ</span>
-                  <div className={cx("variant-service_packages")}>
-                    {servicePackages?.map((sPackage, id) => {
-                      const totalPrice =
-                        sPackage.items.reduce((totalItemsPrice, item) => {
-                          if (item.selected) {
-                            return totalItemsPrice + item.itemPriceImpact;
-                          }
-                          return totalItemsPrice;
-                        }, 0) + selectedVariant?.price;
-                      return (
-                        <div
-                          className={cx("variant-service_package", {
-                            selected: sPackage.selected,
-                          })}
-                          onClick={() => handleChangePackage(sPackage)}
-                          key={id}
-                        >
-                          <div className={cx("variant-package_name")}>
-                            <div>
-                              <input
-                                type="radio"
-                                name="package"
-                                checked={sPackage.selected}
-                                onChange={() => handleChangePackage(sPackage)}
-                              />
-                              <span>{sPackage.packageName}</span>
+                {servicePackages.length ? (
+                  <div className={cx("variant-service")}>
+                    <span>Các gói dịch vụ</span>
+                    <div className={cx("variant-service_packages")}>
+                      {servicePackages?.map((sPackage, id) => {
+                        const totalPrice =
+                          sPackage.items.reduce((totalItemsPrice, item) => {
+                            if (item.selected) {
+                              return totalItemsPrice + item.itemPriceImpact;
+                            }
+                            return totalItemsPrice;
+                          }, 0) + selectedVariant?.price;
+                        return (
+                          <div
+                            className={cx("variant-service_package", {
+                              selected: sPackage.selected,
+                            })}
+                            onClick={() => handleChangePackage(sPackage)}
+                            key={id}
+                          >
+                            <div className={cx("variant-package_name")}>
+                              <div>
+                                <input
+                                  type="radio"
+                                  name="package"
+                                  checked={sPackage.selected}
+                                  onChange={() => handleChangePackage(sPackage)}
+                                />
+                                <span>{sPackage.packageName}</span>
+                              </div>
+                              <span className={cx("total-price")}>
+                                {formatNumber(totalPrice) + "đ"}
+                              </span>
                             </div>
-                            <span className={cx("total-price")}>
-                              {formatNumber(totalPrice) + "đ"}
-                            </span>
-                          </div>
-                          <div className={cx("variant-service_items")}>
-                            {sPackage.items.map((item, i) => {
-                              if (item.selected) {
-                                return (
-                                  <div
-                                    className={cx("variant-service_item", {
-                                      atLeastOne: item.atLeastOne,
-                                      selected: item.selected,
-                                    })}
-                                    key={i}
-                                  >
+                            <div className={cx("variant-service_items")}>
+                              {sPackage.items.map((item, i) => {
+                                if (item.selected) {
+                                  return (
                                     <div
-                                      className={cx(
-                                        "variant-service_item-icons"
-                                      )}
+                                      className={cx("variant-service_item", {
+                                        atLeastOne: item.atLeastOne,
+                                        selected: item.selected,
+                                      })}
+                                      key={i}
                                     >
                                       <div
                                         className={cx(
-                                          "variant-service_item-icon"
+                                          "variant-service_item-icons"
                                         )}
                                       >
-                                        {item.atLeastOne ? (
-                                          <CrownIcon />
-                                        ) : (
-                                          <CircleCheckIcon />
-                                        )}
-                                      </div>
+                                        <div
+                                          className={cx(
+                                            "variant-service_item-icon"
+                                          )}
+                                        >
+                                          {item.atLeastOne ? (
+                                            <CrownIcon />
+                                          ) : (
+                                            <CircleCheckIcon />
+                                          )}
+                                        </div>
 
-                                      <span>{item.itemName}</span>
+                                        <span>{item.itemName}</span>
+                                      </div>
                                     </div>
-                                  </div>
-                                );
-                              }
-                            })}
-                            {showModalCover &&
-                              sPackage.selected &&
-                              sPackage.items.length > 1 && (
-                                <div
-                                  className={cx("service-overplay")}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setShowModalCover(!showModalCover);
-                                  }}
-                                >
+                                  );
+                                }
+                              })}
+                              {showModalCover &&
+                                sPackage.selected &&
+                                sPackage.items.length > 1 && (
                                   <div
-                                    className={cx("service-overplay-wrapper")}
+                                    className={cx("service-overplay")}
                                     onClick={(e) => {
                                       e.stopPropagation();
+                                      setShowModalCover(!showModalCover);
                                     }}
                                   >
                                     <div
-                                      className={cx("service-overplay-name")}
+                                      className={cx("service-overplay-wrapper")}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                      }}
                                     >
-                                      <span>{sPackage.packageName}</span>
-                                      <button
-                                        onClick={() =>
-                                          setShowModalCover(!showModalCover)
-                                        }
+                                      <div
+                                        className={cx("service-overplay-name")}
                                       >
-                                        <ExistIcon />
-                                      </button>
-                                    </div>
-                                    <div
-                                      className={cx(
-                                        "service-overplay-container"
-                                      )}
-                                    >
-                                      <ul>
-                                        {sPackage.items.map((item) => {
-                                          return (
-                                            <li key={item.itemId}>
-                                              <div>
-                                                {item.selectable ? (
-                                                  <input
-                                                    type="checkbox"
-                                                    id={item.itemId}
-                                                    disabled={!item.selectable}
-                                                    checked={item.selected}
-                                                    onClick={(e) => {
-                                                      e.stopPropagation();
-                                                    }}
-                                                    onChange={(e) =>
-                                                      changeServicePackageItems(
-                                                        e,
-                                                        sPackage.packageId,
-                                                        item.itemId
-                                                      )
-                                                    }
-                                                  />
-                                                ) : (
-                                                  <CheckBoxIcon />
-                                                )}
-                                                <span
-                                                  className={cx({
-                                                    atLeastOne: item.atLeastOne,
-                                                  })}
-                                                >
-                                                  {item.itemName}
+                                        <span>{sPackage.packageName}</span>
+                                        <button
+                                          onClick={() =>
+                                            setShowModalCover(!showModalCover)
+                                          }
+                                        >
+                                          <ExistIcon />
+                                        </button>
+                                      </div>
+                                      <div
+                                        className={cx(
+                                          "service-overplay-container"
+                                        )}
+                                      >
+                                        <ul>
+                                          {sPackage.items.map((item) => {
+                                            return (
+                                              <li key={item.itemId}>
+                                                <div>
+                                                  {item.selectable ? (
+                                                    <input
+                                                      type="checkbox"
+                                                      id={item.itemId}
+                                                      disabled={
+                                                        !item.selectable
+                                                      }
+                                                      checked={item.selected}
+                                                      onClick={(e) => {
+                                                        e.stopPropagation();
+                                                      }}
+                                                      onChange={(e) =>
+                                                        changeServicePackageItems(
+                                                          e,
+                                                          sPackage.packageId,
+                                                          item.itemId
+                                                        )
+                                                      }
+                                                    />
+                                                  ) : (
+                                                    <CheckBoxIcon />
+                                                  )}
+                                                  <span
+                                                    className={cx({
+                                                      atLeastOne:
+                                                        item.atLeastOne,
+                                                    })}
+                                                  >
+                                                    {item.itemName}
+                                                  </span>
+                                                </div>
+                                                <span>
+                                                  {formatNumber(
+                                                    item.itemPriceImpact
+                                                  )}
+                                                  đ
                                                 </span>
-                                              </div>
-                                              <span>
-                                                {formatNumber(
-                                                  item.itemPriceImpact
-                                                )}
-                                                đ
-                                              </span>
-                                            </li>
-                                          );
-                                        })}
-                                      </ul>
-                                    </div>
-                                    <div
-                                      className={cx("service-overplay-bottom")}
-                                    >
-                                      <span>Tổng tiền</span>
-                                      <span>{formatNumber(totalPrice)}đ</span>
+                                              </li>
+                                            );
+                                          })}
+                                        </ul>
+                                      </div>
+                                      <div
+                                        className={cx(
+                                          "service-overplay-bottom"
+                                        )}
+                                      >
+                                        <span>Tổng tiền</span>
+                                        <span>{formatNumber(totalPrice)}đ</span>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              )}
+                                )}
+                            </div>
+                            {sPackage.selected && sPackage.items.length > 1 && (
+                              <button
+                                className={cx(
+                                  "variant-service_package-item-edit_btn"
+                                )}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setShowModalCover(!showModalCover);
+                                }}
+                              >
+                                <span>Thay đổi dịch vụ</span>
+                                <SpecialArrowIcon />
+                              </button>
+                            )}
                           </div>
-                          {sPackage.selected && sPackage.items.length > 1 && (
-                            <button
-                              className={cx(
-                                "variant-service_package-item-edit_btn"
-                              )}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setShowModalCover(!showModalCover);
-                              }}
-                            >
-                              <span>Thay đổi dịch vụ</span>
-                              <SpecialArrowIcon />
-                            </button>
-                          )}
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontWeight: "700",
+                        fontSize: "1.8rem",
+                      }}
+                    >
+                      Giá
+                    </span>
+                    <span
+                      style={{
+                        fontWeight: "800",
+                        color: "darkorange",
+                        fontSize: "2rem",
+                      }}
+                    >
+                      {formatNumber(parseInt(selectedVariant?.price))}đ
+                    </span>
+                  </div>
+                )}
                 <div className={cx("variant-submit")}>
                   <button onClick={handleAddCart}>
                     <span>Thêm vào giỏ hàng</span>

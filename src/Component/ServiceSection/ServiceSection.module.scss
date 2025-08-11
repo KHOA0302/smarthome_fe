@@ -1,11 +1,13 @@
 .wrapper {
   width: 100%;
-  margin-bottom: 60px;
+  margin-bottom: 30px;
+  padding: 8px;
 }
 
 .container {
   width: 100%;
-  background-color: rgb(226, 255, 245);
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   border-radius: 8px;
   padding: 20px;
 }
@@ -51,18 +53,6 @@
 }
 
 .category {
-  button[type="submit"] {
-    margin-top: 8px;
-    color: white;
-    font-weight: 800;
-    font-size: 1.6rem;
-    padding: 4px 24px;
-    background-color: darkorange;
-    border: none;
-    border-radius: 8px;
-    border: 2px solid orangered;
-    cursor: pointer;
-  }
 }
 
 .category-blank {
@@ -121,13 +111,13 @@
 }
 
 .submit {
+  margin-top: 12px;
   color: white;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 1.6rem;
-  padding: 4px 24px;
+  padding: 2px 20px;
   background-color: darkorange;
   border: none;
   border-radius: 8px;
-  border: 2px solid orangered;
   cursor: pointer;
 }

@@ -2,16 +2,22 @@ import { useState, useEffect } from "react";
 import styles from "./Categories.module.scss";
 import classNames from "classnames/bind";
 import { categoryService } from "../../api/categoryService";
+import { Link } from "react-router-dom";
 const cx = classNames.bind(styles);
 
 function Category({ category }) {
   return (
-    <div className={cx("category")}>
+    <Link
+      className={cx("category")}
+      to={`/product-list/${category.category_name.trim().replace(/ /g, "_")}/${
+        category.category_id
+      }?page=1`}
+    >
       <div className={cx("category-container")}>
         <img src={category.icon_url} />
         <span>{category.category_name.toUpperCase()}</span>
       </div>
-    </div>
+    </Link>
   );
 }
 function Categories() {

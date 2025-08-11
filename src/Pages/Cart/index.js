@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { memo, useEffect, useReducer, useRef, useState } from "react";
 import cartService from "../../api/cartService";
 import CartItem from "../../Component/CartItem";
 import styles from "./cart.module.scss";
@@ -15,6 +15,7 @@ import {
 import { initState, reducer } from "./reducer";
 import { ToastContainer, toast } from "react-toastify";
 import { useCartItemQuantContext } from "../../layout/CommonLayout";
+import { useLocation, useNavigate } from "react-router";
 const cx = classNames.bind(styles);
 
 const createMiddleware = (originalDispatch, state) => (action) => {
@@ -31,6 +32,12 @@ function Cart() {
   const [showCover, setShowCover] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const middlewareRef = useRef();
+  const navigate = useNavigate();
+
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   useEffect(() => {
     if (error) {
@@ -112,16 +119,38 @@ function Cart() {
     }
   }, [showCover]);
 
-  const handleCreateOrder = () => {
-    const fetchCreateOrder = async () => {
+  const handleCreateOrder = (e) => {
+    e.preventDefault();
+    if (loading) return;
+    const createOrderPromise = new Promise(async (resolve, reject) => {
+      originalDispatch({ type: "FETCH_START" });
       try {
         const res = await orderService.createOrder(state.orderInfo);
+        if (res.status === 201) {
+          resolve("Đơn hàng đã được tạo thành công!");
+          setCartItemQuant(0);
+        } else {
+          reject(new Error(res.data.message));
+          originalDispatch({ type: "FETCH_ERROR", payload: res.data.message });
+        }
       } catch (error) {
-        console.error(error);
+        reject(error);
+        originalDispatch({
+          type: "FETCH_ERROR",
+          payload: "",
+        });
       }
-    };
+    });
 
-    fetchCreateOrder();
+    toast.promise(createOrderPromise, {
+      pending: "Đang tạo đơn hàng...",
+      success: "Đơn hàng đã được tạo thành công! 🎉",
+      error: {
+        render({ data }) {
+          return data.response.data.message || "Tạo đơn hàng thất bại";
+        },
+      },
+    });
   };
 
   return (
@@ -138,26 +167,45 @@ function Cart() {
             />
           ))}
         </div>
-        <div className={cx("cart-price")}>
-          <span>Tổng tiền</span>
-          <span>{formatNumber(totalPrice)}đ</span>
-        </div>
+        {!!!cartItems.length && (
+          <div style={{ textAlign: "center", padding: "40px 0" }}>
+            <span style={{ fontSize: " 2rem", fontWeight: "900" }}>
+              Giỏ hàng rổng
+            </span>
+          </div>
+        )}
+        {!!cartItems.length && (
+          <div className={cx("cart-price")}>
+            <span>Tổng tiền</span>
+            <span>{formatNumber(totalPrice)}đ</span>
+          </div>
+        )}
       </div>
-      <button className={cx("cart-pay-btn")} onClick={() => setShowCover(true)}>
-        Thanh toán
-      </button>
+      {!!cartItems.length && (
+        <button
+          className={cx("cart-pay-btn")}
+          onClick={() => setShowCover(true)}
+        >
+          Thanh toán
+        </button>
+      )}
 
-      <div className={cx("cart-cover", { show: showCover })}>
+      <form
+        className={cx("cart-cover", { show: showCover })}
+        onSubmit={(e) => handleCreateOrder(e)}
+      >
         <div className={cx("cart-cover-wrapper")}>
           <div className={cx("cart-cover-top")}>
             <span>Thông tin đơn hàng</span>
-            <button onClick={() => setShowCover(false)}>
+            <button onClick={() => setShowCover(false)} type="button">
               <ExistIcon />
             </button>
           </div>
           {!userInfo.is_profile_complete && (
             <div className={cx("cart-cover-warning")}>
-              <span>Vui lòng nhập/kiểm tra thông tin đặt hàng</span>
+              <span style={{ color: "red" }}>
+                Vui lòng nhập/kiểm tra thông tin đặt hàng
+              </span>
             </div>
           )}
           <div className={cx("cart-cover-contact")}>
@@ -168,11 +216,15 @@ function Cart() {
             <div className={cx("cart-cover-contact-main")}>
               <div className={cx("cart-cover-info-form")}>
                 <span>Tên:</span>
-                <span>{userInfo.full_name}</span>
+                <span>
+                  {!!userInfo.full_name ? userInfo.full_name : "stamp"}
+                </span>
               </div>
               <div className={cx("cart-cover-info-form")}>
                 <span>Số điện thoại:</span>
-                <span>{userInfo.phone_number}</span>
+                <span>
+                  {!!userInfo.phone_number ? userInfo.phone_number : "stamp"}
+                </span>
               </div>
             </div>
           </div>
@@ -191,6 +243,7 @@ function Cart() {
                 name="payment"
                 checked={"traditional" === orderInfo.method}
                 onChange={() => {}}
+                required
               />
               <div>
                 <MoneyIcon />
@@ -206,29 +259,28 @@ function Cart() {
             <div className={cx("cart-cover-address-main")}>
               <div className={cx("cart-cover-info-form")}>
                 <span>Tỉnh:</span>
-                <span>{userInfo.province}</span>
+                <span>{!!userInfo.province ? userInfo.province : "stamp"}</span>
               </div>
               <div className={cx("cart-cover-info-form")}>
                 <span>Quận:</span>
-                <span>{userInfo.district}</span>
+                <span>{!!userInfo.district ? userInfo.district : "stamp"}</span>
               </div>
               <div className={cx("cart-cover-info-form")}>
                 <span>Số nhà:</span>
-                <span>{userInfo.house_number}</span>
+                <span>
+                  {!!userInfo.house_number ? userInfo.house_number : "stamp"}
+                </span>
               </div>
             </div>
           </div>
-          <button
-            className={cx("cart-cover-approve")}
-            onClick={handleCreateOrder}
-          >
+          <button className={cx("cart-cover-approve")} type="submit">
             Xác nhận
           </button>
         </div>
-      </div>
+      </form>
       <ToastContainer />
     </div>
   );
 }
 
-export default Cart;
+export default memo(Cart);

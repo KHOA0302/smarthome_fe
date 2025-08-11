@@ -127,7 +127,9 @@ function BrandSection() {
               <div className={cx("brands-exist")}>{brandsHtml}</div>
             </div>
           </div>
-          <button type="submit">Gửi</button>
+          <button type="submit" className={cx("submit")}>
+            Gửi
+          </button>
         </div>
       </div>
     </form>

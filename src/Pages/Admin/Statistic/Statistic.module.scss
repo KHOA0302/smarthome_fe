@@ -1,24 +1,6 @@
 .wrapper {
   position: relative;
   width: 100%;
-  overflow: auto;
-  margin: 20px;
-  background-color: white;
-  padding: 20px;
-  &::-webkit-scrollbar {
-    width: 4px;
-    height: 0;
-  }
-
-  &::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey;
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #2b2b2b;
-    border-radius: 10px;
-  }
 }
 
 .blank {
@@ -27,7 +9,7 @@
 
 .container {
   width: 100%;
-
+  padding: 20px;
   .statistic-top {
     display: flex;
     width: 100%;
@@ -36,19 +18,22 @@
     padding: 20px;
     justify-content: space-between;
     border-radius: 8px;
+
+    background-color: white;
   }
 
   .revenue {
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: #616162;
     padding: 16px;
     border-radius: 8px;
     color: white;
     font-size: 1.8rem;
     align-items: center;
     gap: 12px;
+
+    background-color: white;
 
     span:nth-child(2) {
       font-size: 3rem;

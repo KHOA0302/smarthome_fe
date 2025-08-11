@@ -33,6 +33,8 @@ import { IoIosArrowDropright } from "react-icons/io";
 import { GoDotFill } from "react-icons/go";
 import { BsGithub } from "react-icons/bs";
 import { GrInstagram } from "react-icons/gr";
+import { LuEyeClosed } from "react-icons/lu";
+import { LuEye } from "react-icons/lu";
 
 export {
   BiAddToQueue as AddIcon,
@@ -70,4 +72,6 @@ export {
   GoDotFill as DotBigIcon,
   BsGithub as GithubIcon,
   GrInstagram as InstagramIcon,
+  LuEyeClosed as EyeCloseIcon,
+  LuEye as EyeOpenIcon,
 };

@@ -1,9 +1,9 @@
 .wrapper {
   position: relative;
-  min-width: 20%;
   height: 100vh;
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  width: 100%;
   h1 {
     display: flex;
     justify-content: center;
@@ -83,4 +83,19 @@
     scale: 1.08;
   }
   left: 50%;
+}
+
+.logo {
+  width: 100%;
+  img {
+    scale: 1;
+    width: 100%;
+    object-fit: contain;
+    padding: 20px 10px;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+    &:hover {
+      scale: 1.04;
+    }
+  }
 }

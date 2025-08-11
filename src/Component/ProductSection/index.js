@@ -110,7 +110,7 @@ function ProductSection() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={cx("form")}>
       <div className={cx("product-form")}>
         <BaseInfo productBase={productBase} setProductBase={setProductBase} />
         <VariantInfo
@@ -135,8 +135,10 @@ function ProductSection() {
           productCategory={productBase.category}
         />
       </div>
-      <button type="submit">Gửi</button>
-      <button type="button">Clear</button>
+      <button type="submit" className={cx("submit")}>
+        Gửi
+      </button>
+      {/* <button type="button">Clear</button> */}
     </form>
   );
 }

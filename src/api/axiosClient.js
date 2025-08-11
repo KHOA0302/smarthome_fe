@@ -38,20 +38,12 @@ axiosClient.interceptors.response.use(
       error.response &&
       (error.response.status === 401 || error.response.status === 403)
     ) {
-      console.error(
-        "Lỗi xác thực hoặc phân quyền:",
-        error.response.data.message
-      );
-
       localStorage.removeItem("jwt_token");
-      window.location.href = "/login";
 
-      alert(
-        "Phiên làm việc của bạn đã hết hạn hoặc không có quyền. Vui lòng đăng nhập lại."
-      );
+      alert("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!!!");
 
       return Promise.reject(
-        new Error("Phiên làm việc đã hết hạn hoặc không có quyền.")
+        error || "Phiên làm việc đã hết hạn hoặc không có quyền."
       );
     }
 

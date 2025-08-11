@@ -88,49 +88,67 @@
   span {
     font-size: 1.4rem;
   }
-}
 
-thead {
-  tr {
-    background-color: var(--color-primary-1);
-  }
+  thead {
+    tr {
+      background-color: var(--color-primary-1);
+    }
 
-  th {
-    border: 1px solid #b9b9b9;
-    border-radius: 8px;
-    &.option-name {
-      padding: 0 6px;
-      font-weight: 600;
+    th {
+      border: 1px solid #b9b9b9;
+      border-radius: 8px;
+      &.option-name {
+        padding: 0 6px;
+        font-weight: 600;
+      }
+    }
+
+    th:last-child {
+      visibility: hidden;
     }
   }
 
-  th:last-child {
-    visibility: hidden;
+  th {
+    &.extra-width {
+      width: 30%;
+    }
+
+    &.typical {
+      color: var(--color-text-gray);
+    }
+
+    &.option-value {
+      padding: 8px 0;
+      font-weight: 500;
+    }
   }
-}
 
-th {
-  &.extra-width {
-    width: 30%;
+  td {
+    vertical-align: middle;
+
+    &.value {
+      padding: 8px 0;
+      input {
+        width: 100%;
+      }
+    }
   }
 
-  &.typical {
-    color: var(--color-text-gray);
-  }
+  tbody {
+    tr {
+      background-color: inherit;
+      transition: all 0.2s ease-in-out;
+      &:hover {
+        background-color: var(--color-primary-1);
+      }
 
-  &.option-value {
-    padding: 8px 0;
-    font-weight: 500;
-  }
-}
+      &.hoverActive {
+        background-color: rgb(255, 221, 221);
+      }
 
-td {
-  vertical-align: middle;
-
-  &.value {
-    padding: 8px 0;
-    input {
-      width: 100%;
+      &.remove {
+        background-color: rgb(255, 186, 186);
+      }
     }
   }
 }
@@ -148,24 +166,6 @@ td {
     &:hover {
       cursor: pointer;
       color: red;
-    }
-  }
-}
-
-tbody {
-  tr {
-    background-color: inherit;
-    transition: all 0.2s ease-in-out;
-    &:hover {
-      background-color: var(--color-primary-1);
-    }
-
-    &.hoverActive {
-      background-color: rgb(255, 221, 221);
-    }
-
-    &.remove {
-      background-color: rgb(255, 186, 186);
     }
   }
 }

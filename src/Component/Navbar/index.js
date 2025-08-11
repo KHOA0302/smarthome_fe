@@ -1,9 +1,10 @@
 import styles from "./Navbar.module.scss";
 import classNames from "classnames/bind";
-
+import logo from "../../images/logo.png";
 import zaku from "../../images/zaku.png";
 import { NavLink, replace, useNavigate } from "react-router-dom";
 import authService from "../../api/authService";
+import { memo } from "react";
 
 const cx = classNames.bind(styles);
 
@@ -11,7 +12,9 @@ function Navbar({ navItems }) {
   const navigate = useNavigate();
   return (
     <nav className={cx("wrapper")}>
-      <h1>SmartHome</h1>
+      <div className={cx("logo")} onClick={() => navigate("/")}>
+        <img src={logo} />
+      </div>
       <div className={cx("user")}>
         <div className={cx("user-wrapper")}>
           <img src={zaku} alt="avatar" />
@@ -51,4 +54,4 @@ function Navbar({ navItems }) {
   );
 }
 
-export default Navbar;
+export default memo(Navbar);

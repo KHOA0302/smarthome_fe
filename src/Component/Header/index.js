@@ -24,6 +24,10 @@ function Header() {
             ...authService.getCurrentUser(),
           });
         }
+      } catch (error) {
+        console.error(error);
+      }
+      try {
         const resCar = await cartService.getCartItem();
         if (resCar.status === 200) {
           setCartItemQuant(

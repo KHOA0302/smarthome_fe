@@ -43,6 +43,8 @@ function ServiceEdit({ category_id, servicePackages, variants, dispatch }) {
     servicePackage: combine[key],
   }));
 
+  console.log(modifiedServicePackages, variants);
+
   const handleDispatch = (type, payload) => {
     dispatch({ type: type, payload: payload });
   };
@@ -57,7 +59,6 @@ function ServiceEdit({ category_id, servicePackages, variants, dispatch }) {
     } catch (error) {
       console.error(error);
     }
-    console.log(servicePackages);
   };
 
   return (

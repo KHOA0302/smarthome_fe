@@ -1,3 +1,18 @@
+.container {
+}
+
+.select-wrapper {
+  select {
+    width: fit-content;
+    background-color: white;
+    margin-bottom: 12px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 1.6rem;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  }
+}
+
 .product-specifications {
   max-width: 100%;
   background-color: white;
@@ -15,6 +30,26 @@
 
 .attribute-group-wrapper {
   display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: white;
+  .remove-group-btn {
+    border: none;
+    padding: 0 4px;
+    background-color: tomato;
+    cursor: pointer;
+    svg {
+      font-size: 1.6rem;
+      color: white;
+      scale: 1;
+      transition: all 0.1s ease-in-out;
+    }
+    &:hover {
+      svg {
+        scale: 1.1;
+      }
+    }
+  }
 }
 
 .attribute-group {
@@ -22,12 +57,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 8px;
+  padding: 12px 8px;
   background-color: var(--color-bg-light);
   border-radius: 8px;
 
   span {
     font-size: 1.8rem;
+  }
+
+  input {
+    text-align: left;
+    font-size: 1.6rem;
+    border: none;
+    padding: 8px;
+    width: 80%;
+    border-radius: 8px;
   }
 
   button {
@@ -36,7 +80,7 @@
     background-color: transparent;
     transform: rotate(0);
     transition: all 0.2s ease-in-out;
-
+    cursor: pointer;
     svg {
       font-size: 1.6rem;
     }
@@ -46,30 +90,72 @@
   }
 }
 
+.attribute-item-blank {
+  width: 90%;
+}
+
 .attribute-items {
-  margin-left: 12px;
+  display: flex;
+  flex-direction: column;
   height: 0;
   overflow: hidden;
+  margin-top: 12px;
   &.expend {
     height: fit-content;
   }
-  .attribute-item {
+  .items-control-btn {
     display: flex;
-    gap: 8px;
-    flex-direction: row;
-    padding: 8px 0;
-
-    & div {
+    flex-direction: column;
+    button {
       display: flex;
       align-items: center;
-      gap: 4px;
-      & span {
-        width: 200px;
-        font-weight: 700;
+      border: none;
+      height: 50%;
+      svg {
+        font-size: 1.8rem;
       }
     }
+    button:nth-child(1) {
+      background-color: var(--color-primary-2);
+    }
+    button:nth-child(2) {
+      background-color: tomato;
+    }
   }
-  .attribute-item:not(:last-child) {
+
+  &.new {
+    flex-direction: row;
+
+    .attribute-item {
+      border-bottom: none;
+    }
+  }
+}
+
+.attribute-item {
+  display: flex;
+  gap: 4px;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  .item-content {
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+    flex: 1;
+    width: 100%;
+    border: 0.8px solid var(--color-border);
+    border-radius: 4px;
+    overflow: hidden;
+    input {
+      flex: 1;
+      border: none;
+      padding: 8px 4px;
+    }
+  }
+
+  &:not(:last-child) {
+    margin-bottom: 8px;
     border-bottom: 0.8px solid var(--color-border);
   }
 }
@@ -81,8 +167,40 @@
 
 .groups-exist {
   flex: 1;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  padding: 20px;
+  border-radius: 8px;
 }
 
 .groups-new {
   flex: 1;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.add-groups-btn {
+  margin-top: 12px;
+  color: white;
+  font-weight: 700;
+  font-size: 1.6rem;
+  padding: 2px 12px;
+  background-color: var(--color-primary-3);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit {
+  margin-top: 12px;
+  color: white;
+  font-weight: 700;
+  font-size: 1.6rem;
+  padding: 2px 20px;
+  background-color: darkorange;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }

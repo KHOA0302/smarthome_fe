@@ -23,6 +23,7 @@ import { Dashboard as CustomerDashboard } from "./Pages/Customer";
 import Cart from "./Pages/Cart";
 import ProductEdit from "./Pages/Admin/ProductEdit";
 import Order from "./Pages/Customer/Order";
+import ProductList from "./Pages/ProductList";
 
 const ROLE_ADMIN = 1;
 const ROLE_CUSTOMER = 2;
@@ -55,12 +56,16 @@ function App() {
           <Route exact path="home" element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
-          <Route path="unauthorized" element={<Unauthorized />} />
           <Route
             path="product/:product_id/variant/:variant_id"
             element={<ProductDetails />}
           />
           <Route path="cart" element={<Cart />} />
+          <Route
+            path="product-list/:category_slug/:category_id"
+            element={<ProductList />}
+          />
+          <Route path="unauthorized" element={<Unauthorized />} />
           <Route path="*" element={<NotFound />} />
         </Route>
 

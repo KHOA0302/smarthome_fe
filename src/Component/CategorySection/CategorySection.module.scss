@@ -1,9 +1,12 @@
-.category-wrapper {
-  padding: 16px;
-  margin-bottom: 60px;
-  background-color: aliceblue;
-  border-radius: 8px;
+.category-form {
+  padding: 8px;
+}
 
+.category-wrapper {
+  padding: 20px 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   & h1 {
     margin-bottom: 30px;
     border-bottom: 1px solid var(--color-border);
@@ -66,4 +69,15 @@
       height: 30px;
     }
   }
+}
+
+.submit {
+  color: white;
+  font-weight: 700;
+  font-size: 1.6rem;
+  padding: 2px 20px;
+  background-color: darkorange;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }

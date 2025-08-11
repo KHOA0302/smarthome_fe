@@ -7,5 +7,11 @@
   background-color: var(--color-bg-light);
   overflow: hidden;
 }
+.container-side_bar {
+  flex: 1;
+}
 
-
+.container-content {
+  flex: 5;
+  min-width: 80%;
+}

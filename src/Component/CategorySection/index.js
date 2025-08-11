@@ -177,7 +177,9 @@ function CategorySection() {
               <div className={cx("categories-exist")}>{categoryHtml}</div>
             </div>
           </div>
-          <button type="submit">Gửi</button>
+          <button type="submit" className={cx("submit")}>
+            Gửi
+          </button>
         </div>
       </div>
     </form>
