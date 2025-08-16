@@ -68,7 +68,7 @@ function CartItem({
               <button onClick={() => handleDecreaseItem(cartItem.cartItemId)}>
                 -
               </button>
-              <input value={cartItem.quantity} name="quantity" />
+              <span>{cartItem.quantity}</span>
               <button onClick={() => handleIncreaseItem(cartItem.cartItemId)}>
                 +
               </button>

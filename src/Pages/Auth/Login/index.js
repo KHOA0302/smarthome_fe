@@ -5,6 +5,7 @@ import authService from "../../../api/authService";
 import { useNavigate } from "react-router-dom";
 import { EyeCloseIcon, EyeOpenIcon } from "../../../icons";
 import banner from "../../../images/household-electric-devices.jpg";
+import { GoogleLogin } from "@react-oauth/google";
 const cx = classNames.bind(styles);
 function Login() {
   const [username, setUsername] = useState("");
@@ -13,6 +14,34 @@ function Login() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+
+  const handleGoogleSubmit = async (credentialResponse) => {
+    console.log("Google credential response:", credentialResponse);
+
+    try {
+      const res = await authService.googleSign(credentialResponse.credential);
+      console.log(
+        "Đăng nhập/Đăng ký Google thành công (qua @react-oauth/google):",
+        res
+      );
+
+      console.log(res.data.message);
+      localStorage.setItem("jwt_token", res.data.token);
+      localStorage.setItem("user_info", JSON.stringify(res.data.user));
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Lỗi khi xử lý đăng nhập Google ở Frontend:", error);
+      alert(
+        error.response?.data?.message ||
+          "Đăng nhập Google thất bại. Vui lòng thử lại."
+      );
+    }
+  };
+
+  const handleGoogleFailure = (error) => {
+    console.log("Đăng nhập Google thất bại:", error);
+    alert("Đăng nhập Google thất bại. Vui lòng thử lại.");
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -100,6 +129,10 @@ function Login() {
                 Đăng kí
               </button>
             </div>
+            <GoogleLogin
+              onSuccess={handleGoogleSubmit}
+              onError={handleGoogleFailure}
+            />
           </form>
         </div>
       </div>

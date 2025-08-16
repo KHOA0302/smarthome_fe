@@ -152,6 +152,8 @@ function OrderList({ orders, setOrders, role = "customer" }) {
       });
   };
 
+  console.log(orders);
+
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
@@ -162,7 +164,6 @@ function OrderList({ orders, setOrders, role = "customer" }) {
             </thead>
             <tbody>
               {orders.map((order, id) => {
-                console.log(order);
                 return (
                   <tr key={id}>
                     <td>{order.order_id}</td>
@@ -179,21 +180,46 @@ function OrderList({ orders, setOrders, role = "customer" }) {
                       {order.order_status}
                     </td>
                     <td>{formatNumber(parseInt(order.order_total))}đ</td>
-                    <td>{order.created_at}</td>
+                    <td>
+                      {new Date(order.created_at).toLocaleString("vi-VN", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </td>
                     {isAdmin && (
                       <Fragment>
-                        <td>{order.user.full_name}</td>
-                        <td>{order.user.phone_number}</td>
+                        <td>
+                          {!!order.user_id
+                            ? order.user.full_name
+                            : order.guest_name}
+                        </td>
+                        <td>
+                          {!!order.user_id
+                            ? order.user.phone_number
+                            : order.guest_phone}
+                          {}
+                        </td>
                         <td>
                           <button onClick={() => setShowAddress(id)}>
                             Xem địa chỉ
                           </button>
                         </td>
-                        <td>{order.user.email}</td>
                         <td>
-                          <button>
-                            {order.order_status === "cancel" ? "xóa" : "cancel"}
-                          </button>
+                          {!!order.user_id ? order.user.email : "(tk khách)"}
+                        </td>
+                        <td>
+                          {order.order_status === "cancel" ||
+                          order.order_status === "completed" ? (
+                            <button style={{ backgroundColor: "red" }}>
+                              xóa
+                            </button>
+                          ) : (
+                            <button> cancel</button>
+                          )}
+
                           {!!lookupOrderNextStage[order.order_status] && (
                             <button
                               onClick={() =>
@@ -249,10 +275,27 @@ function OrderList({ orders, setOrders, role = "customer" }) {
                               </thead>
                               <tbody>
                                 <tr>
-                                  <td>{order.user.full_name}</td>
-                                  <td>{order.user.province}</td>
-                                  <td>{order.user.district}</td>
-                                  <td>{order.user.house_number}</td>
+                                  <td>
+                                    {!!order.user_id
+                                      ? order.user.full_name
+                                      : order.guest_name}
+                                    {}
+                                  </td>
+                                  <td>
+                                    {!!order.user_id
+                                      ? order.user.province
+                                      : order.guest_province}
+                                  </td>
+                                  <td>
+                                    {!!order.user_id
+                                      ? order.user.district
+                                      : order.guest_district}
+                                  </td>
+                                  <td>
+                                    {!!order.user_id
+                                      ? order.user.house_number
+                                      : order.guest_house_number}
+                                  </td>
                                 </tr>
                               </tbody>
                             </table>

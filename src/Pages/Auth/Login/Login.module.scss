@@ -2,6 +2,7 @@
   display: flex;
   height: 100vh;
   overflow: hidden;
+  padding: 2px;
 }
 
 .container {
@@ -10,6 +11,7 @@
   margin: auto;
   overflow: hidden;
   border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
 .form-wrapper {
@@ -124,7 +126,7 @@
 }
 
 .btn {
-  margin-top: 20px;
+  margin: 20px 0;
   button {
     border: none;
     color: white;

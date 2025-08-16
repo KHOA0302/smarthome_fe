@@ -35,6 +35,7 @@ import { BsGithub } from "react-icons/bs";
 import { GrInstagram } from "react-icons/gr";
 import { LuEyeClosed } from "react-icons/lu";
 import { LuEye } from "react-icons/lu";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export {
   BiAddToQueue as AddIcon,
@@ -74,4 +75,5 @@ export {
   GrInstagram as InstagramIcon,
   LuEyeClosed as EyeCloseIcon,
   LuEye as EyeOpenIcon,
+  AiOutlineLoading3Quarters as LoadingIcon,
 };

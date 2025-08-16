@@ -3,7 +3,7 @@ import classNames from "classnames/bind";
 import { Outlet } from "react-router-dom";
 
 import Navbar from "../../Component/Navbar";
-import { InvoiceIcon, UserInfoIcon } from "../../icons";
+import { CartIcon, InvoiceIcon, UserInfoIcon } from "../../icons";
 
 const cx = classNames.bind(styles);
 

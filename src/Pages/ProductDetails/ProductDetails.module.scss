@@ -6,9 +6,11 @@
 }
 
 .variant-name {
-  font-size: 2rem;
-  font-weight: 700;
   margin: 12px 0 8px 0;
+  span {
+    font-size: 2.2rem;
+    font-weight: 700;
+  }
 }
 
 .product-main {
@@ -32,8 +34,10 @@
 .product-imgs-display_area {
   margin-bottom: 20px;
   .product-img_display {
+    height: 50vh;
     img {
       width: 100%;
+      height: 100%;
       object-fit: contain;
     }
   }
@@ -47,15 +51,20 @@
 
 .product-imgs-choice_area {
   display: flex;
-  gap: 10px;
+  justify-content: center;
   width: 80%;
   margin: auto;
+  .choice_area-wrapper {
+    display: flex;
+    gap: 10px;
+  }
 }
 
 .product-img {
   padding: 4px 4px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
+  cursor: pointer;
 
   img {
     max-height: 100px;

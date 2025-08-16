@@ -1,26 +1,35 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { PlusIcon, TrashIcon } from "../../icons";
 import styles from "./ProductImgEdit.module.scss";
 import classNames from "classnames/bind";
-import { uploadImageToFirebase } from "../../utils/firebaseUpload";
+import {
+  deleteImageFromFirebase,
+  uploadImageToFirebase,
+} from "../../utils/firebaseUpload";
 import productService from "../../api/productService";
 import { useParams } from "react-router";
+import { toast, ToastContainer } from "react-toastify";
 const cx = classNames.bind(styles);
 function ProductImgsEdit({ productImgs, dispatch }) {
   const fileInputRef = useRef(null);
   const { productId } = useParams();
-
+  const [activeEdit, setActiveEdit] = useState(false);
   const handleDispatch = (type, payload) => {
+    if (!activeEdit) return;
     dispatch({ type: type, payload: payload });
   };
 
   const handleAddImageClick = () => {
+    if (!activeEdit) return;
     fileInputRef.current.click();
   };
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    let displayOrder = productImgs[productImgs.length - 1].display_order;
+    let displayOrder =
+      productImgs.length > 0
+        ? productImgs[productImgs.length - 1].display_order
+        : 100000;
     if (files.length > 0) {
       files.forEach((file) => {
         const tempImageUrl = URL.createObjectURL(file);
@@ -40,43 +49,92 @@ function ProductImgsEdit({ productImgs, dispatch }) {
     }
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const updateProductImgs = await Promise.all(
-      productImgs.map(async (img) => {
-        if (img.file) {
-          const imgUrlFirebase = await uploadImageToFirebase(img.file, "basic");
-          return {
-            ...img,
-            image_url: imgUrlFirebase,
-            file: "",
-          };
-        }
-        return img;
-      })
-    );
 
-    const fetch = () => {
+    const promiseToast = new Promise(async (resolve, reject) => {
+      let updateProductImgs;
       try {
-        const res = productService.editProductImgs(
+        updateProductImgs = await Promise.all(
+          productImgs.map(async (img) => {
+            if (!img.isRemove && img.file) {
+              const imgUrlFirebase = await uploadImageToFirebase(
+                img.file,
+                "basic"
+              );
+              return {
+                ...img,
+                image_url: imgUrlFirebase,
+                file: "",
+              };
+            }
+            return img;
+          })
+        );
+
+        const imgsToDelete = updateProductImgs.filter((img) => img.isRemove);
+
+        const res = await productService.editProductImgs(
           productId,
           updateProductImgs
         );
-        console.log(res.data);
+
+        if (res.status === 200) {
+          await Promise.all(
+            imgsToDelete.map(async (img) => {
+              if (typeof img.img_id === "number") {
+                await deleteImageFromFirebase(img.image_url);
+              }
+            })
+          );
+        }
+
+        resolve(res);
       } catch (error) {
         console.error(error);
-      }
-    };
 
-    fetch();
+        const newImgsUploaded = updateProductImgs.filter(
+          (img) =>
+            typeof img.img_id !== "number" &&
+            !img.isRemove &&
+            img.image_url.startsWith("http")
+        );
+
+        if (newImgsUploaded.length > 0) {
+          await Promise.all(
+            newImgsUploaded.map(async (img) => {
+              try {
+                await deleteImageFromFirebase(img.image_url);
+              } catch (deleteError) {}
+            })
+          );
+        }
+        reject(error);
+      }
+    });
+
+    toast.promise(promiseToast, {
+      pending: "Đang cập nhật sản phẩm...",
+      success: "Cập nhật sản phẩm thành công!",
+      error: "Cập nhật sản phẩm thất bại! Vui lòng thử lại.",
+    });
   };
 
   return (
     <form className={cx("wrapper")} onSubmit={handleSubmit}>
       <div className={cx("container")}>
-        <h3>Phần ảnh sản phẩm</h3>
+        <div className={cx("title")}>
+          <h2>Phần ảnh sản phẩm</h2>
+          <button
+            className={cx({ active: activeEdit })}
+            onClick={() => setActiveEdit(!activeEdit)}
+            type="button"
+          >
+            SỬA
+          </button>
+        </div>
         <div className={cx("imgs")}>
-          <button type="button">SỬA</button>
           <div className={cx("blank")}>
             {productImgs?.map((img, id) => {
               return (
@@ -103,6 +161,11 @@ function ProductImgsEdit({ productImgs, dispatch }) {
             </button>
           </div>
         </div>
+        {activeEdit && (
+          <button type="submit" className={cx("submit-btn")}>
+            SUBMIT
+          </button>
+        )}
       </div>
 
       <input
@@ -113,7 +176,7 @@ function ProductImgsEdit({ productImgs, dispatch }) {
         onChange={handleFileChange}
         accept="image/*"
       />
-      <button type="submit">SUBMIT</button>
+      <ToastContainer />
     </form>
   );
 }

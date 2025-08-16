@@ -31,6 +31,10 @@ const authService = {
   googleSign: (token) => {
     return axiosClient.post("/auth/google", { token });
   },
+
+  editUserinfo: (userEdited) => {
+    return axiosClient.put("/auth/edit-info", { userEdited });
+  },
 };
 
 export default authService;

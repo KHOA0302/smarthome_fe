@@ -24,6 +24,7 @@ import Cart from "./Pages/Cart";
 import ProductEdit from "./Pages/Admin/ProductEdit";
 import Order from "./Pages/Customer/Order";
 import ProductList from "./Pages/ProductList";
+import CBOSSedit from "./Pages/Admin/CBOSSedit";
 
 const ROLE_ADMIN = 1;
 const ROLE_CUSTOMER = 2;
@@ -44,7 +45,10 @@ function App() {
             <Route path="edit-product/:productId" element={<ProductEdit />} />
 
             <Route path="statistic" element={<Statistic />} />
-
+            <Route
+              path="brand-category-option-service-spec"
+              element={<CBOSSedit />}
+            />
             <Route path="invoice" element={<InvoiceManagement />} />
 
             <Route path="*" element={<NotFound />} />
@@ -65,6 +69,7 @@ function App() {
             path="product-list/:category_slug/:category_id"
             element={<ProductList />}
           />
+          <Route path="order" element={<Order />} />
           <Route path="unauthorized" element={<Unauthorized />} />
           <Route path="*" element={<NotFound />} />
         </Route>
@@ -77,6 +82,7 @@ function App() {
             <Route path="dashboard" element={<CustomerDashboard />} />
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="order" element={<Order />} />
+
             <Route path="*" element={<NotFound />} />
           </Route>
         </Route>

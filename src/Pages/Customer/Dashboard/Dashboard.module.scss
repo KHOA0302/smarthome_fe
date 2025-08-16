@@ -18,6 +18,9 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 10px 200px 10px 10px;
+  border-radius: 8px;
+  background-image: url("../../../images/hand_painted_ocean_themed_fluid_art_design_1704.jpg");
 }
 
 .user {
@@ -26,6 +29,7 @@
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
   border-right: 1px solid var(--color-border);
+  background-color: white;
 
   & button {
     padding: 0 8px;
@@ -175,6 +179,14 @@
 .submit-btn {
   width: 20%;
   margin: auto;
+  background-color: darkorange;
+  font-weight: 800;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 0;
+  font-size: 1.8rem;
+  cursor: pointer;
 }
 
 .search-select {

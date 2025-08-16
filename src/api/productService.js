@@ -14,21 +14,24 @@ const productService = {
     return axiosClient.get(`/product/details/${productId}`);
   },
 
-  getAllProducts: () => {
-    return axiosClient.get("/product/all");
+  getAllProductsByFilter: ({ brandId, categoryId }) => {
+    return axiosClient.post("/product/all", { brandId, categoryId });
+  },
+
+  editProductInfo: (productInfo) => {
+    return axiosClient.put("/product/edit-product-info", { productInfo });
   },
 
   editProductImgs: (productId, productImgs) => {
-    return axiosClient.post("/product/edit-imgs", { productId, productImgs });
+    return axiosClient.put("/product/edit-imgs", { productId, productImgs });
   },
 
   editVariants: (productId, variants) => {
     return axiosClient.post("/product/edit-variants", { productId, variants });
   },
 
-  editService: (productId, servicePackages) => {
+  editService: (servicePackages) => {
     return axiosClient.put("/product/edit-service", {
-      productId,
       servicePackages,
     });
   },
@@ -53,6 +56,10 @@ const productService = {
       categoryId,
       brandId,
     });
+  },
+
+  searchTopProduct: (keyword) => {
+    return axiosClient.get(`product/search?keyword=${keyword}`);
   },
 };
 

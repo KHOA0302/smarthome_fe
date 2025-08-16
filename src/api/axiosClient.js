@@ -41,6 +41,7 @@ axiosClient.interceptors.response.use(
       localStorage.removeItem("jwt_token");
 
       alert("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!!!");
+      window.location.href = "/login";
 
       return Promise.reject(
         error || "Phiên làm việc đã hết hạn hoặc không có quyền."

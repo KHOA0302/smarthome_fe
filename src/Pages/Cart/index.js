@@ -16,6 +16,7 @@ import { initState, reducer } from "./reducer";
 import { ToastContainer, toast } from "react-toastify";
 import { useCartItemQuantContext } from "../../layout/CommonLayout";
 import { useLocation, useNavigate } from "react-router";
+import vnpay from "../../images/vnpay.webp";
 const cx = classNames.bind(styles);
 
 const createMiddleware = (originalDispatch, state) => (action) => {
@@ -31,6 +32,13 @@ function Cart() {
   const { cartItems, orderInfo, loading, error, success } = state;
   const [showCover, setShowCover] = useState(false);
   const [userInfo, setUserInfo] = useState({});
+  const [guestInfo, setGuestInfo] = useState({
+    guest_name: "",
+    guest_phone: "",
+    guest_province: "",
+    guest_district: "",
+    guest_house_number: "",
+  });
   const middlewareRef = useRef();
   const navigate = useNavigate();
 
@@ -122,13 +130,24 @@ function Cart() {
   const handleCreateOrder = (e) => {
     e.preventDefault();
     if (loading) return;
+    if (Object.keys(userInfo).length > 0 && !userInfo.is_profile_complete) {
+      toast.error("Vui lòng điền địa chỉ tạo trang cusmtomer");
+      return;
+    }
     const createOrderPromise = new Promise(async (resolve, reject) => {
       originalDispatch({ type: "FETCH_START" });
       try {
-        const res = await orderService.createOrder(state.orderInfo);
+        const res = await orderService.createOrder(state.orderInfo, guestInfo);
         if (res.status === 201) {
           resolve("Đơn hàng đã được tạo thành công!");
+          const redirectToVnPay = res.data?.redirect;
+          console.log(res.data);
+          if (res.data?.redirect) {
+            window.location.href = redirectToVnPay;
+          }
           setCartItemQuant(0);
+          setShowCover(false);
+          originalDispatch({ type: "CLEAR_CART" });
         } else {
           reject(new Error(res.data.message));
           originalDispatch({ type: "FETCH_ERROR", payload: res.data.message });
@@ -152,6 +171,48 @@ function Cart() {
       },
     });
   };
+
+  const isAuth = authService.isAuthenticated();
+  const hasEmptyField = Object.values(guestInfo).some((value) => value === "");
+
+  const handleEditGuestInfo = (e) => {
+    switch (e.target.name) {
+      case "username":
+        setGuestInfo((prev) => ({
+          ...prev,
+          guest_name: e.target.value,
+        }));
+        break;
+      case "phone_number":
+        setGuestInfo((prev) => ({
+          ...prev,
+          guest_phone: e.target.value,
+        }));
+        break;
+      case "province":
+        setGuestInfo((prev) => ({
+          ...prev,
+          guest_province: e.target.value,
+        }));
+        break;
+      case "district":
+        setGuestInfo((prev) => ({
+          ...prev,
+          guest_district: e.target.value,
+        }));
+        break;
+      case "house_number":
+        setGuestInfo((prev) => ({
+          ...prev,
+          guest_house_number: e.target.value,
+        }));
+        break;
+      default:
+        break;
+    }
+  };
+
+  console.log(userInfo);
 
   return (
     <div className={cx("wrapper")}>
@@ -185,6 +246,7 @@ function Cart() {
         <button
           className={cx("cart-pay-btn")}
           onClick={() => setShowCover(true)}
+          type="button"
         >
           Thanh toán
         </button>
@@ -192,7 +254,7 @@ function Cart() {
 
       <form
         className={cx("cart-cover", { show: showCover })}
-        onSubmit={(e) => handleCreateOrder(e)}
+        onSubmit={handleCreateOrder}
       >
         <div className={cx("cart-cover-wrapper")}>
           <div className={cx("cart-cover-top")}>
@@ -201,36 +263,62 @@ function Cart() {
               <ExistIcon />
             </button>
           </div>
-          {!userInfo.is_profile_complete && (
+          {(hasEmptyField || !userInfo.is_profile_complete) && (
             <div className={cx("cart-cover-warning")}>
               <span style={{ color: "red" }}>
                 Vui lòng nhập/kiểm tra thông tin đặt hàng
               </span>
+              <button onClick={() => navigate("/login")} type="button">
+                Hoặc đăng để mua hàng thuận tiện hơn
+              </button>
             </div>
           )}
           <div className={cx("cart-cover-contact")}>
             <div className={cx("cart-cover-contact-title")}>
               <span>Thông tin người đặt</span>
-              <button>Chỉnh sửa</button>
+              {isAuth && (
+                <button
+                  onClick={() => navigate("/customer/dashboard")}
+                  type="button"
+                >
+                  Chỉnh sửa
+                </button>
+              )}
             </div>
             <div className={cx("cart-cover-contact-main")}>
               <div className={cx("cart-cover-info-form")}>
                 <span>Tên:</span>
-                <span>
-                  {!!userInfo.full_name ? userInfo.full_name : "stamp"}
-                </span>
+                {isAuth ? (
+                  <span>{userInfo.full_name}</span>
+                ) : (
+                  <input
+                    value={guestInfo.guest_name}
+                    onChange={handleEditGuestInfo}
+                    name="username"
+                    type="text"
+                    required
+                  />
+                )}
               </div>
               <div className={cx("cart-cover-info-form")}>
                 <span>Số điện thoại:</span>
-                <span>
-                  {!!userInfo.phone_number ? userInfo.phone_number : "stamp"}
-                </span>
+                {isAuth ? (
+                  <span>{userInfo.phone_number}</span>
+                ) : (
+                  <input
+                    value={guestInfo.phone_number}
+                    onChange={handleEditGuestInfo}
+                    name="phone_number"
+                    type="text"
+                    required
+                  />
+                )}
               </div>
             </div>
           </div>
           <div className={cx("cart-cover-delivery")}>
             <span>Hình thức giao hàng</span>
-            <button>
+            <button type="button">
               <span>Giao tận nơi</span>
               <TruckIcon />
             </button>
@@ -241,35 +329,95 @@ function Cart() {
               <input
                 type="radio"
                 name="payment"
+                id="traditional"
                 checked={"traditional" === orderInfo.method}
-                onChange={() => {}}
+                onChange={() => {
+                  originalDispatch({
+                    type: "CHANGE_PAYMENT_METHOD",
+                    payload: "traditional",
+                  });
+                }}
                 required
               />
-              <div>
+              <label htmlFor="traditional">
                 <MoneyIcon />
                 <span>Thanh toán khi nhận hàng</span>
-              </div>
+              </label>
+            </div>
+            <div className={cx("cart-cover-payment-method")}>
+              <input
+                type="radio"
+                name="payment"
+                id="vnpay"
+                checked={"vnpay" === orderInfo.method}
+                onChange={() => {
+                  originalDispatch({
+                    type: "CHANGE_PAYMENT_METHOD",
+                    payload: "vnpay",
+                  });
+                }}
+                required
+              />
+              <label htmlFor="vnpay">
+                <img src={vnpay} style={{ width: "16px" }} />
+                <span>Thanh toán bằng VNPAY</span>
+              </label>
             </div>
           </div>
           <div className={cx("cart-cover-address")}>
             <div className={cx("cart-cover-address-title")}>
               <span>Địa chỉ giao hàng</span>
-              <button>Chỉnh sửa</button>
+              {isAuth && (
+                <button
+                  onClick={() => navigate("/customer/dashboard")}
+                  type="button"
+                >
+                  Chỉnh sửa
+                </button>
+              )}
             </div>
             <div className={cx("cart-cover-address-main")}>
               <div className={cx("cart-cover-info-form")}>
                 <span>Tỉnh:</span>
-                <span>{!!userInfo.province ? userInfo.province : "stamp"}</span>
+                {isAuth ? (
+                  <span>{userInfo.province}</span>
+                ) : (
+                  <input
+                    value={guestInfo.guest_province}
+                    onChange={handleEditGuestInfo}
+                    name="province"
+                    type="text"
+                    required
+                  />
+                )}
               </div>
               <div className={cx("cart-cover-info-form")}>
                 <span>Quận:</span>
-                <span>{!!userInfo.district ? userInfo.district : "stamp"}</span>
+                {isAuth ? (
+                  <span>{userInfo.district}</span>
+                ) : (
+                  <input
+                    value={guestInfo.guest_district}
+                    onChange={handleEditGuestInfo}
+                    name="district"
+                    type="text"
+                    required
+                  />
+                )}
               </div>
               <div className={cx("cart-cover-info-form")}>
                 <span>Số nhà:</span>
-                <span>
-                  {!!userInfo.house_number ? userInfo.house_number : "stamp"}
-                </span>
+                {isAuth ? (
+                  <span>{userInfo.house_number}</span>
+                ) : (
+                  <input
+                    value={guestInfo.guest_house_number}
+                    onChange={handleEditGuestInfo}
+                    name="house_number"
+                    type="text"
+                    required
+                  />
+                )}
               </div>
             </div>
           </div>

@@ -1,12 +1,20 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { formatNumber } from "../../utils/formatNumber";
 import styles from "./ServiceEdit.module.scss";
 import classNames from "classnames/bind";
 import { serviceService } from "../../api/serviceService";
 import { SelectableIcon, TrashIcon, UnSelectableIcon } from "../../icons";
 import productService from "../../api/productService";
+import { toast, ToastContainer } from "react-toastify";
 const cx = classNames.bind(styles);
-function ServiceEdit({ category_id, servicePackages, variants, dispatch }) {
+function ServiceEdit({
+  category_id,
+  servicePackages,
+  variants,
+  dispatch,
+  loading,
+  error,
+}) {
   const [serviceFilter, setServiceFilter] = useState([]);
   const [changeable, setChangeable] = useState(false);
 
@@ -43,7 +51,18 @@ function ServiceEdit({ category_id, servicePackages, variants, dispatch }) {
     servicePackage: combine[key],
   }));
 
-  console.log(modifiedServicePackages, variants);
+  variants.forEach((variant) => {
+    const isExist = modifiedServicePackages.find(
+      (pk) => pk.variant_id === variant.variant_id
+    );
+
+    if (!isExist) {
+      modifiedServicePackages.push({
+        variant_id: variant.variant_id,
+        servicePackage: [],
+      });
+    }
+  });
 
   const handleDispatch = (type, payload) => {
     dispatch({ type: type, payload: payload });
@@ -52,22 +71,22 @@ function ServiceEdit({ category_id, servicePackages, variants, dispatch }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await productService.editService(servicePackages);
-      if (res.status === 200) {
-        console.log("sussed");
-      }
+      await toast.promise(productService.editService(servicePackages), {
+        pending: "Đang cập nhật dịch vụ...",
+        success: "Cập nhật dịch vụ thành công! 🎉",
+        error: "Cập nhật dịch vụ thất bại! 😔",
+      });
     } catch (error) {
       console.error(error);
     }
   };
-
   return (
     <form className={cx("wrapper")} onSubmit={handleSubmit}>
       <div className={cx("container")}>
         <div className={cx("title")}>
-          <h3>Phần dịch vụ biến thể</h3>
+          <h2>Phần dịch vụ biến thể</h2>
           <button
-            className={cx({ change: changeable })}
+            className={cx({ active: changeable })}
             onClick={() => setChangeable(!changeable)}
             type="button"
           >
@@ -164,7 +183,7 @@ function ServiceEdit({ category_id, servicePackages, variants, dispatch }) {
                                         <select
                                           name="service"
                                           value={item.serviceId}
-                                          required={!item.isRemove}
+                                          required={item.isRemove}
                                           onChange={(e) =>
                                             handleDispatch(
                                               "EDIT_SERVICE_VALUE",
@@ -210,7 +229,7 @@ function ServiceEdit({ category_id, servicePackages, variants, dispatch }) {
                                           value={formatNumber(
                                             item.itemPriceImpact
                                           )}
-                                          required={!item.isRemove}
+                                          required={item.isRemove}
                                           onChange={(e) =>
                                             handleDispatch(
                                               "EDIT_SERVICE_PRICE",
@@ -326,8 +345,9 @@ function ServiceEdit({ category_id, servicePackages, variants, dispatch }) {
           SUBMIT
         </button>
       )}
+      <ToastContainer />
     </form>
   );
 }
 
-export default ServiceEdit;
+export default memo(ServiceEdit);

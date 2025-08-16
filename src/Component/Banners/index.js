@@ -7,6 +7,7 @@ import {
   ArrowCircleRightIcon,
   DotBigIcon,
 } from "../../icons";
+import { Link } from "react-router";
 const cx = classNames.bind(styles);
 
 function Banner({ banner }) {
@@ -15,7 +16,15 @@ function Banner({ banner }) {
       <img src={banner.banner} className={cx("banner-img")} />
       <div className={cx("banner-slogan")}>
         <span>{banner.slogan}</span>
-        <button>Tìm hiểu thêm</button>
+        <button>
+          <Link
+            to={`/product-list/${banner.category_name
+              .trim()
+              .replace(/ /g, "_")}/${banner.category_id}?page=1`}
+          >
+            Tìm hiểu thêm
+          </Link>
+        </button>
       </div>
     </div>
   );
@@ -43,6 +52,8 @@ function Banners() {
     };
     fetch();
   }, []);
+
+  console.log(banners);
 
   const handleNext = () => {
     if (currentBanner === banners.length) {

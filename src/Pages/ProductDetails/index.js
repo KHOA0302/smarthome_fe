@@ -252,6 +252,10 @@ function ProductDetails() {
     fetchCreateCartItem();
   };
 
+  const handleChangeDisplayImg = (newDisplayImg) => {
+    dispatch({ type: "CHANGE_DISPLAY_IMG", payload: newDisplayImg });
+  };
+
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
@@ -310,23 +314,26 @@ function ProductDetails() {
                 </div>
               </div>
               <div className={cx("product-imgs-choice_area")}>
-                {productDetails?.productImages.map((img, id) => {
-                  return (
-                    <div
-                      className={cx("product-img", {
-                        active: img.imgId === displayImg?.imgId,
-                      })}
-                      key={id}
-                    >
-                      <img src={img.imageUrl} />
-                    </div>
-                  );
-                })}
+                <div className={cx("choice_area-wrapper")}>
+                  {productDetails?.productImages.map((img, id) => {
+                    return (
+                      <div
+                        className={cx("product-img", {
+                          active: img.imgId === displayImg?.imgId,
+                        })}
+                        onClick={() => handleChangeDisplayImg(img)}
+                        key={id}
+                      >
+                        <img src={img.imageUrl} />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
             <div className={cx("product-guarantees")}>
-              <span>Smarthome xin đảm bảo</span>
-              <span>{loading ? " loading" : " done"}</span>
+              <span>Smarthome xin đảm bảo chất lượng sản phẩm</span>
+              {/* <span>{loading ? " loading" : " done"}</span> */}
               <span>{isOverQuantity && "quá hạn"}</span>
             </div>
             <div>

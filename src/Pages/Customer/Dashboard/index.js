@@ -3,6 +3,7 @@ import authService from "../../../api/authService";
 import styles from "./Dashboard.module.scss";
 import classNames from "classnames/bind";
 import { initState, reducer } from "./reducer";
+import { toast, ToastContainer } from "react-toastify";
 const cx = classNames.bind(styles);
 
 const normalizeString = (str) => {
@@ -14,7 +15,7 @@ const normalizeString = (str) => {
     .replace(/đ/g, "d")
     .replace(/Đ/g, "D");
 };
-const searchProvinces = (dataList, searchTerm) => {
+const searchAddress = (dataList, searchTerm) => {
   const normalizedSearchTerm = normalizeString(searchTerm)
     .split(/\s+/)
     .filter(Boolean);
@@ -36,19 +37,21 @@ function Dashboard() {
   const [activeSetting, setActiveSetting] = useState([]);
   const [state, dispatch] = useReducer(reducer, initState);
   const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
   const [onFocus, setOnFocus] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "https://provinces.open-api.vn/api/?depth=2"
-        );
+        const response = await fetch("https://provinces.open-api.vn/api/v2/");
+        const res = await fetch("https://provinces.open-api.vn/api/v2/w/");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data = await response.json();
-        setProvinces(data);
+        const dataProvinces = await response.json();
+        setProvinces(dataProvinces);
+        const dataDistricts = await res.json();
+        setDistricts(dataDistricts);
       } catch (error) {
         console.error(error);
       }
@@ -73,7 +76,11 @@ function Dashboard() {
           district: res2.data.district,
           houseNumber: res2.data.house_number,
           isProfileComplete: res2.data.is_profile_complete,
+          google_sub_id: res2.data.google_sub_id,
+          login_method: res2.data.login_method,
         };
+
+        console.log(res2.data);
 
         dispatch({ type: "FETCH_SUCCESS", payload: newUser });
       } catch (error) {
@@ -90,27 +97,24 @@ function Dashboard() {
 
   const handleChangeProvince = (e) => {
     dispatch({ type: "EDIT-PROVINCE", payload: e.target.value });
-    const provinceSearchData = searchProvinces(provinces, e.target.value);
+    const provinceSearchData = searchAddress(provinces, e.target.value);
     dispatch({ type: "SET-PROVINCE-SEARCH-DATA", payload: provinceSearchData });
   };
 
   const handleChangeDistrict = (e) => {
     dispatch({ type: "EDIT-DISTRICT", payload: e.target.value });
     if (state.provinceSearchData.length === 1) {
-      const districtSearchData = searchProvinces(
-        state.provinceSearchData[0].districts,
-        e.target.value
+      const dataDistricts = districts.filter(
+        (district) =>
+          district.province_code === state.provinceSearchData[0].code
       );
+      const districtSearchData = searchAddress(dataDistricts, e.target.value);
 
       dispatch({
         type: "SET-DISTRICT-SEARCH-DATA",
         payload: districtSearchData,
       });
     }
-  };
-
-  const fetchEditUser = (e) => {
-    e.preventDefault();
   };
 
   const handleActive = (position) => {
@@ -124,11 +128,34 @@ function Dashboard() {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const {
+      loading,
+      error,
+      provinceSearchData,
+      districtSearchData,
+      ...restOfState
+    } = state;
+    const updatePromise = authService.editUserinfo(restOfState);
+
+    toast.promise(updatePromise, {
+      pending: "Đang cập nhật thông tin...",
+      success: "Cập nhật thông tin thành công! 🎉",
+      error: {
+        render({ data }) {
+          return `Cập nhật thất bại: ${data.message}`;
+        },
+      },
+    });
+  };
+
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
         <h1>Thông tin người dùng</h1>
-        <form onSubmit={fetchEditUser} className={cx("blank")}>
+        <form onSubmit={handleSubmit} className={cx("blank")}>
           <div className={cx("user")}>
             <button
               type="button"
@@ -195,14 +222,14 @@ function Dashboard() {
                       onChange={handleChangeProvince}
                       onFocus={() => setOnFocus("province")}
                       onBlur={() => setOnFocus("")}
-                      autocomplete="off"
+                      autoComplete="off"
                     />
                   ) : (
                     <span>{state.province}</span>
                   )}
                   {onFocus === "province" && (
                     <ul className={cx("search-select")}>
-                      {state.provinceSearchData?.map((province) => {
+                      {state.provinceSearchData?.map((province, id) => {
                         return (
                           <li
                             onClick={() => {
@@ -213,6 +240,7 @@ function Dashboard() {
                               handleEditUser(province.name, "EDIT-PROVINCE");
                             }}
                             onMouseDown={(e) => e.preventDefault()}
+                            key={id}
                           >
                             {province.name}
                           </li>
@@ -230,25 +258,26 @@ function Dashboard() {
                       onChange={handleChangeDistrict}
                       onFocus={() => setOnFocus("district")}
                       onBlur={() => setOnFocus("")}
-                      autocomplete="off"
+                      autoComplete="off"
                     />
                   ) : (
                     <span>{state.district}</span>
                   )}
                   {onFocus === "district" && (
                     <ul className={cx("search-select")}>
-                      {state.districtSearchData?.map((province) => (
+                      {state.districtSearchData?.map((district, id) => (
                         <li
                           onClick={() => {
                             dispatch({
                               type: "SET-DISTRICT-SEARCH-DATA",
-                              payload: [province],
+                              payload: [district],
                             });
-                            handleEditUser(province.name, "EDIT-DISTRICT");
+                            handleEditUser(district.name, "EDIT-DISTRICT");
                           }}
                           onMouseDown={(e) => e.preventDefault()}
+                          key={id}
                         >
-                          {province.name}
+                          {district.name}
                         </li>
                       ))}
                     </ul>
@@ -278,6 +307,7 @@ function Dashboard() {
           )}
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 }

@@ -80,6 +80,26 @@ export const reducer = (state, action) => {
         loading: false,
         success: message,
       };
+    case "CHANGE_PAYMENT_METHOD":
+      const paymentMethod = action.payload;
+      console.log(paymentMethod);
+      const newOrderInfo = {
+        ...state.orderInfo,
+        method: paymentMethod,
+      };
+      return {
+        ...state,
+        orderInfo: newOrderInfo,
+      };
+    case "CLEAR_CART":
+      return {
+        ...state,
+        cartItems: [],
+        orderInfo: {
+          cartId: "",
+          method: "traditional",
+        },
+      };
     default:
       return state;
   }

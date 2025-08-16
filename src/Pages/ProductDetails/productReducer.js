@@ -95,6 +95,12 @@ const productReducer = (state, action) => {
         ...state,
         servicePackages: [..._newServicePackages],
       };
+    case "CHANGE_DISPLAY_IMG":
+      const newDisplayImg = action.payload;
+      return {
+        ...state,
+        displayImg: newDisplayImg,
+      };
     default:
       return state;
   }

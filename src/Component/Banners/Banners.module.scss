@@ -138,13 +138,15 @@
       background-color: #ffffff5c;
       border-radius: 8px;
       border: none;
-      font-size: 2rem;
-      font-weight: 800;
       cursor: pointer;
       animation-name: bounce;
       animation-duration: 1s;
       animation-iteration-count: infinite;
       animation-timing-function: cubic-bezier(0.28, 0.84, 0.42, 1);
+      a {
+        font-size: 2rem;
+        font-weight: 800;
+      }
     }
   }
 }

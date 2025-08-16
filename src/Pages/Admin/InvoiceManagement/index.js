@@ -37,7 +37,6 @@ function InvoiceManagement() {
   }, [types]);
 
   const handleAddType = (type) => {
-    console.log(type, types);
     if (types.includes(type)) {
       setTypes([...types.filter((t) => t !== type)]);
     } else {
@@ -100,7 +99,7 @@ function InvoiceManagement() {
           <ul>
             {types.map((type, id) => {
               return (
-                <li>
+                <li key={id}>
                   <span>{lookupTypes[type]}</span>
                   <button
                     onClick={() =>

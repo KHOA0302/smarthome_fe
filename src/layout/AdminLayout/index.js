@@ -9,6 +9,7 @@ import {
   UserInfoIcon,
 } from "../../icons";
 import Navbar from "../../Component/Navbar";
+import { TbPencilCog } from "react-icons/tb";
 
 const cx = classNames.bind(styles);
 
@@ -32,6 +33,11 @@ const navItems = [
     name: "Chỉnh sửa sản phẩm",
     icon: EditIcon,
     route: "/admin/edit-product",
+  },
+  {
+    name: "Quản lý tổng hợp",
+    icon: TbPencilCog,
+    route: "/admin/brand-category-option-service-spec",
   },
   {
     name: "Quản lý đơn hàng",

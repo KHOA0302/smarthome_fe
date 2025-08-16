@@ -21,6 +21,7 @@ const reducer = (state, action) => {
       const newUser = action.payload;
 
       return {
+        ...state,
         ...newUser,
         loading: false,
       };

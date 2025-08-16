@@ -6,6 +6,7 @@ import { formatNumber } from "../../utils/formatNumber";
 import productService from "../../api/productService";
 import { useParams } from "react-router";
 import { uploadImageToFirebase } from "../../utils/firebaseUpload";
+import { toast, ToastContainer } from "react-toastify";
 const cx = classNames.bind(styles);
 function VariantEdit({ variants, dispatch }) {
   const [changeable, setChangeable] = useState(false);
@@ -37,24 +38,42 @@ function VariantEdit({ variants, dispatch }) {
   const fetch = async (e) => {
     e.preventDefault();
 
-    const updateVariants = await Promise.all(
-      variants.map(async (variant) => {
-        if (variant.file) {
-          const imgUrlFirebase = await uploadImageToFirebase(
-            variant.file,
-            "variant"
-          );
-          return {
-            ...variant,
-            image_url: imgUrlFirebase,
-          };
-        }
-        return variant;
-      })
-    );
+    const fullProcessPromise = new Promise(async (resolve, reject) => {
+      try {
+        const updateVariants = await Promise.all(
+          variants.map(async (variant) => {
+            if (variant.file) {
+              const imgUrlFirebase = await uploadImageToFirebase(
+                variant.file,
+                "variant"
+              );
+              return {
+                ...variant,
+                image_url: imgUrlFirebase,
+              };
+            }
+            return variant;
+          })
+        );
+
+        const res = await productService.editVariants(
+          productId,
+          updateVariants
+        );
+
+        resolve(res);
+      } catch (error) {
+        reject(error);
+      }
+    });
 
     try {
-      const res = productService.editVariants(productId, updateVariants);
+      const res = await toast.promise(fullProcessPromise, {
+        pending: "Đang xử lý, vui lòng chờ...",
+        success: "Cập nhật sản phẩm thành công! 🎉",
+        error: "Đã xảy ra lỗi trong quá trình xử lý! 😔",
+      });
+
       console.log(res.data);
     } catch (error) {
       console.error(error);
@@ -64,11 +83,17 @@ function VariantEdit({ variants, dispatch }) {
   return (
     <form className="wrapper" onSubmit={fetch}>
       <div className={cx("container")}>
-        <h3>Phần biến thể sản phẩm</h3>
-        <div className={cx("blank")}>
-          <button onClick={() => setChangeable(!changeable)} type="button">
+        <div className={cx("title")}>
+          <h2>Phần biến thể sản phẩm</h2>
+          <button
+            onClick={() => setChangeable(!changeable)}
+            type="button"
+            className={cx({ active: changeable })}
+          >
             SỬA
           </button>
+        </div>
+        <div className={cx("blank")}>
           <table>
             <thead>
               <tr>
@@ -192,8 +217,13 @@ function VariantEdit({ variants, dispatch }) {
             </tbody>
           </table>
         </div>
-        {changeable && <button type="submit">SUBMIT</button>}
+        {changeable && (
+          <button type="submit" className={cx("submit-btn")}>
+            SUBMIT
+          </button>
+        )}
       </div>
+      <ToastContainer />
     </form>
   );
 }

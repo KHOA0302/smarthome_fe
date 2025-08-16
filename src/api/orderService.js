@@ -1,8 +1,8 @@
 import axiosClient from "./axiosClient";
 
 const orderService = {
-  createOrder: (data) => {
-    return axiosClient.post("/order/create-order", data);
+  createOrder: (data, guestInfo) => {
+    return axiosClient.post("/order/create-order", { ...data, guestInfo });
   },
   getOrderAdmin: (status) => {
     return axiosClient.post("/order/get-order-admin", { status });

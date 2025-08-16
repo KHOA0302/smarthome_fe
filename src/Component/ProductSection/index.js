@@ -10,6 +10,7 @@ import {
 } from "../../utils/firebaseUpload";
 import productServiceApi from "../../api/productService";
 import AttributeInfo from "./AttributeInfo";
+import { toast, ToastContainer } from "react-toastify";
 
 const cx = classNames.bind(styles);
 
@@ -39,74 +40,90 @@ function ProductSection() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const baseImageUrls = await uploadMultipleImagesToFirebase(
-        productBase.imgs,
-        "basic"
-      );
+    if (!loading) return;
 
-      const updatedProductBase = {
-        ...productBase,
-        imgs: baseImageUrls,
-      };
+    const submitPromise = new Promise(async (resolve, reject) => {
+      setLoading(true);
+      try {
+        const baseImageUrls = await uploadMultipleImagesToFirebase(
+          productBase.imgs,
+          "basic"
+        );
 
-      const updatedVariants = await Promise.all(
-        productVariant
-          .filter((variant) => !variant.isRemove)
-          .map(async (variant) => {
-            if (variant.img && variant.img instanceof File) {
-              const variantImageUrl = await uploadImageToFirebase(
-                variant.img,
-                "variant"
-              );
+        const updatedProductBase = {
+          ...productBase,
+          imgs: baseImageUrls,
+        };
 
-              return { ...variant, img: variantImageUrl };
-            }
+        const updatedVariants = await Promise.all(
+          productVariant
+            .filter((variant) => !variant.isRemove)
+            .map(async (variant) => {
+              if (variant.img && variant.img instanceof File) {
+                const variantImageUrl = await uploadImageToFirebase(
+                  variant.img,
+                  "variant"
+                );
 
-            return { ...variant };
-          })
-      );
+                return { ...variant, img: variantImageUrl };
+              }
 
-      const updateServices = productService.filter(
-        (ps, id) => ps.packageServices.length > 0
-      );
+              return { ...variant };
+            })
+        );
 
-      const updateAttributes = productAttribute
-        .filter((pa) => !pa.isRemove)
-        .map((pa) => {
-          const newAttributes = pa.attributes.filter(
-            (attr, i) => !attr.isRemove
-          );
-          return {
-            ...pa,
-            newAttributes,
-          };
-        });
+        const updateServices = productService.filter(
+          (ps) => ps.packageServices.length > 0
+        );
 
-      const finalProductData = {
-        basic: updatedProductBase,
-        options: productOption,
-        variants: updatedVariants,
-        services: updateServices,
-        attributes: updateAttributes,
-      };
+        const updateAttributes = productAttribute
+          .filter((pa) => !pa.isRemove)
+          .map((pa) => {
+            const newAttributes = pa.attributes.filter(
+              (attr) => !attr.isRemove
+            );
+            return {
+              ...pa,
+              attributes: newAttributes,
+            };
+          });
 
-      const fetchProductAdd = async () => {
+        const finalProductData = {
+          basic: updatedProductBase,
+          options: productOption,
+          variants: updatedVariants,
+          services: updateServices,
+          attributes: updateAttributes,
+        };
+
         const response = await productServiceApi.createProduct(
           finalProductData
         );
+
         if (response.data && response.data.data) {
-          console.log("work");
+          resolve(response);
         } else {
-          setError(response.data.message || "Không có dữ liệu option.");
+          reject(response.data.message || "Không có dữ liệu option.");
         }
         setLoading(false);
-      };
+        resolve(response);
+      } catch (error) {
+        console.error("Lỗi trong quá trình submit:", error);
+        reject(error);
+      } finally {
+        setLoading(false);
+      }
+    });
 
-      fetchProductAdd();
-    } catch (error) {
-      console.error("Lỗi trong quá trình submit:", error);
-    }
+    toast.promise(submitPromise, {
+      pending: "Đang xử lý...",
+      success: "Thành công! 🎉",
+      error: {
+        render({ data }) {
+          return "Lỗi khi lưu sản phẩm";
+        },
+      },
+    });
   };
 
   return (
@@ -138,6 +155,7 @@ function ProductSection() {
       <button type="submit" className={cx("submit")}>
         Gửi
       </button>
+      <ToastContainer position="bottom-right" autoClose={5000} />
       {/* <button type="button">Clear</button> */}
     </form>
   );

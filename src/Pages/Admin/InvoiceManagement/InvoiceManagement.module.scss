@@ -1,22 +1,20 @@
 .wrapper {
   position: relative;
   width: 100%;
-  min-height: 100vh;
-  padding: 10px;
   border-radius: 8px;
 }
 
 .container {
   width: 100%;
-  height: 100%;
-  padding: 20px;
-  background-color: white;
+  height: 100vh;
 }
 
 .orders {
   height: 90%;
   overflow: auto;
-
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
   &::-webkit-scrollbar {
     width: 4px;
     height: 0;
@@ -35,7 +33,7 @@
 
 .filter {
   display: flex;
-  padding: 8px 4px;
+  padding: 16px 0;
   border-radius: 4px;
   width: fit-content;
   gap: 16px;
@@ -99,7 +97,7 @@
   height: 0;
   overflow: hidden;
   pointer-events: none;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
   &.show {
     height: 150px;
   }
@@ -117,7 +115,7 @@
     background-color: transparent;
     border: none;
     background-color: white;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.1s ease-in-out;
     padding: 4px 0;
     font-size: 1.4rem;
     cursor: pointer;

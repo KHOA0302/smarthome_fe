@@ -1,4 +1,9 @@
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import { storage } from "../config/firebase";
 
 export const uploadImageToFirebase = async (file, type) => {
@@ -44,4 +49,24 @@ export const uploadMultipleImagesToFirebase = async (files, type) => {
     }
   }
   return imageUrls;
+};
+
+export const deleteImageFromFirebase = async (imageURL) => {
+  console.log(imageURL);
+  if (!imageURL) {
+    throw new Error("URL ảnh không được rỗng.");
+  }
+
+  try {
+    const decodedURL = decodeURIComponent(imageURL);
+    const storagePath = decodedURL.split("/o/")[1].split("?")[0];
+    const imageRef = ref(storage, storagePath);
+    await deleteObject(imageRef);
+
+    console.log("Ảnh đã được xóa thành công!");
+    return true;
+  } catch (error) {
+    console.error("Lỗi khi xóa ảnh từ Firebase:", error);
+    throw error;
+  }
 };

@@ -8,6 +8,10 @@ const brandService = {
   createBrand: (data) => {
     return axiosClient.post("/brand/create-brand", data);
   },
+
+  editBrand: (newBrand) => {
+    return axiosClient.put("/brand/edit-brand", { newBrand });
+  },
 };
 
 export { brandService };

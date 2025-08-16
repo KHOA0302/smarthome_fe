@@ -7,6 +7,9 @@ const categoryService = {
   createCategory: (data) => {
     return axiosClient.post("/category/create-category", data);
   },
+  editCategory: (newCategory) => {
+    return axiosClient.put("/category/edit-category", { newCategory });
+  },
 };
 
 export { categoryService };

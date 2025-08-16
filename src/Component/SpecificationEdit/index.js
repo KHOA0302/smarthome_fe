@@ -10,10 +10,11 @@ import {
 } from "../../icons";
 import productService from "../../api/productService";
 import { useParams } from "react-router";
+import { toast, ToastContainer } from "react-toastify";
 const cx = classNames.bind(styles);
 function SpecificationEdit({ attributeGroups, dispatch }) {
   const [expend, setExpend] = useState([]);
-  const [changeable, setChangeable] = useState(true);
+  const [changeable, setChangeable] = useState(false);
   const { productId } = useParams();
   const handleExpend = (id) => {
     if (expend.includes(id)) {
@@ -32,17 +33,17 @@ function SpecificationEdit({ attributeGroups, dispatch }) {
     e.preventDefault();
 
     try {
-      const res = await productService.editSpecifications(
-        productId,
-        attributeGroups
+      const res = await toast.promise(
+        productService.editSpecifications(productId, attributeGroups),
+        {
+          pending: "Đang cập nhật thông số kỹ thuật...",
+          success: "Cập nhật thành công! 🎉",
+          error: "Cập nhật thất bại! 😔",
+        }
       );
-      if (res.status === 200) {
-        console.log(res.data);
-      }
     } catch (error) {
       console.error(error);
     }
-    console.log(attributeGroups);
   };
 
   return (
@@ -50,7 +51,11 @@ function SpecificationEdit({ attributeGroups, dispatch }) {
       <div className={cx("container")}>
         <div className={cx("title")}>
           <h3>Phần thông số kĩ thuật</h3>
-          <button type="button" onClick={() => setChangeable(!changeable)}>
+          <button
+            type="button"
+            onClick={() => setChangeable(!changeable)}
+            className={cx({ active: changeable })}
+          >
             SỬA
           </button>
         </div>
@@ -172,10 +177,14 @@ function SpecificationEdit({ attributeGroups, dispatch }) {
             })}
           </div>
         </div>
+        {changeable && (
+          <button type="submit" className={cx("submit-btn")}>
+            SUBMIT
+          </button>
+        )}
       </div>
-      <button type="submit" className={cx("submit")}>
-        SUBMIT
-      </button>
+
+      <ToastContainer />
     </form>
   );
 }
