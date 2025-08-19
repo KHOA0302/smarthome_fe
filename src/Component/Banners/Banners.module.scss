@@ -14,7 +14,6 @@
 }
 
 .wrapper {
-  padding-top: 20px;
 }
 
 .container {
@@ -96,6 +95,16 @@
   transform: translateX(-100%);
   &.transition {
     transition: all 0.5s ease-in-out;
+  }
+}
+
+.img-loading {
+  position: relative;
+  min-height: 600px;
+  min-width: 100%;
+  background-color: #e6e6e6;
+  &.loading {
+    max-height: 100%;
   }
 }
 

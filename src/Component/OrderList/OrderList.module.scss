@@ -1,3 +1,14 @@
+@keyframes fade-in-from-center {
+  0% {
+    opacity: 0;
+    scale: 0.7;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
 .wrapper {
   width: 100%;
 }
@@ -20,7 +31,7 @@
         }
       }
       th:nth-child(1) {
-        border-top-left-radius: 8px;
+        border-top-left-radius: 4px;
       }
       th:nth-child(2) {
       }
@@ -37,7 +48,7 @@
       th:nth-child(8) {
       }
       th:nth-child(9) {
-        border-top-right-radius: 8px;
+        border-top-right-radius: 4px;
       }
       th:nth-child(10) {
         visibility: hidden;
@@ -145,19 +156,44 @@
   }
 }
 
-.table-product {
+.cover-blank {
   position: absolute;
   display: flex;
-  flex-direction: column;
+  padding: 32px 8px 8px 8px;
   top: 50%;
   left: 50%;
+  animation: fade-in-from-center 0.2s ease-out forwards;
+  flex-direction: column;
+  max-height: 80vh;
   transform: translate(-50%, -50%);
   width: 70%;
-  max-height: 80vh;
+  background-image: url("../../images/hand_painted_ocean_themed_fluid_art_design_1704.jpg");
+  border-radius: 4px;
+  border: 2px solid var(--color-primary-2);
+}
+
+.table-product {
+  width: 100%;
+  height: 100%;
   background-color: white;
-  border-radius: 8px;
-  padding: 16px 8px 8px 8px;
+  border-radius: 4px;
+  padding: 8px 8px 8px 8px;
   overflow: auto;
+  scroll-behavior: smooth;
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #2b2b2b;
+    border-radius: 10px;
+  }
   &::-webkit-scrollbar {
     width: 4px;
     height: 0;
@@ -212,7 +248,7 @@
       th:nth-child(4) {
       }
       th:nth-child(5) {
-        border-top-right-radius: 8px;
+        border-top-right-radius: 4px;
       }
     }
     tbody {
@@ -225,22 +261,28 @@
       }
       td:nth-child(1) {
         img {
-          height: 60px;
+          height: 80px;
           border-radius: 8px;
           object-fit: contain;
+          place-self: center;
         }
       }
       td:nth-child(2) {
-        font-size: 1.4rem;
+        font-size: 1.6rem;
+        font-weight: 700;
       }
       td:nth-child(3) {
         ul {
+          margin-left: 16px;
           li {
             text-align: start;
             font-size: 1.2rem;
             color: var(--color-text-gray);
             &:not(:last-child) {
               margin-bottom: 4px;
+            }
+            span {
+              margin-left: 2px;
             }
           }
         }
@@ -279,7 +321,7 @@
   background-color: white;
   padding: 10px;
   border-radius: 8px;
-
+  animation: fade-in-from-center 0.2s ease-out forwards;
   .exist-btn-address {
     border: none;
     display: flex;

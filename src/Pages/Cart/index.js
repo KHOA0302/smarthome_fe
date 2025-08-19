@@ -141,7 +141,7 @@ function Cart() {
         if (res.status === 201) {
           resolve("Đơn hàng đã được tạo thành công!");
           const redirectToVnPay = res.data?.redirect;
-          console.log(res.data);
+
           if (res.data?.redirect) {
             window.location.href = redirectToVnPay;
           }
@@ -161,15 +161,21 @@ function Cart() {
       }
     });
 
-    toast.promise(createOrderPromise, {
-      pending: "Đang tạo đơn hàng...",
-      success: "Đơn hàng đã được tạo thành công! 🎉",
-      error: {
-        render({ data }) {
-          return data.response.data.message || "Tạo đơn hàng thất bại";
+    toast.promise(
+      createOrderPromise,
+      {
+        pending: "Đang tạo đơn hàng...",
+        success: "Đơn hàng đã được tạo thành công! 🎉",
+        error: {
+          render({ data }) {
+            return data.response.data.message || "Tạo đơn hàng thất bại";
+          },
         },
       },
-    });
+      {
+        toastClassName: "custom-toast-position",
+      }
+    );
   };
 
   const isAuth = authService.isAuthenticated();
@@ -212,7 +218,7 @@ function Cart() {
     }
   };
 
-  console.log(userInfo);
+  console.log(cartItems);
 
   return (
     <div className={cx("wrapper")}>
@@ -426,7 +432,7 @@ function Cart() {
           </button>
         </div>
       </form>
-      <ToastContainer />
+      <ToastContainer style={{ top: "70px" }} />
     </div>
   );
 }

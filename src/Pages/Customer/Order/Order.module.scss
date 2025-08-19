@@ -16,7 +16,7 @@
 .orders {
   height: 90%;
   overflow: auto;
-
+  scroll-behavior: smooth;
   &::-webkit-scrollbar {
     width: 4px;
     height: 0;

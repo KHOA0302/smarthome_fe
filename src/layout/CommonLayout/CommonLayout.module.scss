@@ -22,6 +22,27 @@
   z-index: 1000;
 }
 
+@keyframes bouncing-effect {
+  0% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(-20px);
+  }
+  40% {
+    transform: translateY(0);
+  }
+  60% {
+    transform: translateY(-10px);
+  }
+  80% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 .chat-box-img {
   position: absolute;
   width: 60px;
@@ -29,12 +50,14 @@
   bottom: 100%;
   right: 100%;
   z-index: 2;
+
   img {
     width: 60px;
     height: 60px;
     cursor: pointer;
     scale: 1;
     transition: all 0.2s ease-in-out;
+    animation: bouncing-effect 2s infinite;
     &:hover {
       scale: 1.2;
     }

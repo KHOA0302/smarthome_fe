@@ -29,7 +29,6 @@ function Order() {
       .promise(fetchOrdersPromise, {
         pending: "Đang tải danh sách đơn hàng...",
         success: "Tải đơn hàng thành công! 🎉",
-        error: "Có lỗi xảy ra khi tải đơn hàng. 😢",
       })
       .then((res) => {
         if (res.status === 200) {

@@ -37,7 +37,7 @@ function CommonLayout() {
               allow="microphone;"
               width="350"
               height="430"
-              src="https://console.dialogflow.com/api-client/demo/embedded/cad2d96c-8a03-4c37-878e-3a380174ef97"
+              src="https://console.dialogflow.com/api-client/demo/embedded/f112c6d5-2f25-4e9f-b194-b07e25511982"
             ></iframe>
           </div>
         </div>

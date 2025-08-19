@@ -8,12 +8,17 @@ import {
   DotBigIcon,
 } from "../../icons";
 import { Link } from "react-router";
-const cx = classNames.bind(styles);
 
-function Banner({ banner }) {
+const cx = classNames.bind(styles);
+function Banner({ banner, isLoaded, setIsLoaded }) {
   return (
     <div className={cx("banner")}>
-      <img src={banner.banner} className={cx("banner-img")} />
+      <img
+        src={banner.banner}
+        className={cx("banner-img")}
+        onLoad={() => setIsLoaded(true)}
+      />
+
       <div className={cx("banner-slogan")}>
         <span>{banner.slogan}</span>
         <button>
@@ -33,6 +38,7 @@ function Banners() {
   const bannersRef = useRef(null);
   const [banners, setBanners] = useState([]);
   const [currentBanner, setCurrentBanner] = useState(1);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
@@ -102,8 +108,18 @@ function Banners() {
             transform: `translateX(-${currentBanner * 100 - 100}%)`,
           }}
         >
+          {!isLoaded && (
+            <div className={cx("img-loading", { loading: isLoaded })}></div>
+          )}
           {banners.map((banner, id) => {
-            return <Banner banner={banner} key={id} />;
+            return (
+              <Banner
+                banner={banner}
+                key={id}
+                isLoaded={isLoaded}
+                setIsLoaded={setIsLoaded}
+              />
+            );
           })}
         </div>
 

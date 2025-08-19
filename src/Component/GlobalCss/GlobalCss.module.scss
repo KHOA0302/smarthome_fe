@@ -34,11 +34,13 @@ html {
   font-size: 62.5%;
   color: var(--color-text-primary);
   line-height: 1.5;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   font-size: 1.6rem;
+  scroll-behavior: smooth;
   &::-webkit-scrollbar {
     width: 4px;
     height: 0;
@@ -57,18 +59,18 @@ body {
 
 ul,
 ol {
-  list-style: none; /* Loại bỏ dấu chấm/số mặc định */
+  list-style: none;
 }
 
 a {
-  color: inherit; /* Kế thừa màu chữ từ cha */
-  background-color: transparent; /* Loại bỏ background mặc định trên một số trình duyệt */
-  text-decoration: none; /* Loại bỏ gạch chân mặc định */
+  color: inherit;
+  background-color: transparent;
+  text-decoration: none;
 }
 
 img {
-  display: block; /* Tránh khoảng trắng dưới ảnh */
-  max-width: 100%; /* Đảm bảo ảnh không tràn ra ngoài */
+  display: block;
+  max-width: 100%;
   height: auto;
 }
 

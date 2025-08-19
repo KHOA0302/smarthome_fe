@@ -34,7 +34,7 @@ function TableTitleCustomer({ next }) {
       <th>Thanh toán</th>
       <th
         style={{
-          borderTopRightRadius: "8px",
+          borderTopRightRadius: "4px",
         }}
       >
         Ngày tạo
@@ -50,53 +50,58 @@ function TableProduct({ orderItems, setShowProduct, showProduct, orderId }) {
         show: showProduct === orderId,
       })}
     >
-      <div className={cx("table-product")}>
-        <button className={cx("exist-btn")} onClick={() => setShowProduct("")}>
-          <ExistIcon />
-        </button>
-        <table>
-          <thead>
-            <tr>
-              <th>Ảnh</th>
-              <th>Tên</th>
-              <th>Dịch vụ</th>
-              <th>Số lượng</th>
-              <th>Giá</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orderItems.map((item, i) => {
-              return (
-                <tr key={i}>
-                  <td>
-                    <img src={item.image_url} />
-                  </td>
-                  <td>{item.variant_name}</td>
-                  <td>
-                    <ul>
-                      {item.orderItemServices.map((service) => {
-                        return (
-                          <li>
-                            <ArrowRightIcon />
-                            <span>
-                              {
-                                service.packageServiceItem.serviceDefinition
-                                  .service_name
-                              }
-                            </span>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </td>
-                  <td>{item.quantity}</td>
+      <div className={cx("cover-blank")}>
+        <div className={cx("table-product")}>
+          <button
+            className={cx("exist-btn")}
+            onClick={() => setShowProduct("")}
+          >
+            <ExistIcon />
+          </button>
+          <table>
+            <thead>
+              <tr>
+                <th>Ảnh</th>
+                <th>Tên</th>
+                <th>Dịch vụ</th>
+                <th>Số lượng</th>
+                <th>Giá</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orderItems.map((item, i) => {
+                return (
+                  <tr key={i}>
+                    <td>
+                      <img src={item.image_url} />
+                    </td>
+                    <td>{item.variant_name}</td>
+                    <td>
+                      <ul>
+                        {item.orderItemServices.map((service) => {
+                          return (
+                            <li>
+                              <ArrowRightIcon />
+                              <span>
+                                {
+                                  service.packageServiceItem.serviceDefinition
+                                    .service_name
+                                }
+                              </span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </td>
+                    <td>{item.quantity}</td>
 
-                  <td>{formatNumber(parseInt(item.total_price))}đ</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    <td>{formatNumber(parseInt(item.total_price))}đ</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
@@ -140,7 +145,7 @@ function OrderList({ orders, setOrders, role = "customer" }) {
       .promise(editPromise, {
         pending: "Đang chuyển trạn thái đơn hàng...",
         success: "Thay đổi trạng thái đơn hàng thành công! 🎉",
-        error: "Có lỗi xảy ra khi chuyển đổi trạng thái đơn hàng. 😢",
+        error: "",
       })
       .then((res) => {
         if (res.status === 200) {
@@ -151,8 +156,6 @@ function OrderList({ orders, setOrders, role = "customer" }) {
         console.error("Lỗi khi tải đơn hàng:", error);
       });
   };
-
-  console.log(orders);
 
   return (
     <div className={cx("wrapper")}>
