@@ -11,25 +11,29 @@ import VariantEdit from "../VariantEdit";
 import ServiceEdit from "../ServiceEdit";
 import SpecificationEdit from "../SpecificationEdit";
 import productService from "../../api/productService";
+import { toast, ToastContainer } from "react-toastify";
 
 const cx = classNames.bind(styles);
 function ProductEditSection() {
   const [state, dispatch] = useReducer(reducer, initState);
   const { productId } = useParams();
 
-  useEffect(() => {
-    const fetchProductDetails = async () => {
-      dispatch({ type: "FETCH_START" });
-      try {
-        const res = await productService.getProductDetails(productId);
-        if (res.status === 200) {
-          dispatch({ type: "FETCH_SUCCESS", payload: res.data });
-        }
-      } catch (error) {
-        dispatch({ type: "FETCH_ERROR", payload: error.message });
-        console.error(error);
+  console.log(1);
+  const fetchProductDetails = async () => {
+    dispatch({ type: "FETCH_START" });
+    try {
+      const res = await productService.getProductDetails(productId);
+      if (res.status === 200) {
+        dispatch({ type: "FETCH_SUCCESS", payload: res.data });
       }
-    };
+    } catch (error) {
+      dispatch({ type: "FETCH_ERROR", payload: error.message });
+
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
     fetchProductDetails();
   }, []);
 
@@ -78,6 +82,11 @@ function ProductEditSection() {
           loading={loading}
           error={error}
         />
+      </div>
+      <div className={cx("re-fetch")}>
+        <button onClick={() => fetchProductDetails()}>
+          Tải lại thông tin sản phẩm
+        </button>
       </div>
     </div>
   );

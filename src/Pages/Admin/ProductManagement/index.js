@@ -65,7 +65,7 @@ function ProductManagement() {
       <div className={cx("container")}>
         <div className={cx("products")}>
           <div className={cx("product-search")}>
-            <input type="text" onChange={handleSearchProduct} />
+            <input name="search" type="text" onChange={handleSearchProduct} />
             <button>TÌM KIẾM</button>
           </div>
           <div

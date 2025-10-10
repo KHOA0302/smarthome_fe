@@ -14,6 +14,7 @@ function ServiceEdit({
   dispatch,
   loading,
   error,
+  reFetch,
 }) {
   const [serviceFilter, setServiceFilter] = useState([]);
   const [changeable, setChangeable] = useState(false);
@@ -80,6 +81,9 @@ function ServiceEdit({
       console.error(error);
     }
   };
+
+  console.log(servicePackages);
+
   return (
     <form className={cx("wrapper")} onSubmit={handleSubmit}>
       <div className={cx("container")}>
@@ -183,7 +187,9 @@ function ServiceEdit({
                                         <select
                                           name="service"
                                           value={item.serviceId}
-                                          required={item.isRemove}
+                                          required={
+                                            !item.isRemove && !sp.isRemove
+                                          }
                                           onChange={(e) =>
                                             handleDispatch(
                                               "EDIT_SERVICE_VALUE",
@@ -229,7 +235,9 @@ function ServiceEdit({
                                           value={formatNumber(
                                             item.itemPriceImpact
                                           )}
-                                          required={item.isRemove}
+                                          required={
+                                            !item.isRemove && !sp.isRemove
+                                          }
                                           onChange={(e) =>
                                             handleDispatch(
                                               "EDIT_SERVICE_PRICE",
@@ -339,12 +347,13 @@ function ServiceEdit({
             })}
           </div>
         </div>
+        {changeable && (
+          <button type="submit" className={cx("submit-btn")}>
+            SUBMIT
+          </button>
+        )}
       </div>
-      {changeable && (
-        <button type="submit" className={cx("submit-btn")}>
-          SUBMIT
-        </button>
-      )}
+
       <ToastContainer />
     </form>
   );

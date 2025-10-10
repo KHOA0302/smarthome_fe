@@ -11,11 +11,11 @@
   height: 100%;
   border-radius: 8px;
   overflow: hidden;
-  padding: 20px;
+  padding: 10px;
   padding-left: 0;
   .products-container {
-    height: 100%;
-    padding: 10px;
+    height: 90%;
+    padding: 20px;
     background-color: white;
     overflow: auto;
     border-radius: 8px;
@@ -105,14 +105,18 @@
 }
 
 .product-search {
+  display: flex;
+  width: 40%;
   place-self: end;
-  margin-bottom: 8px;
+  margin: 8px 0;
   border-radius: 4px;
   overflow: hidden;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   input {
-    padding: 4px 2px;
+    flex: 1;
+    padding: 8px 12px;
     padding-right: 16px;
+    font-size: 1.6rem;
   }
   button {
     background-color: darkorange;

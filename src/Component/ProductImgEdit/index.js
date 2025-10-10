@@ -10,7 +10,7 @@ import productService from "../../api/productService";
 import { useParams } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 const cx = classNames.bind(styles);
-function ProductImgsEdit({ productImgs, dispatch }) {
+function ProductImgsEdit({ productImgs, dispatch, reFetch }) {
   const fileInputRef = useRef(null);
   const { productId } = useParams();
   const [activeEdit, setActiveEdit] = useState(false);
@@ -48,7 +48,6 @@ function ProductImgsEdit({ productImgs, dispatch }) {
       });
     }
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();

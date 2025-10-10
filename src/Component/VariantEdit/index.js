@@ -8,7 +8,7 @@ import { useParams } from "react-router";
 import { uploadImageToFirebase } from "../../utils/firebaseUpload";
 import { toast, ToastContainer } from "react-toastify";
 const cx = classNames.bind(styles);
-function VariantEdit({ variants, dispatch }) {
+function VariantEdit({ variants, dispatch, reFetch }) {
   const [changeable, setChangeable] = useState(false);
   const fileInputRefs = useRef([]);
   const { productId } = useParams();

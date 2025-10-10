@@ -26,7 +26,7 @@ function OptionSection() {
   const fetchCreateOption = async () => {
     try {
       const res = await optionService.createOption(currentCate, optionValue);
-      console.log(res.data);
+      setOptionValue({ name: "", isFilter: true });
     } catch (error) {
       console.error(error);
     }

@@ -3,7 +3,7 @@ import classNames from "classnames/bind";
 import { useEffect, useState } from "react";
 import { useProductInfoFormGetContext } from "../../Pages/Admin/ProductAdd";
 import { serviceService } from "../../api/serviceService";
-import { AllIcon } from "../../icons";
+
 const cx = classNames.bind(styles);
 function ServiceSection() {
   const { categories } = useProductInfoFormGetContext();
@@ -48,7 +48,10 @@ function ServiceSection() {
         serviceValue.name
       );
 
-      console.log(res.data);
+      setCurrentCate({
+        name: "",
+        for: "one",
+      });
     } catch (error) {
       console.error(error);
     }

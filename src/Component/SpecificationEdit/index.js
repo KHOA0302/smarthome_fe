@@ -12,7 +12,7 @@ import productService from "../../api/productService";
 import { useParams } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 const cx = classNames.bind(styles);
-function SpecificationEdit({ attributeGroups, dispatch }) {
+function SpecificationEdit({ attributeGroups, dispatch, reFetch }) {
   const [expend, setExpend] = useState([]);
   const [changeable, setChangeable] = useState(false);
   const { productId } = useParams();

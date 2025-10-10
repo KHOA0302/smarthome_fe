@@ -15,11 +15,13 @@ import {
 } from "../../icons";
 import banner from "../../images/girl.png";
 import { formatNumber } from "../../utils/formatNumber";
-
 import cartService from "../../api/cartService";
-
 import { useCartItemQuantContext } from "../../layout/CommonLayout";
 import { toast, ToastContainer } from "react-toastify";
+import sideTuff from "../../images/icon sp kem theo142836.png";
+import warrant from "../../images/icon bao hanh170837.png";
+import exchange from "../../images/Exchange232102.png";
+import stroke from "../../images/stroke104155.png";
 
 const cx = classNames.bind(styles);
 function ProductDetails() {
@@ -29,10 +31,7 @@ function ProductDetails() {
   const [showModalCover, setShowModalCover] = useState(false);
   const [expendGroups, setExpendGroups] = useState([]);
   const [isOverQuantity, setIsOverQuantity] = useState(false);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  console.log('alamachap');
 
   const handleGroupExpand = (groupId) => {
     let newExpendGroup;
@@ -66,6 +65,7 @@ function ProductDetails() {
     };
 
     fetchProductData();
+
     return () => {
       ignore = true;
     };
@@ -306,25 +306,30 @@ function ProductDetails() {
       }
     });
 
-    toast.promise(
-      promiseToast,
-      {
-        pending: "Đang thêm sản phẩm...",
-        success: "Thêm sản phẩm thành công!",
-        error: "Thêm sản phẩm thất bại! Vui lòng thử lại.",
-      },
-      {
-        toastClassName: "custom-toast-position",
-      }
-    );
-    if (isNavigate) {
-      navigate("/cart");
-    }
+    toast
+      .promise(
+        promiseToast,
+        {
+          pending: "Đang thêm sản phẩm...",
+          success: "Thêm sản phẩm thành công!",
+          error: "Thêm sản phẩm thất bại! Vui lòng thử lại.",
+        },
+        {
+          toastClassName: "custom-toast-position",
+        }
+      )
+      .then(() => {
+        if (isNavigate) {
+          navigate("/cart");
+        }
+      });
   };
 
   const handleChangeDisplayImg = (newDisplayImg) => {
     dispatch({ type: "CHANGE_DISPLAY_IMG", payload: newDisplayImg });
   };
+
+  console.log(error);
 
   return (
     <div className={cx("wrapper")}>
@@ -402,8 +407,25 @@ function ProductDetails() {
               </div>
             </div>
             <div className={cx("product-guarantees")}>
-              <span>Smarthome xin đảm bảo chất lượng sản phẩm</span>
-              <span>{isOverQuantity && "quá hạn"}</span>
+              <h3>Smarthome xin đảm bảo chất lượng sản phẩm </h3>
+              <div className={cx("guarantees-container")}>
+                <div className={cx("guarantees-item")}>
+                  <img src={warrant} />
+                  <span>Bảo hành chính hãng nhà sản xuất</span>
+                </div>
+                <div className={cx("guarantees-item")}>
+                  <img src={stroke} />
+                  <span>Phí vật tư có thể phát sinh thêm</span>
+                </div>
+                <div className={cx("guarantees-item")}>
+                  <img src={exchange} />
+                  <span>Hư gì đổi nấy, nhân viên đến tận nhà</span>
+                </div>
+                <div className={cx("guarantees-item")}>
+                  <img src={sideTuff} />
+                  <span>Thùng sản phẩm có các bộ điều khiển đi kèm</span>
+                </div>
+              </div>
             </div>
             <div>
               <div className={cx("product-specifications")}>
@@ -529,6 +551,7 @@ function ProductDetails() {
                                       className={cx("service-overplay")}
                                       onClick={(e) => {
                                         e.stopPropagation();
+                                        dispatch({ type: "SET_ERROR_DEFAULT" });
                                         setShowModalCover(!showModalCover);
                                       }}
                                     >
@@ -538,6 +561,9 @@ function ProductDetails() {
                                         )}
                                         onClick={(e) => {
                                           e.stopPropagation();
+                                          dispatch({
+                                            type: "SET_ERROR_DEFAULT",
+                                          });
                                         }}
                                       >
                                         <div
@@ -547,9 +573,14 @@ function ProductDetails() {
                                         >
                                           <span>{sPackage.packageName}</span>
                                           <button
-                                            onClick={() =>
-                                              setShowModalCover(!showModalCover)
-                                            }
+                                            onClick={() => {
+                                              setShowModalCover(
+                                                !showModalCover
+                                              );
+                                              dispatch({
+                                                type: "SET_ERROR_DEFAULT",
+                                              });
+                                            }}
                                           >
                                             <ExistIcon />
                                           </button>
@@ -606,6 +637,15 @@ function ProductDetails() {
                                             })}
                                           </ul>
                                         </div>
+                                        <span
+                                          style={{
+                                            color: "red",
+                                            fontSize: "1.4rem",
+                                            fontWeight: "800",
+                                          }}
+                                        >
+                                          {error}
+                                        </span>
                                         <div
                                           className={cx(
                                             "service-overplay-bottom"
@@ -667,7 +707,7 @@ function ProductDetails() {
                   </div>
                 )}
                 <div className={cx("variant-submit")}>
-                  <button onClick={handleAddCart}>
+                  <button onClick={() => handleAddCart(false)}>
                     <span>Thêm vào giỏ hàng</span>
                   </button>
 

@@ -6,6 +6,8 @@ const cx = classNames.bind(styles);
 function BaseInfo({ productBase, setProductBase }) {
   const { brands, categories } = useProductInfoFormGetContext();
 
+  console.log(productBase);
+
   const handleChange = (e) => {
     let newProduct;
     switch (e.target.name) {
@@ -54,6 +56,7 @@ function BaseInfo({ productBase, setProductBase }) {
                 type="text"
                 id="productName"
                 name="name"
+                value={productBase.name}
                 onChange={handleChange}
                 placeholder="Nhập tên sản phẩm..."
                 required
@@ -61,7 +64,12 @@ function BaseInfo({ productBase, setProductBase }) {
             </div>
             <div>
               <label htmlFor="brand">Hãng</label>
-              <select id="brand" name="brand" onChange={handleChange}>
+              <select
+                value={parseInt(productBase.brand)}
+                id="brand"
+                name="brand"
+                onChange={handleChange}
+              >
                 <option value="">-- Vui lòng chọn một tùy chọn --</option>
                 {brands.map((brand, id) => {
                   return (
@@ -76,7 +84,12 @@ function BaseInfo({ productBase, setProductBase }) {
           <div className={cx("basic-sub_container_2")}>
             <div>
               <label htmlFor="category">Danh mục</label>
-              <select id="category" name="category" onChange={handleChange}>
+              <select
+                value={parseInt(productBase.category)}
+                id="category"
+                name="category"
+                onChange={handleChange}
+              >
                 <option value="">-- Vui lòng chọn một tùy chọn --</option>
                 {categories.map((category, id) => {
                   return (
@@ -101,7 +114,7 @@ function BaseInfo({ productBase, setProductBase }) {
             </div>
           </div>
         </div>
-        <div className={cx("basic-container_2")}>
+        {/* <div className={cx("basic-container_2")}>
           <div>
             <label htmlFor="description">Mô tả</label>
             <textarea
@@ -112,7 +125,7 @@ function BaseInfo({ productBase, setProductBase }) {
               placeholder="Nhập mô tả chi tiết sản phẩm..."
             ></textarea>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

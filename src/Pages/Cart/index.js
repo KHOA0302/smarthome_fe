@@ -91,6 +91,7 @@ function Cart() {
       originalDispatch({ type: "FETCH_START" });
       try {
         const res = await cartService.getCartItem();
+
         if (res.status === 200) {
           originalDispatch({
             type: "FETCH_SUCCESS",
@@ -218,8 +219,6 @@ function Cart() {
     }
   };
 
-  console.log(cartItems);
-
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
@@ -269,15 +268,22 @@ function Cart() {
               <ExistIcon />
             </button>
           </div>
-          {(hasEmptyField || !userInfo.is_profile_complete) && (
+          {!isAuth && hasEmptyField && (
             <div className={cx("cart-cover-warning")}>
               <span style={{ color: "red" }}>
                 Vui lòng nhập/kiểm tra thông tin đặt hàng
               </span>
               <button onClick={() => navigate("/login")} type="button">
-                Hoặc đăng để mua hàng thuận tiện hơn
+                <span>
+                  Hoặc <p>đăng nhập</p> để mua hàng thuận tiện hơn
+                </span>
               </button>
             </div>
+          )}
+          {isAuth && !userInfo.is_profile_complete && (
+            <span style={{ color: "red" }}>
+              Vui lòng nhập/kiểm tra thông tin đặt hàng
+            </span>
           )}
           <div className={cx("cart-cover-contact")}>
             <div className={cx("cart-cover-contact-title")}>

@@ -91,9 +91,6 @@ function Header() {
             <li>
               <Link to={toOrder}>Đơn hàng</Link>
             </li>
-            <li>
-              <Link>Sản phẩm nổi bật</Link>
-            </li>
           </ul>
         </nav>
         <div className={cx("user")}>

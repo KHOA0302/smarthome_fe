@@ -6,7 +6,7 @@ import productService from "../../api/productService";
 import { toast, ToastContainer } from "react-toastify";
 
 const cx = classNames.bind(styles);
-function ProductInfoEdit({ productInfo, dispatch }) {
+function ProductInfoEdit({ productInfo, dispatch, reFetch }) {
   const [brands, setBrands] = useState([]);
   const [activeEdit, setActiveEdit] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,24 +31,18 @@ function ProductInfoEdit({ productInfo, dispatch }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const promise = productService.editProductInfo(productInfo);
+    const editPromise = productService.editProductInfo(productInfo);
 
-    toast.promise(promise, {
+    const combinedPromise = editPromise.then(() => {
+      return "done";
+    });
+
+    toast.promise(combinedPromise, {
       pending: "Đang cập nhật sản phẩm...",
       success: "Cập nhật sản phẩm thành công!",
       error: "Cập nhật sản phẩm thất bại!",
     });
-
-    promise
-      .then((res) => {
-        console.log("Cập nhật thành công, dữ liệu trả về:", res);
-      })
-      .catch((error) => {
-        console.error("Lỗi khi cập nhật:", error);
-      });
   };
-
-  console.log(productInfo);
 
   return (
     <form className={cx("wrapper")} onSubmit={handleSubmit}>

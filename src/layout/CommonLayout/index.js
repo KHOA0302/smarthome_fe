@@ -29,16 +29,17 @@ function CommonLayout() {
         </div>
         <Footer />
         <div className={cx("chat-box")}>
-          <div className={cx("chat-box-img")}>
+          {/* <div className={cx("chat-box-img")}>
             <img src={chatbox} onClick={() => setShow(!show)} />
-          </div>
+          </div> */}
           <div className={cx("chat-box-ai", { show: show })}>
-            <iframe
-              allow="microphone;"
-              width="350"
-              height="430"
-              src="https://console.dialogflow.com/api-client/demo/embedded/f112c6d5-2f25-4e9f-b194-b07e25511982"
-            ></iframe>
+            <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+            <df-messenger
+              intent="WELCOME"
+              chat-title="dev_chatbox"
+              agent-id="09fa15ef-11c2-4140-b09a-546bd103d0f6"
+              language-code="vi"
+            ></df-messenger>
           </div>
         </div>
       </div>

@@ -300,6 +300,14 @@ function VariantInfo({
             <button
               type="button"
               onClick={(e) => handleAddOptionValueForm(e, id)}
+              style={{
+                backgroundColor: "darkblue",
+                color: "white",
+                border: "none",
+                padding: "2px 4px",
+                borderRadius: "4px",
+                fontWeight: "700",
+              }}
             >
               Thêm giá trị
             </button>
@@ -329,7 +337,18 @@ function VariantInfo({
         <div className={cx("variant-container_1")}>
           <h3>1. Định nghĩa các tùy chọn</h3>
           {options}
-          <button type="button" onClick={handleAddOptionForm}>
+          <button
+            type="button"
+            onClick={handleAddOptionForm}
+            style={{
+              backgroundColor: "darkOrange",
+              color: "white",
+              border: "none",
+              padding: "4px 6px",
+              borderRadius: "4px",
+              fontWeight: "800",
+            }}
+          >
             Thêm tùy chọn
           </button>
         </div>

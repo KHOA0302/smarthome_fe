@@ -122,7 +122,7 @@ function ProductList() {
         <Link to="/">Home</Link>
         <span>{" › "}</span>
         <span>
-          {category_slug}({totalVariants})
+          {category_slug.replace("_", " ")}({totalVariants})
         </span>
       </div>
       <div className={cx("container")}>

@@ -68,56 +68,58 @@ function ProductAdd() {
   return (
     <ProductInfoFormContext.Provider value={contextValue}>
       <div className={cx("wrapper")}>
-        <nav className={cx("navbar")}>
-          <button
-            className={cx({ active: currentSection === "product-current" })}
-            onClick={() => handleChangeSection("product-current")}
-          >
-            Sản phẩm
-          </button>
-          <button
-            className={cx({
-              active: currentSection === "brand-category-current",
-            })}
-            onClick={() => handleChangeSection("brand-category-current")}
-          >
-            Hãng / Danh mục
-          </button>
-          <button
-            className={cx({
-              active: currentSection === "option-service-current",
-            })}
-            onClick={() => handleChangeSection("option-service-current")}
-          >
-            Option / Dịch vụ
-          </button>
-          <button
-            className={cx({
-              active: currentSection === "specification-current",
-            })}
-            onClick={() => handleChangeSection("specification-current")}
-          >
-            Thông số kĩ thuật
-          </button>
-        </nav>
-        <div className={cx("container", { [currentSection]: true })}>
-          <div className={cx("product")}>
-            <ProductSection />
-          </div>
+        <div className={cx("blank")}>
+          <nav className={cx("navbar")}>
+            <button
+              className={cx({ active: currentSection === "product-current" })}
+              onClick={() => handleChangeSection("product-current")}
+            >
+              Sản phẩm
+            </button>
+            <button
+              className={cx({
+                active: currentSection === "brand-category-current",
+              })}
+              onClick={() => handleChangeSection("brand-category-current")}
+            >
+              Hãng / Danh mục
+            </button>
+            <button
+              className={cx({
+                active: currentSection === "option-service-current",
+              })}
+              onClick={() => handleChangeSection("option-service-current")}
+            >
+              Option / Dịch vụ
+            </button>
+            <button
+              className={cx({
+                active: currentSection === "specification-current",
+              })}
+              onClick={() => handleChangeSection("specification-current")}
+            >
+              Thông số kĩ thuật
+            </button>
+          </nav>
+          <div className={cx("container", { [currentSection]: true })}>
+            <div className={cx("product")}>
+              <ProductSection />
+            </div>
 
-          <div className={cx("brand-category")}>
-            <BrandSection />
+            <div className={cx("brand-category")}>
+              <BrandSection />
 
-            <CategorySection />
-          </div>
+              <CategorySection />
+            </div>
 
-          <div className={cx("option-package_service")}>
-            <ServiceSection />
-            <OptionSection />
-          </div>
+            <div className={cx("option-package_service")}>
+              <ServiceSection />
+              <OptionSection />
+            </div>
 
-          <div className={cx("specification")}>
-            <SpecificationSection />
+            <div className={cx("specification")}>
+              <SpecificationSection />
+            </div>
           </div>
         </div>
       </div>

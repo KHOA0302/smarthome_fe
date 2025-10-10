@@ -1,11 +1,9 @@
 @keyframes fade-in-from-center {
   0% {
     opacity: 0;
-    scale: 0.7;
   }
   100% {
     opacity: 1;
-    scale: 1;
   }
 }
 
@@ -241,6 +239,7 @@
         width: 10%;
       }
       th:nth-child(2) {
+        width: 20%;
       }
       th:nth-child(3) {
         width: 40%;
@@ -249,6 +248,11 @@
       }
       th:nth-child(5) {
         border-top-right-radius: 4px;
+      }
+      th:nth-child(6) {
+        background-color: white;
+        border: none;
+        box-shadow: none;
       }
     }
     tbody {
@@ -295,6 +299,10 @@
         font-weight: 800;
         color: darkorange;
       }
+      td:nth-child(6) {
+        font-size: 1rem;
+        font-weight: 600;
+      }
     }
   }
 }
@@ -313,15 +321,9 @@
 }
 
 .table-address {
-  position: absolute;
-  width: 80%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   background-color: white;
   padding: 10px;
   border-radius: 8px;
-  animation: fade-in-from-center 0.2s ease-out forwards;
   .exist-btn-address {
     border: none;
     display: flex;
@@ -379,4 +381,101 @@
       }
     }
   }
+}
+
+.review-btn {
+  display: flex;
+  width: 100%;
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+  justify-content: center;
+  svg {
+    font-size: 2.4rem;
+    scale: 1;
+    transition: all 0.2s ease-in-out;
+  }
+  &:hover {
+    svg {
+      scale: 1.2;
+      color: var(--color-primary-2);
+    }
+  }
+}
+
+.review-cover {
+  display: none;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.211);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  &.show {
+    display: block;
+  }
+}
+
+.review-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  background-color: white;
+  border: 6px solid var(--color-primary-1);
+  cursor: default;
+}
+
+.review-container {
+  width: 100%;
+  padding: 12px;
+}
+
+.review-element {
+  display: flex;
+  gap: 20px;
+}
+
+.review-product_img {
+  display: flex;
+  width: 100px;
+  img {
+    width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+}
+
+.review-content {
+  flex: 1;
+  h4 {
+    place-self: start;
+  }
+}
+
+.review-stars {
+  display: flex;
+  .star {
+    display: flex;
+    color: goldenrod;
+    cursor: pointer;
+    &.full {
+      color: gold;
+    }
+  }
+}
+
+.review-textarea {
+  width: 100%;
+  height: 100px;
+  padding: 8px;
+  resize: none;
+  border: 2px solid var(--color-border);
+}
+
+.review-button {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
 }

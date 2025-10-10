@@ -377,7 +377,18 @@ function ServiceInfo({
             type="button"
             onClick={(e) => handleAddServiceItem(id, pkSId, id)}
           >
-            <span>Thêm dịch vụ</span>
+            <span
+              style={{
+                backgroundColor: "darkblue",
+                color: "white",
+                border: "none",
+                padding: "2px 4px",
+                borderRadius: "4px",
+                fontWeight: "700",
+              }}
+            >
+              Thêm dịch vụ
+            </span>
           </button>
         </div>
       );
@@ -386,7 +397,18 @@ function ServiceInfo({
     return (
       <div className={cx("service-blank")} key={id}>
         <h3>Tên biến thể: {ps.variantName}</h3> {a}
-        <button type="button" onClick={() => handleAddPackage(id)}>
+        <button
+          style={{
+            backgroundColor: "darkOrange",
+            color: "white",
+            border: "none",
+            padding: "4px 6px",
+            borderRadius: "4px",
+            fontWeight: "800",
+          }}
+          type="button"
+          onClick={() => handleAddPackage(id)}
+        >
           <span>Thêm gói dịch vụ</span>
         </button>
       </div>

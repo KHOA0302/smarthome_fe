@@ -15,7 +15,7 @@ import { toast, ToastContainer } from "react-toastify";
 const cx = classNames.bind(styles);
 
 function ProductSection() {
-  const [error, setError] = useState(null);
+  const [isSave, setIsSave] = useState(false);
   const [loading, setLoading] = useState(true);
   const [productBase, setProductBase] = useState({
     name: "",
@@ -102,6 +102,7 @@ function ProductSection() {
 
         if (response.data && response.data.data) {
           resolve(response);
+          setIsSave(true);
         } else {
           reject(response.data.message || "Không có dữ liệu option.");
         }
@@ -124,6 +125,28 @@ function ProductSection() {
         },
       },
     });
+  };
+
+  const handleClear = () => {
+    setIsSave(false);
+    setProductBase({
+      name: "",
+      brand: "",
+      category: "",
+      des: "",
+      imgs: [],
+    });
+
+    setProductOption([
+      {
+        optionId: "",
+        optionValue: [""],
+      },
+    ]);
+    setProductVariant([]);
+    setProductService([]);
+    setProductAttribute([]);
+    toast.success("Đã làm sạch form nhập liệu");
   };
 
   return (
@@ -151,12 +174,32 @@ function ProductSection() {
           setProductAttribute={setProductAttribute}
           productCategory={productBase.category}
         />
+
+        {isSave ? (
+          <button type="submit" className={cx("submit")}>
+            Gửi
+          </button>
+        ) : (
+          <button
+            onClick={handleClear}
+            type="button"
+            className={cx("clear-btn")}
+            style={{
+              backgroundColor: "darkblue",
+              color: "white",
+              border: "none",
+              padding: "2px 4px",
+              borderRadius: "4px",
+              fontWeight: "700",
+              cursor: "pointer",
+            }}
+          >
+            Clear
+          </button>
+        )}
       </div>
-      <button type="submit" className={cx("submit")}>
-        Gửi
-      </button>
-      <ToastContainer position="bottom-right" autoClose={5000} />
-      {/* <button type="button">Clear</button> */}
+
+      <ToastContainer />
     </form>
   );
 }

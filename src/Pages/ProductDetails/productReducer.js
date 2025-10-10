@@ -1,3 +1,5 @@
+import { error } from "ajv/dist/vocabularies/applicator/dependencies";
+
 // productReducer.js
 const initialState = {
   loading: true,
@@ -72,14 +74,31 @@ const productReducer = (state, action) => {
       };
     case "SET_SERVICE_PACKAGE_ITEM":
       const { _packageId, itemId } = action.payload;
+      let error = null;
       const _newServicePackages = state.servicePackages.map((_package) => {
         if (_package.packageId === _packageId) {
+          const atLeastOneFilter = _package.items.filter(
+            (item) => item.atLeastOne && item.selected
+          );
+
           const newItems = _package.items.map((item) => {
             if (item.itemId === itemId) {
-              return {
-                ...item,
-                selected: !item.selected,
-              };
+              if (
+                item.selected &&
+                item.atLeastOne &&
+                atLeastOneFilter.length === 1
+              ) {
+                error = "Phải có ít nhất 1 dịch vụ VUA đc chọn";
+                return {
+                  ...item,
+                };
+              } else {
+                return {
+                  ...item,
+                  selected: !item.selected,
+                  error: null,
+                };
+              }
             }
             return item;
           });
@@ -94,12 +113,18 @@ const productReducer = (state, action) => {
       return {
         ...state,
         servicePackages: [..._newServicePackages],
+        error,
       };
     case "CHANGE_DISPLAY_IMG":
       const newDisplayImg = action.payload;
       return {
         ...state,
         displayImg: newDisplayImg,
+      };
+    case "SET_ERROR_DEFAULT":
+      return {
+        ...state,
+        error: null,
       };
     default:
       return state;
