@@ -37,7 +37,7 @@ import { LuEyeClosed } from "react-icons/lu";
 import { LuEye } from "react-icons/lu";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { BiComment } from "react-icons/bi";
-import { BiCommentCheck } from "react-icons/bi";
+import { BiSolidCommentCheck } from "react-icons/bi";
 import { GoStar } from "react-icons/go";
 import { GoStarFill } from "react-icons/go";
 
@@ -81,7 +81,7 @@ export {
   LuEye as EyeOpenIcon,
   AiOutlineLoading3Quarters as LoadingIcon,
   BiComment as CommentIcon,
-  BiCommentCheck as CommentCheckIcon,
+  BiSolidCommentCheck as CommentCheckIcon,
   GoStar as StarIcon,
   GoStarFill as FullStarIcon,
 };

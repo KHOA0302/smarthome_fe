@@ -192,20 +192,7 @@
     background: #2b2b2b;
     border-radius: 10px;
   }
-  &::-webkit-scrollbar {
-    width: 4px;
-    height: 0;
-  }
 
-  &::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey;
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #2b2b2b;
-    border-radius: 10px;
-  }
   .exist-btn {
     border: none;
     display: flex;
@@ -401,6 +388,11 @@
       color: var(--color-primary-2);
     }
   }
+  &.commented {
+    svg {
+      color: #8cc24a;
+    }
+  }
 }
 
 .review-cover {
@@ -430,6 +422,22 @@
 .review-container {
   width: 100%;
   padding: 12px;
+  max-height: 70vh;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #2b2b2b;
+    border-radius: 10px;
+  }
 }
 
 .review-element {
@@ -450,7 +458,7 @@
 .review-content {
   flex: 1;
   h4 {
-    place-self: start;
+    text-align: left;
   }
 }
 

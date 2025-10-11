@@ -4,6 +4,7 @@ import { Fragment, useEffect, useState } from "react";
 import { formatNumber } from "../../utils/formatNumber";
 import {
   ArrowRightIcon,
+  CommentCheckIcon,
   CommentIcon,
   ExistIcon,
   FullStarIcon,
@@ -12,6 +13,9 @@ import {
 import orderService from "../../api/orderService";
 import { toast } from "react-toastify";
 import { AiOutlineComment } from "react-icons/ai";
+import { Toaster } from "react-hot-toast";
+import axiosClient from "../../api/axiosClient";
+import { reviewService } from "../../api/reviewService";
 
 const cx = classNames.bind(styles);
 
@@ -115,9 +119,33 @@ function TableProduct({ orderItems, setShowProduct, showProduct, orderId }) {
   );
 }
 
-function ReviewItem({ item, id, reviewsData }) {
-  const [comment, setComment] = useState(reviewsData[id]?.comment);
-  const [starState, setStarState] = useState(reviewsData[id]?.rating);
+function ReviewItem({ item, id, reviewsData, setReviewsData }) {
+  const reviewData = reviewsData[id];
+  const handleRating = (star) => {
+    const newReviewsData = reviewsData.map((review, index) => {
+      if (index === id) {
+        return {
+          ...review,
+          rating: star,
+        };
+      }
+      return { ...review };
+    });
+    setReviewsData(newReviewsData);
+  };
+
+  const handelComment = (e) => {
+    const newReviewsData = reviewsData.map((review, index) => {
+      if (index === id) {
+        return {
+          ...review,
+          comment: e.target.value,
+        };
+      }
+      return { ...review };
+    });
+    setReviewsData(newReviewsData);
+  };
 
   return (
     <div className={cx("review-element")} key={id}>
@@ -128,14 +156,15 @@ function ReviewItem({ item, id, reviewsData }) {
         <h4>{item.variant_name}</h4>
         <ul className={cx("review-stars")}>
           {[...Array(5)].map((_, index) => {
-            const Star = index + 1 > starState ? StarIcon : FullStarIcon;
+            const Star =
+              index + 1 > reviewData?.rating ? StarIcon : FullStarIcon;
             return (
               <li
                 key={index}
                 className={cx("star", {
-                  full: index + 1 <= starState,
+                  full: index + 1 <= reviewData?.rating,
                 })}
-                onMouseEnter={() => setStarState(index + 1)}
+                onMouseEnter={() => handleRating(index + 1)}
               >
                 <Star />
               </li>
@@ -146,8 +175,8 @@ function ReviewItem({ item, id, reviewsData }) {
           className={cx("review-textarea")}
           id="textarea"
           name="comment"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          value={reviewData?.comment}
+          onChange={handelComment}
         ></textarea>
       </div>
     </div>
@@ -158,24 +187,45 @@ function TableReview({ orderItems, showReview, setShowReview, orderId }) {
   const [reviewsData, setReviewsData] = useState([]);
 
   useEffect(() => {
-    const reviewsDataGen = orderItems.map((item, id) => {
+    const reviewsDataGen = orderItems.map((item) => {
+      const review = item.reviews;
       return {
         order_item_id: item.order_item_id,
-        rating: 0,
-        comment: "",
+        product_id: item.product_id,
+        rating: review ? review.rating : 0,
+        comment: review ? review.comment_text : "",
       };
     });
 
     setReviewsData(reviewsDataGen);
   }, []);
 
-  console.log(reviewsData);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const notRating = reviewsData.some((review) => review.rating === 0);
+
+    if (notRating) {
+      toast("Vui lòng đánh giá sao!⭐", {
+        icon: "⭐",
+        duration: 3000,
+      });
+      return;
+    }
+
+    try {
+      const fetch = await reviewService.createReview(reviewsData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
-    <div
+    <form
       className={cx("review-cover", {
         show: showReview === orderId,
       })}
+      onSubmit={handleSubmit}
     >
       <div className={cx("review-wrapper")}>
         <div className={cx("review-container")}>
@@ -185,17 +235,19 @@ function TableReview({ orderItems, showReview, setShowReview, orderId }) {
               item={item}
               id={id}
               reviewsData={reviewsData}
+              setReviewsData={setReviewsData}
             />
           ))}
         </div>
         <div className={cx("review-button")}>
-          <button type="button">LƯU</button>
+          <button type="submit">LƯU</button>
           <button type="button" onClick={() => setShowReview("")}>
             THOÁT
           </button>
         </div>
       </div>
-    </div>
+      <Toaster />
+    </form>
   );
 }
 
@@ -248,10 +300,6 @@ function OrderList({ orders, setOrders, role = "customer" }) {
       .catch((error) => {
         console.error("Lỗi khi tải đơn hàng:", error);
       });
-  };
-
-  const handleRate = (e) => {
-    console.log(e);
   };
 
   return (
@@ -354,10 +402,20 @@ function OrderList({ orders, setOrders, role = "customer" }) {
                       <td>
                         <button
                           type="button"
-                          className={cx("review-btn")}
+                          className={cx("review-btn", {
+                            commented: order.orderItems.some(
+                              (item) => item.reviews !== null
+                            ),
+                          })}
                           onClick={() => setShowReview(id)}
                         >
-                          <CommentIcon />
+                          {order.orderItems.some(
+                            (item) => item.reviews === null
+                          ) ? (
+                            <CommentIcon />
+                          ) : (
+                            <CommentCheckIcon />
+                          )}
                         </button>
                       </td>
                     )}
