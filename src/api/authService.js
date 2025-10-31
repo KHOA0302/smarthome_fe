@@ -24,6 +24,10 @@ const authService = {
     return userInfo ? JSON.parse(userInfo) : null;
   },
 
+  getGuestId: () => {
+    return localStorage.getItem("guest_session_id");
+  },
+
   getUserInfo: () => {
     return axiosClient.get("/auth/user-info");
   },

@@ -1,0 +1,142 @@
+.chat-container {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+  width: 400px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+  &.show {
+    display: block;
+  }
+}
+
+.chat-window {
+  height: 450px;
+  border: 1px solid #ccc;
+  overflow: auto;
+  overflow-x: hidden;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.chat-message {
+  padding: 8px 12px;
+  max-width: 85%;
+  line-height: 1.4;
+  border-radius: 18px;
+  word-wrap: break-word;
+  display: inline-block;
+}
+
+.user-message {
+  background-color: #007fff;
+  color: white;
+  margin-left: auto;
+  text-align: left;
+  border-bottom-right-radius: 4px;
+  margin: 10px 0;
+}
+
+.bot-message {
+  background-color: #f0f0f0;
+  color: #333;
+  margin-right: auto;
+  text-align: left;
+  border-bottom-left-radius: 4px;
+}
+
+.message-container {
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.message-container.user {
+  justify-content: flex-end;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  background-color: white;
+  margin-top: 15px;
+  padding: 4px 4px;
+}
+
+.user-input {
+  flex-grow: 1;
+  border: none;
+  padding: 5px 10px;
+  outline: none;
+  font-size: 14px;
+  width: auto !important;
+}
+
+.chatbot-icon {
+  color: #888;
+  cursor: pointer;
+  height: 50px;
+}
+
+.chatbot-icon img {
+  height: 100%;
+  width: 100%;
+}
+
+.send-button {
+  background-color: #007fff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  transform: rotate(-45deg);
+  transition: background-color 0.3s;
+}
+
+.send-button:disabled,
+.user-input:disabled {
+  cursor: not-allowed;
+  background-color: #ccc !important;
+  color: #888 !important;
+}
+
+.loading-message {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #007fff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+  margin-left: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
