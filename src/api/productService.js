@@ -61,6 +61,16 @@ const productService = {
   searchTopProduct: (keyword) => {
     return axiosClient.get(`product/search?keyword=${keyword}`);
   },
+
+  chatbotSearchProductAsking: (category, option, brand) => {
+    return axiosClient.get(
+      `/product/chatbot-asking-product?category=${category}&option=${option}&brand=${brand}`
+    );
+  },
+
+  getProductPrediction: () => {
+    return axiosClient.get("/product/prediction");
+  },
 };
 
 export default productService;

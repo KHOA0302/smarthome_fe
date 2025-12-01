@@ -5,6 +5,7 @@ import OrderList from "../../../Component/OrderList";
 import orderService from "../../../api/orderService";
 import { FilterIcon } from "../../../icons";
 import { ToastContainer, toast } from "react-toastify";
+import { useLocation } from "react-router";
 const cx = classNames.bind(styles);
 const lookupTypes = {
   pending: "Chờ xử lý",
@@ -14,39 +15,38 @@ const lookupTypes = {
   cancel: "Hủy",
 };
 function Order() {
-  const [types, setTypes] = useState([]);
+  const location = useLocation();
+  const orderStatus = location.state ? [location.state] : [];
+  const [types, setTypes] = useState([...orderStatus]);
   const [orders, setOrders] = useState([]);
   const [showFilterOption, setShowFilterOption] = useState(false);
-  const currentToastId = useRef(null);
 
   useEffect(() => {
-    if (currentToastId.current) {
-      toast.dismiss(currentToastId.current);
-    }
     const fetchOrdersPromise = orderService.getOrderCustomer(types);
 
-    currentToastId.current = toast
+    toast
       .promise(fetchOrdersPromise, {
         pending: "Đang tải danh sách đơn hàng...",
-        success: "Tải đơn hàng thành công! 🎉",
+        error: "Có lỗi rồi😔😔",
       })
       .then((res) => {
+        setOrders(res.data);
         if (res.status === 200) {
-          setOrders(res.data);
+          toast.success("Tải đơn hàng thành công! 🎉");
+        } else if (res.status === 204) {
+          toast.warning(
+            `Không có đơn hàng ${types[types.length - 1]} nào 😔😔`
+              .replace(/\s\s+/g, " ")
+              .trim()
+          );
         }
       })
       .catch((error) => {
         console.error("Lỗi khi tải đơn hàng:", error);
       });
-    return () => {
-      if (currentToastId.current) {
-        toast.dismiss(currentToastId.current);
-      }
-    };
   }, [types]);
 
   const handleAddType = (type) => {
-    console.log(type, types);
     if (types.includes(type)) {
       setTypes([...types.filter((t) => t !== type)]);
     } else {
@@ -56,7 +56,6 @@ function Order() {
 
   return (
     <div className={cx("wrapper")}>
-      <ToastContainer />
       <div className={cx("container")}>
         <div className={cx("filter")}>
           <div className={cx("filter-main")}>
@@ -109,7 +108,7 @@ function Order() {
           <ul>
             {types.map((type, id) => {
               return (
-                <li>
+                <li key={id}>
                   <span>{lookupTypes[type]}</span>
                   <button
                     onClick={() =>
@@ -127,6 +126,7 @@ function Order() {
           <OrderList orders={orders} />
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

@@ -1,4 +1,5 @@
-import pixelGif from "../../../images/4d670e6307fb44c4d4b6d8d14a5661fa.gif";
+import OutStockAlert from "../../../Component/OutStockAlert";
+import ProductManagementTable from "../../../Component/ProductManagementTable";
 import styles from "./Dashboard.module.scss";
 import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
@@ -6,7 +7,7 @@ function Dashboard() {
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
-        <img src={pixelGif} />
+        <ProductManagementTable />
       </div>
     </div>
   );

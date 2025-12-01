@@ -12,9 +12,7 @@ import {
 } from "../../icons";
 import orderService from "../../api/orderService";
 import { toast } from "react-toastify";
-import { AiOutlineComment } from "react-icons/ai";
-import { Toaster } from "react-hot-toast";
-import axiosClient from "../../api/axiosClient";
+
 import { reviewService } from "../../api/reviewService";
 
 const cx = classNames.bind(styles);
@@ -119,19 +117,31 @@ function TableProduct({ orderItems, setShowProduct, showProduct, orderId }) {
   );
 }
 
-function ReviewItem({ item, id, reviewsData, setReviewsData }) {
+function ReviewItem({
+  item,
+  id,
+  reviewsData,
+  loading,
+  setLoading,
+  setReviewsData,
+  orderId,
+  reviewByMap,
+  setReviewByMap,
+}) {
   const reviewData = reviewsData[id];
   const handleRating = (star) => {
-    const newReviewsData = reviewsData.map((review, index) => {
-      if (index === id) {
-        return {
-          ...review,
-          rating: star,
-        };
-      }
-      return { ...review };
-    });
-    setReviewsData(newReviewsData);
+    if (!loading) {
+      const newReviewsData = reviewsData.map((review, index) => {
+        if (index === id) {
+          return {
+            ...review,
+            rating: star,
+          };
+        }
+        return { ...review };
+      });
+      setReviewsData(newReviewsData);
+    }
   };
 
   const handelComment = (e) => {
@@ -147,10 +157,59 @@ function ReviewItem({ item, id, reviewsData, setReviewsData }) {
     setReviewsData(newReviewsData);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (loading) return;
+
+    if (reviewData.rating <= 0) {
+      toast("Vui lòng đánh giá sao!⭐", {
+        icon: "⭐",
+        duration: 3000,
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const createReviewPromise = reviewService.createReview([reviewData]);
+      toast
+        .promise(createReviewPromise, {
+          pending: "Đang gửi đánh giá...",
+          success: "🎉 Đánh giá của bạn đã được gửi thành công!",
+          error: "❌ Gửi thất bại! Vui lòng thử lại.",
+        })
+        .then((result) => {
+          const newReviewByMapItem = {
+            ...reviewByMap[orderId][id],
+            comment_text: reviewData.comment,
+            rating: reviewData.rating,
+          };
+
+          const newReviewByMap = reviewByMap.map((review, index) => {
+            if (index === orderId) {
+              review[id] = newReviewByMapItem;
+            }
+            return review;
+          });
+
+          setReviewByMap(newReviewByMap);
+
+          console.log(newReviewByMapItem);
+        });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    }
+  };
+
   return (
-    <div className={cx("review-element")} key={id}>
+    <form className={cx("review-element")} key={id} onSubmit={handleSubmit}>
       <div className={cx("review-product_img")}>
         <img src={item.image_url} />
+        <button type="submit">LƯU</button>
       </div>
       <div className={cx("review-content")}>
         <h4>{item.variant_name}</h4>
@@ -163,6 +222,7 @@ function ReviewItem({ item, id, reviewsData, setReviewsData }) {
                 key={index}
                 className={cx("star", {
                   full: index + 1 <= reviewData?.rating,
+                  loading: loading,
                 })}
                 onMouseEnter={() => handleRating(index + 1)}
               >
@@ -172,19 +232,28 @@ function ReviewItem({ item, id, reviewsData, setReviewsData }) {
           })}
         </ul>
         <textarea
-          className={cx("review-textarea")}
+          className={cx("review-textarea", { loading: loading })}
           id="textarea"
           name="comment"
-          value={reviewData?.comment}
+          value={reviewData?.comment || ""}
+          disabled={loading}
           onChange={handelComment}
         ></textarea>
       </div>
-    </div>
+    </form>
   );
 }
 
-function TableReview({ orderItems, showReview, setShowReview, orderId }) {
+function TableReview({
+  orderItems,
+  showReview,
+  setShowReview,
+  orderId,
+  reviewByMap,
+  setReviewByMap,
+}) {
   const [reviewsData, setReviewsData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const reviewsDataGen = orderItems.map((item) => {
@@ -200,32 +269,11 @@ function TableReview({ orderItems, showReview, setShowReview, orderId }) {
     setReviewsData(reviewsDataGen);
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const notRating = reviewsData.some((review) => review.rating === 0);
-
-    if (notRating) {
-      toast("Vui lòng đánh giá sao!⭐", {
-        icon: "⭐",
-        duration: 3000,
-      });
-      return;
-    }
-
-    try {
-      const fetch = await reviewService.createReview(reviewsData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
-    <form
+    <div
       className={cx("review-cover", {
         show: showReview === orderId,
       })}
-      onSubmit={handleSubmit}
     >
       <div className={cx("review-wrapper")}>
         <div className={cx("review-container")}>
@@ -235,19 +283,28 @@ function TableReview({ orderItems, showReview, setShowReview, orderId }) {
               item={item}
               id={id}
               reviewsData={reviewsData}
+              loading={loading}
+              setLoading={setLoading}
               setReviewsData={setReviewsData}
+              orderId={orderId}
+              reviewByMap={reviewByMap}
+              setReviewByMap={setReviewByMap}
             />
           ))}
         </div>
-        <div className={cx("review-button")}>
-          <button type="submit">LƯU</button>
-          <button type="button" onClick={() => setShowReview("")}>
+        <div className={cx("review-button", { loading: loading })}>
+          <button
+            type="button"
+            onClick={() => {
+              if (loading) return;
+              setShowReview("");
+            }}
+          >
             THOÁT
           </button>
         </div>
       </div>
-      <Toaster />
-    </form>
+    </div>
   );
 }
 
@@ -273,34 +330,21 @@ function OrderList({ orders, setOrders, role = "customer" }) {
   const [showProduct, setShowProduct] = useState("");
   const [showReview, setShowReview] = useState("");
   const [showAddress, setShowAddress] = useState("");
+  const [reviewByMap, setReviewByMap] = useState([]);
 
   const handleOrderStatus = (orderId, status) => {
-    const newOrders = orders.map((order) => {
-      if (order.order_id === orderId) {
-        return {
-          ...order,
-          order_status: status,
-        };
-      }
-      return order;
-    });
-
     const editPromise = orderService.editOrderStatus(orderId, status);
-    toast
-      .promise(editPromise, {
-        pending: "Đang chuyển trạn thái đơn hàng...",
-        success: "Thay đổi trạng thái đơn hàng thành công! 🎉",
-        error: "",
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          setOrders([...newOrders]);
-        }
-      })
-      .catch((error) => {
-        console.error("Lỗi khi tải đơn hàng:", error);
-      });
   };
+
+  useEffect(() => {
+    const reviewsMap = orders
+      .map((order) => order.orderItems)
+      .map((items) => {
+        return items.map((item) => item.reviews);
+      });
+
+    setReviewByMap(reviewsMap);
+  }, [orders]);
 
   return (
     <div className={cx("wrapper")}>
@@ -403,18 +447,18 @@ function OrderList({ orders, setOrders, role = "customer" }) {
                         <button
                           type="button"
                           className={cx("review-btn", {
-                            commented: order.orderItems.some(
-                              (item) => item.reviews !== null
+                            commented: reviewByMap[id]?.some(
+                              (review) => review
                             ),
                           })}
                           onClick={() => setShowReview(id)}
                         >
-                          {order.orderItems.some(
-                            (item) => item.reviews === null
+                          {reviewByMap[id]?.every(
+                            (review) => review !== null
                           ) ? (
-                            <CommentIcon />
-                          ) : (
                             <CommentCheckIcon />
+                          ) : (
+                            <CommentIcon />
                           )}
                         </button>
                       </td>
@@ -425,6 +469,8 @@ function OrderList({ orders, setOrders, role = "customer" }) {
                         showReview={showReview}
                         setShowReview={setShowReview}
                         orderId={id}
+                        reviewByMap={reviewByMap}
+                        setReviewByMap={setReviewByMap}
                       />
                     </td>
 

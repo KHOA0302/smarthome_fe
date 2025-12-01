@@ -21,6 +21,7 @@ function Header() {
   const [productSearchResult, setProductSearchResult] = useState([]);
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetch = async () => {
       try {
@@ -35,10 +36,10 @@ function Header() {
         console.error(error);
       }
       try {
-        const resCar = await cartService.getCartItem();
-        if (resCar.status === 200) {
+        const resCart = await cartService.getCartItem();
+        if (resCart.status === 200) {
           setCartItemQuant(
-            resCar.data.cartItems.reduce(
+            resCart.data.cartItems.reduce(
               (number, item) => item.quantity + number,
               0
             )
@@ -69,8 +70,6 @@ function Header() {
       setProductSearchResult([]);
     }
   }, [searchKeyword]);
-
-  console.log(productSearchResult);
 
   const handleSearch = (e) => {
     setSearchKeyword(e.target.value);

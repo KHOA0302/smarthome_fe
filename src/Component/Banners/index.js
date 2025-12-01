@@ -59,8 +59,6 @@ function Banners() {
     fetch();
   }, []);
 
-  console.log(banners);
-
   const handleNext = () => {
     if (currentBanner === banners.length) {
       setCurrentBanner(1);
@@ -70,7 +68,6 @@ function Banners() {
   };
 
   const handlePrev = () => {
-    console.log(currentBanner);
     if (currentBanner === 1) {
       setCurrentBanner(banners.length);
       return;

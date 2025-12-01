@@ -398,11 +398,12 @@
 .review-cover {
   display: none;
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.211);
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  background-color: rgba(0, 0, 0, 0.211);
+  z-index: 100;
   &.show {
     display: block;
   }
@@ -443,20 +444,41 @@
 .review-element {
   display: flex;
   gap: 20px;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  &:not(:last-child) {
+    margin-bottom: 20px;
+  }
 }
 
 .review-product_img {
   display: flex;
+  flex-direction: column;
   width: 100px;
   img {
     width: 100%;
-    max-height: 100%;
+    height: 100%;
     object-fit: contain;
+  }
+  button {
+    margin-top: 8px;
+    background-color: var(--color-primary-3) !important;
+    color: white;
+    font-weight: 800;
+    scale: 1;
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      scale: 1.1;
+    }
   }
 }
 
 .review-content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   h4 {
     text-align: left;
   }
@@ -468,8 +490,17 @@
     display: flex;
     color: goldenrod;
     cursor: pointer;
+
     &.full {
       color: gold;
+      scale: 1;
+      transition: all 0.1s ease-in-out;
+    }
+    &.full:hover {
+      scale: 1.3;
+    }
+    &.loading {
+      cursor: not-allowed;
     }
   }
 }
@@ -480,10 +511,33 @@
   padding: 8px;
   resize: none;
   border: 2px solid var(--color-border);
+
+  &.loading {
+    cursor: not-allowed;
+    background-color: #c7c7c77a;
+  }
 }
 
 .review-button {
   display: flex;
   justify-content: space-between;
   padding: 8px 12px;
+  place-self: end;
+
+  button {
+    background-color: rgb(254, 61, 61) !important;
+    color: white;
+    scale: 1;
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      scale: 1.1;
+    }
+  }
+
+  &.loading {
+    button {
+      opacity: 0.8;
+      cursor: not-allowed !important;
+    }
+  }
 }

@@ -13,6 +13,9 @@ const orderService = {
   getOrderQuarterlyRevenue: () => {
     return axiosClient.get("/order/get-quarterly-revenue");
   },
+  chatbotAskingOrder: (orderStatus) => {
+    return axiosClient.get(`/order/chatbot-asking-order?status=${orderStatus}`);
+  },
   editOrderStatus: (orderId, status) => {
     return axiosClient.put("/order/edit-order-status", { orderId, status });
   },

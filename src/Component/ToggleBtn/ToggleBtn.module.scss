@@ -1,0 +1,40 @@
+.wrapper {
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.container {
+  display: flex;
+  height: 100%;
+  background-color: #e6e6e6;
+  border-radius: 8px;
+  span {
+    font-size: 1.5rem;
+    transition: all 0.1s ease-in-out;
+  }
+
+  span:first-child {
+    width: 50%;
+    height: 100%;
+    transform: translateX(0);
+  }
+  span:last-child {
+    width: 50%;
+    transform: translateX(0);
+    padding-right: 2px;
+    padding-left: 0;
+  }
+
+  &.reverse {
+    span:first-child {
+      transform: translateX(100%);
+    }
+    span:last-child {
+      transform: translateX(-100%);
+      padding-right: 0;
+      padding-left: 2px;
+    }
+  }
+}

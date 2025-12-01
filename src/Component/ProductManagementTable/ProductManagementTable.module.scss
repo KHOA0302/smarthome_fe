@@ -1,0 +1,124 @@
+.wrapper {
+}
+
+.container {
+}
+
+.product-filter {
+}
+
+.product-table {
+  padding: 12px;
+  margin-top: 10px;
+  margin-right: 10px;
+  background-color: white;
+  border-radius: 8px;
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    thead {
+      background-color: var(--color-primary-1);
+      th {
+        padding: 4px 0;
+        font-size: 1.4rem;
+        font-weight: 700;
+      }
+    }
+
+    thead th:nth-child(1) {
+      width: 4%;
+      color: var(--color-text-gray);
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    thead th:nth-child(2) {
+      text-align: left;
+    }
+
+    thead th:nth-child(3) {
+      text-align: left;
+    }
+
+    thead th:nth-child(4) {
+      width: 8%;
+      text-align: left;
+    }
+
+    thead th:nth-child(5) {
+      text-align: left;
+    }
+
+    thead th:nth-child(6) {
+      width: 8%;
+      text-align: left;
+    }
+
+    thead th:nth-child(7) {
+      width: 8%;
+      text-align: left;
+    }
+
+    thead th:nth-child(8) {
+      width: 10%;
+      text-align: left;
+    }
+
+    thead th:nth-child(9) {
+      width: 6%;
+      text-align: left;
+    }
+    thead th:nth-child(10) {
+      width: 4%;
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+
+    tbody {
+    }
+
+    tbody tr {
+      height: 40px;
+      border-bottom: 1px solid #dbdbdb;
+      font-size: 1.4rem;
+    }
+    tbody tr td {
+      padding: 4px 0;
+    }
+    tbody tr td:nth-child(1) {
+      text-align: center;
+      color: var(--color-text-gray);
+    }
+    tbody tr td:nth-child(2) {
+    }
+    tbody tr td:nth-child(3) {
+      font-weight: 700;
+    }
+    tbody tr td:nth-child(4) {
+      display: flex;
+      flex-direction: column;
+      & span {
+        width: fit-content;
+        padding: 0 4px;
+        background-color: #dbdbdb;
+        border-radius: 2px;
+        &:not(:last-child) {
+          margin-bottom: 2px;
+        }
+      }
+    }
+    tbody tr td:nth-child(5) {
+    }
+    tbody tr td:nth-child(6) {
+    }
+    tbody tr td:nth-child(7) {
+    }
+    tbody tr td:nth-child(8) {
+    }
+    tbody tr td:nth-child(9) {
+    }
+    tbody tr td:nth-child(10) {
+      text-align: center;
+    }
+  }
+}

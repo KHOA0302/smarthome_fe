@@ -2,12 +2,30 @@ import { useState, useRef, useEffect } from "react";
 import styles from "./ChatStyles.module.scss";
 import classNames from "classnames/bind";
 import { chatService } from "./chatService";
+import productService from "../../api/productService";
+import { formatNumber } from "../../utils/formatNumber";
+import { useNavigate } from "react-router";
+import orderService from "../../api/orderService";
+import authService from "../../api/authService";
 
 const cx = classNames.bind(styles);
 
 const INITIAL_MESSAGES = [
-  { text: "Chào mừng! Hãy nhập tin nhắn để bắt đầu.", sender: "bot", id: 1 },
+  {
+    id: 1,
+    sender: "bot",
+    response: "Chào mừng! Hãy nhập tin nhắn để bắt đầu 🥳🥳",
+    type: "text",
+  },
 ];
+
+const lookupColor = {
+  pending: "#f0d821",
+  preparing: "#eb8c1b",
+  shipping: "#2880ea",
+  completed: "#1bb052",
+  cancel: "#fe6347",
+};
 
 function decodeHtmlEntities(text) {
   if (!text) return "";
@@ -19,6 +37,7 @@ function decodeHtmlEntities(text) {
 }
 
 const Chatbot = ({ show }) => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -35,14 +54,40 @@ const Chatbot = ({ show }) => {
     }
   }, [messages, isLoading]);
 
-  const appendMessage = (text, sender) => {
+  const appendMessage = (response, sender, type = "text") => {
     setMessages((prev) => [
       ...prev,
-      { text, sender, id: Date.now() + Math.random() },
+      { response, sender, id: Date.now() + Math.random(), type },
     ]);
   };
 
+  const fetchProduct = async (category, option, brand) => {
+    try {
+      const res = await productService.chatbotSearchProductAsking(
+        category,
+        option,
+        brand
+      );
+
+      appendMessage(res.data.message, "bot", "text");
+      appendMessage(res.data.product, "bot", "product");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchOrder = async (orderStatus) => {
+    try {
+      const res = await orderService.chatbotAskingOrder(orderStatus);
+
+      appendMessage(res.data, "bot", "order");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSendMessage = async (e) => {
+    const holdMess = "Xin đợi, chúng tôi đang tìm phân tích yêu cầu của bạn 🫡🫡";
     if (e) e.preventDefault();
     const text = userInput
       .normalize("NFD")
@@ -53,6 +98,7 @@ const Chatbot = ({ show }) => {
     if (!text || isLoading) return;
 
     appendMessage(userInput.trim(), "user");
+    appendMessage(holdMess, "bot");
     setUserInput("");
     setIsLoading(true);
 
@@ -65,12 +111,18 @@ const Chatbot = ({ show }) => {
         botResponses.forEach((item) => {
           if (item.type === "text" && item.text) {
             const rawText = item.text;
-            const startTag = "<<JSON_PAYLOAD_START>>";
-            const endTag = "<<JSON_PAYLOAD_END>>";
+            const startProductTag = "<<JSON_PRODUCT_PAYLOAD_START>>";
+            const endProductTag = "<<JSON_PRODUCT_PAYLOAD_END>>";
+            const startOrderTag = "<<JSON_ORDER_PAYLOAD_START>>";
+            const endOrderTag = "<<JSON_ORDER_PAYLOAD_END>>";
 
-            if (rawText.includes(startTag) && rawText.includes(endTag)) {
-              const startIndex = rawText.indexOf(startTag) + startTag.length;
-              const endIndex = rawText.indexOf(endTag);
+            if (
+              rawText.includes(startProductTag) &&
+              rawText.includes(endProductTag)
+            ) {
+              const startIndex =
+                rawText.indexOf(startProductTag) + startProductTag.length;
+              const endIndex = rawText.indexOf(endProductTag);
               const jsonString = rawText.substring(startIndex, endIndex).trim();
 
               const extractedEntities = JSON.parse(
@@ -86,8 +138,31 @@ const Chatbot = ({ show }) => {
               const optionValue = entityMap["@option"] ?? null;
               const brand = entityMap["@brand"] ?? null;
 
-              console.log(entityMap);
-              console.log(category, optionValue, brand);
+              fetchProduct(category, optionValue, brand);
+            } else if (
+              rawText.includes(startOrderTag) &&
+              rawText.includes(endOrderTag)
+            ) {
+              const startIndex =
+                rawText.indexOf(startOrderTag) + startOrderTag.length;
+              const endIndex = rawText.indexOf(endOrderTag);
+              const jsonString = rawText.substring(startIndex, endIndex).trim();
+
+              const extractedEntities = JSON.parse(
+                decodeHtmlEntities(jsonString)
+              );
+
+              const orderStatus = extractedEntities.reduce(
+                (accumulator, currentItem) => {
+                  if (accumulator === "") {
+                    return currentItem.name.split("_").pop();
+                  }
+                  return accumulator + "," + currentItem.name.split("_").pop();
+                },
+                ""
+              );
+
+              fetchOrder(orderStatus);
             } else {
               appendMessage(rawText, "bot");
             }
@@ -95,10 +170,7 @@ const Chatbot = ({ show }) => {
         });
       }
     } catch (error) {
-      console.error("Lỗi khi gửi/nhận tin nhắn:", error);
-
-      const status = error.response ? error.response.status : "Mạng";
-      const errorText = `Lỗi API (${status}). Vui lòng kiểm tra console.`;
+      const errorText = `Đã có lỗi gì đó, bạn nhắn lại giúp bot với 🥺🥺`;
 
       appendMessage(errorText, "bot");
     } finally {
@@ -106,11 +178,97 @@ const Chatbot = ({ show }) => {
     }
   };
 
-  const renderMessage = (msg) => (
+  const textMessage = (msg) => (
     <div key={msg.id} className={cx("message-container", `${msg.sender}`)}>
-      <p className={cx("chat-message", `${msg.sender}-message`)}>{msg.text}</p>
+      <p className={cx("chat-message", `${msg.sender}-message`)}>
+        {msg.response}
+      </p>
     </div>
   );
+
+  const productMessage = (msg) => (
+    <div key={msg.id} className={cx("message-container", `${msg.sender}`)}>
+      <div
+        className={cx("chat-message", `${msg.sender}-message`, "product-array")}
+      >
+        <div className={cx("product-wrapper")}>
+          {msg.response.map((product, id) => {
+            return (
+              <div
+                key={id}
+                className={cx("product-container")}
+                onClick={() =>
+                  navigate(
+                    `/product/${product.product.product_id}/variant/${product.variant_id}`
+                  )
+                }
+              >
+                <div className={cx("product-variant")}>
+                  <div className={cx("variant-img")}>
+                    <img src={product.image_url} />
+                  </div>
+                  <div className={cx("variant-main")}>
+                    <span className={cx("variant-name")}>
+                      {product.variant_name}
+                    </span>
+                    <div className={cx("variant-sold")}>
+                      <span>{formatNumber(parseInt(product.price))}đ</span>
+                      <span>{product.product.sale_volume}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+
+  const toOrder = authService.getCurrentUser ? "/customer/order" : "/order";
+
+  const orderMessage = (msg) => (
+    <div key={msg.id} className={cx("message-container", `${msg.sender}`)}>
+      <div
+        className={cx(
+          "chat-message",
+          `${msg.sender}-message`,
+          "order-status-array"
+        )}
+      >
+        <h3 className={cx("order-title")}>Đơn hàng</h3>
+        <div className={cx("order-status-container")}>
+          {msg.response.map((order, id) => {
+            return (
+              <div
+                className={cx("order-status-item")}
+                key={id}
+                style={{ background: lookupColor[order.order_status] }}
+                onClick={() =>
+                  navigate(toOrder, {
+                    state: order.order_status,
+                  })
+                }
+              >
+                <span className={cx("status-name")}>{order.order_status}</span>
+                <span className={cx("status-count")}>{order.count} đơn</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderMessage = (msg) => {
+    if (msg.type === "text") {
+      return textMessage(msg);
+    } else if (msg.type === "product") {
+      return productMessage(msg);
+    } else if (msg.type === "order") {
+      return orderMessage(msg);
+    }
+  };
 
   return (
     <div className={cx("chat-container", { show: show })}>
@@ -140,10 +298,9 @@ const Chatbot = ({ show }) => {
           onChange={(e) => setUserInput(e.target.value)}
           disabled={isLoading}
           ref={inputRef}
+          id="user-input"
         />
-        {/* <div className={cx("chatbot-icon")}>
-          <img src={chatbot} />
-        </div> */}
+        <div style={{ width: "40px" }}></div>
       </form>
     </div>
   );
