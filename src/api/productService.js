@@ -68,8 +68,13 @@ const productService = {
     );
   },
 
-  getProductPrediction: () => {
-    return axiosClient.get("/product/prediction");
+  getProductPrediction: (brand, category, status) => {
+    let statusModify = "";
+    if (status === 1) statusModify = "in_stock";
+    if (status === 0) statusModify = "out_of_stock";
+    return axiosClient.get(
+      `/product/prediction?brand=${brand}&category=${category}&status=${statusModify}`
+    );
   },
 };
 
