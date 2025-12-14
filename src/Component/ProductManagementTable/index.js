@@ -8,11 +8,36 @@ import { formatNumber } from "../../utils/formatNumber";
 
 const cx = classNames.bind(styles);
 
-function ProductManagementTable({ productsDetail }) {
+function ProductManagementTable({
+  productsDetail,
+  onButton = false,
+  numberDisplay = 7,
+  loading,
+}) {
+  const [limitedShow, setLimitedShow] = useState(numberDisplay);
+
+  const handleShowMore = () => {
+    const fullShow = productsDetail.length;
+    if (limitedShow < fullShow) {
+      setLimitedShow(productsDetail.length);
+    } else {
+      setLimitedShow(numberDisplay);
+    }
+  };
+
   return (
     <div className={cx("wrapper")}>
-      <div className={cx("container")}>
-        <div className={cx("product-filter")}></div>
+      <div
+        className={cx("container", {
+          "show-more": !loading && limitedShow < productsDetail.length,
+        })}
+      >
+        {limitedShow < productsDetail.length && (
+          <button
+            className={cx("show-more-btn")}
+            onClick={handleShowMore}
+          ></button>
+        )}
         <div className={cx("product-table")}>
           <table>
             <thead>
@@ -31,6 +56,8 @@ function ProductManagementTable({ productsDetail }) {
             </thead>
             <tbody>
               {productsDetail.map((product, id) => {
+                if (loading) return;
+                if (id + 1 > limitedShow) return;
                 const status =
                   product.item_status === "in_stock" ? true : false;
                 return (
@@ -38,7 +65,7 @@ function ProductManagementTable({ productsDetail }) {
                     <td>{id + 1}</td>
                     <td>
                       <div>
-                        <img src={product.image_url} />
+                        <img src={product.image_url} key={product.variant_id} />
                       </div>
                     </td>
                     <td>{product.variant_name}</td>
@@ -57,15 +84,85 @@ function ProductManagementTable({ productsDetail }) {
                     <td>{product.stock_quantity}</td>
                     <td>{product.product.category.category_name}</td>
                     <td>{product.product.brand.brand_name}</td>
-                    <td>{product.stemp}</td>
+                    <td>{product.predicted_order_next_quarter.toFixed(2)}</td>
                     <td>
-                      <ToggleBtn active={status} />
+                      <ToggleBtn active={status} onButton={onButton} />
                     </td>
                   </tr>
                 );
               })}
+
+              {loading && (
+                <>
+                  <tr className={cx("skeleton-loading")}>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr className={cx("skeleton-loading")}>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr className={cx("skeleton-loading")}>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr className={cx("skeleton-loading")}>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr className={cx("skeleton-loading")}>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </>
+              )}
             </tbody>
           </table>
+          {limitedShow === productsDetail.length && (
+            <div className={cx("show-less-btn")} onClick={handleShowMore}>
+              <span>show less</span>
+            </div>
+          )}
         </div>
       </div>
       <ToastContainer />

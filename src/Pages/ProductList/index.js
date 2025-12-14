@@ -26,7 +26,9 @@ function PagesNavigate({ currentPage, totalPages }) {
         <ArrowCircleLeftIcon />
         <ul>
           {pageNumbers.map((number) => (
-            <li className={cx({ active: number === currentPage })}>{number}</li>
+            <li className={cx({ active: number === currentPage })} key={number}>
+              {number}
+            </li>
           ))}
         </ul>
         <ArrowCircleRightIcon />

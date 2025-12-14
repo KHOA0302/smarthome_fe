@@ -4,10 +4,11 @@ import classNames from "classnames/bind";
 
 const cx = classNames.bind(styles);
 
-function ToggleBtn({ active }) {
+function ToggleBtn({ active, onButton }) {
   const [status, setStatus] = useState(active);
 
   const handleToggle = () => {
+    if (!onButton) return;
     setStatus(!status);
   };
 

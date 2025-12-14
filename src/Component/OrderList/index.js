@@ -12,7 +12,9 @@ import {
 } from "../../icons";
 import orderService from "../../api/orderService";
 import { toast } from "react-toastify";
-
+import "tippy.js/dist/tippy.css";
+import "tippy.js/animations/scale.css";
+import Tippy from "@tippyjs/react";
 import { reviewService } from "../../api/reviewService";
 
 const cx = classNames.bind(styles);
@@ -129,7 +131,10 @@ function ReviewItem({
   setReviewByMap,
 }) {
   const reviewData = reviewsData[id];
+
+  const notAllowEdit = !!reviewData?.reviewId;
   const handleRating = (star) => {
+    if (notAllowEdit) return;
     if (!loading) {
       const newReviewsData = reviewsData.map((review, index) => {
         if (index === id) {
@@ -145,6 +150,7 @@ function ReviewItem({
   };
 
   const handelComment = (e) => {
+    if (notAllowEdit) return;
     const newReviewsData = reviewsData.map((review, index) => {
       if (index === id) {
         return {
@@ -181,6 +187,7 @@ function ReviewItem({
         .then((result) => {
           const newReviewByMapItem = {
             ...reviewByMap[orderId][id],
+            // reviewId: (Math.random() * 9 + 1).toFixed(3),
             comment_text: reviewData.comment,
             rating: reviewData.rating,
           };
@@ -194,7 +201,19 @@ function ReviewItem({
 
           setReviewByMap(newReviewByMap);
 
-          console.log(newReviewByMapItem);
+          const newReviewData = {
+            ...reviewData,
+            reviewId: (Math.random() * 9 + 1).toFixed(3),
+          };
+
+          const newReviewsData = reviewsData.map((review, index) => {
+            if (index === id) {
+              return newReviewData;
+            }
+            return review;
+          });
+
+          setReviewsData(newReviewsData);
         });
     } catch (error) {
       console.error(error);
@@ -208,37 +227,48 @@ function ReviewItem({
   return (
     <form className={cx("review-element")} key={id} onSubmit={handleSubmit}>
       <div className={cx("review-product_img")}>
-        <img src={item.image_url} />
-        <button type="submit">LƯU</button>
+        <img
+          src={item.image_url}
+          className={cx({ notAllowEdit: notAllowEdit })}
+        />
+        {!notAllowEdit && (
+          <button type="submit" className={cx({ loading: loading })}>
+            LƯU
+          </button>
+        )}
       </div>
-      <div className={cx("review-content")}>
+      <div className={cx("review-content", { notAllowEdit: notAllowEdit })}>
         <h4>{item.variant_name}</h4>
-        <ul className={cx("review-stars")}>
-          {[...Array(5)].map((_, index) => {
-            const Star =
-              index + 1 > reviewData?.rating ? StarIcon : FullStarIcon;
-            return (
-              <li
-                key={index}
-                className={cx("star", {
-                  full: index + 1 <= reviewData?.rating,
-                  loading: loading,
-                })}
-                onMouseEnter={() => handleRating(index + 1)}
-              >
-                <Star />
-              </li>
-            );
-          })}
-        </ul>
-        <textarea
-          className={cx("review-textarea", { loading: loading })}
-          id="textarea"
-          name="comment"
-          value={reviewData?.comment || ""}
-          disabled={loading}
-          onChange={handelComment}
-        ></textarea>
+        <Tippy content="Bạn không thể sửa đánh giá" disabled={!notAllowEdit}>
+          <ul className={cx("review-stars")}>
+            {[...Array(5)].map((_, index) => {
+              const Star =
+                index + 1 > reviewData?.rating ? StarIcon : FullStarIcon;
+              return (
+                <li
+                  key={index}
+                  className={cx("star", {
+                    full: index + 1 <= reviewData?.rating,
+                    loading: loading,
+                  })}
+                  onMouseEnter={() => handleRating(index + 1)}
+                >
+                  <Star />
+                </li>
+              );
+            })}
+          </ul>
+        </Tippy>
+        <Tippy content="Bạn không thể sửa đánh giá" disabled={!notAllowEdit}>
+          <textarea
+            className={cx("review-textarea", { loading: loading })}
+            id="textarea"
+            name="comment"
+            value={reviewData?.comment || ""}
+            disabled={loading}
+            onChange={handelComment}
+          ></textarea>
+        </Tippy>
       </div>
     </form>
   );
@@ -258,7 +288,9 @@ function TableReview({
   useEffect(() => {
     const reviewsDataGen = orderItems.map((item) => {
       const review = item.reviews;
+
       return {
+        reviewId: review ? review.review_id : null,
         order_item_id: item.order_item_id,
         product_id: item.product_id,
         rating: review ? review.rating : 0,
@@ -333,7 +365,11 @@ function OrderList({ orders, setOrders, role = "customer" }) {
   const [reviewByMap, setReviewByMap] = useState([]);
 
   const handleOrderStatus = (orderId, status) => {
-    const editPromise = orderService.editOrderStatus(orderId, status);
+    try {
+      const editPromise = orderService.editOrderStatus(orderId, status);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -356,6 +392,7 @@ function OrderList({ orders, setOrders, role = "customer" }) {
             </thead>
             <tbody>
               {orders.map((order, id) => {
+                const allowReview = order.order_status === "completed";
                 return (
                   <tr key={id}>
                     <td>{order.order_id}</td>
@@ -444,34 +481,39 @@ function OrderList({ orders, setOrders, role = "customer" }) {
 
                     {!isAdmin && (
                       <td>
-                        <button
-                          type="button"
-                          className={cx("review-btn", {
-                            commented: reviewByMap[id]?.some(
-                              (review) => review
-                            ),
-                          })}
-                          onClick={() => setShowReview(id)}
-                        >
-                          {reviewByMap[id]?.every(
-                            (review) => review !== null
-                          ) ? (
-                            <CommentCheckIcon />
-                          ) : (
-                            <CommentIcon />
-                          )}
-                        </button>
+                        <Tippy content="Bạn chỉ được đánh giá đơn hàng đã giao">
+                          <button
+                            type="button"
+                            className={cx("review-btn", {
+                              commented: reviewByMap[id]?.some(
+                                (review) => review
+                              ),
+                              notAllowReview: !allowReview,
+                            })}
+                            onClick={() => setShowReview(id)}
+                          >
+                            {reviewByMap[id]?.every(
+                              (review) => review !== null
+                            ) ? (
+                              <CommentCheckIcon />
+                            ) : (
+                              <CommentIcon />
+                            )}
+                          </button>
+                        </Tippy>
                       </td>
                     )}
                     <td>
-                      <TableReview
-                        orderItems={order.orderItems}
-                        showReview={showReview}
-                        setShowReview={setShowReview}
-                        orderId={id}
-                        reviewByMap={reviewByMap}
-                        setReviewByMap={setReviewByMap}
-                      />
+                      {allowReview && (
+                        <TableReview
+                          orderItems={order.orderItems}
+                          showReview={showReview}
+                          setShowReview={setShowReview}
+                          orderId={id}
+                          reviewByMap={reviewByMap}
+                          setReviewByMap={setReviewByMap}
+                        />
+                      )}
                     </td>
 
                     {isAdmin && (

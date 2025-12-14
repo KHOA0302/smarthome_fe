@@ -22,6 +22,7 @@ import sideTuff from "../../images/icon sp kem theo142836.png";
 import warrant from "../../images/icon bao hanh170837.png";
 import exchange from "../../images/Exchange232102.png";
 import stroke from "../../images/stroke104155.png";
+import ReviewSection from "../../Component/ReviewSection";
 
 const cx = classNames.bind(styles);
 function ProductDetails() {
@@ -31,7 +32,6 @@ function ProductDetails() {
   const [showModalCover, setShowModalCover] = useState(false);
   const [expendGroups, setExpendGroups] = useState([]);
   const [isOverQuantity, setIsOverQuantity] = useState(false);
-  console.log('alamachap');
 
   const handleGroupExpand = (groupId) => {
     let newExpendGroup;
@@ -203,58 +203,6 @@ function ProductDetails() {
 
   const { setCartItemQuant } = useCartItemQuantContext();
 
-  // const handleAddCart = () => {
-  //   const optionValuesChoose = allOptions.map((option) => {
-  //     const newOptionValues = option.optionValues.filter(
-  //       (value) => value.selected
-  //     );
-
-  //     return {
-  //       ...option,
-  //       optionValues: [...newOptionValues],
-  //     };
-  //   });
-
-  //   const servicePackageChoose = servicePackages
-  //     .filter((sp) => sp.selected)
-  //     .map((sp) => {
-  //       const newItems = sp.items.filter((item) => item.selected);
-  //       return {
-  //         ...sp,
-  //         items: newItems,
-  //       };
-  //     })[0];
-
-  //   const cartItems = {
-  //     selectedVariant,
-  //     optionValuesChoose,
-  //     servicePackageChoose,
-  //   };
-
-  //   const fetchCreateCartItem = async () => {
-  //     try {
-  //       const res = await cartService.createCartItem(cartItems);
-
-  //       if (res.status === 200) {
-  //         const resCar = await cartService.getCartItem();
-  //         if (resCar.status === 200) {
-  //           setCartItemQuant(
-  //             resCar.data.cartItems.reduce(
-  //               (number, item) => item.quantity + number,
-  //               0
-  //             )
-  //           );
-  //         }
-  //       }
-  //     } catch (error) {
-  //       setIsOverQuantity(true);
-  //       console.error(error.response.data.message);
-  //     }
-  //   };
-
-  //   fetchCreateCartItem();
-  // };
-
   const handleAddCart = (isNavigate = false) => {
     const promiseToast = new Promise(async (resolve, reject) => {
       try {
@@ -328,8 +276,6 @@ function ProductDetails() {
   const handleChangeDisplayImg = (newDisplayImg) => {
     dispatch({ type: "CHANGE_DISPLAY_IMG", payload: newDisplayImg });
   };
-
-  console.log(error);
 
   return (
     <div className={cx("wrapper")}>
@@ -434,8 +380,10 @@ function ProductDetails() {
               <div className={cx("product-des")}></div>
             </div>
             <div>
-              <div className={cx("product-rating")}></div>
-              <div className={cx("product-comment")}></div>
+              <ReviewSection
+                productId={product_id}
+                productName={productDetails?.productName}
+              />
             </div>
           </section>
           <section className={cx("variant-section")}>

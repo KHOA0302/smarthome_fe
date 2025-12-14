@@ -76,6 +76,13 @@ const productService = {
       `/product/prediction?brand=${brand}&category=${category}&status=${statusModify}`
     );
   },
+
+  editProductVisibility: (variantId, itemStatus) => {
+    return axiosClient.put("/product/edit-product-visibility", {
+      variantId,
+      itemStatus,
+    });
+  },
 };
 
 export default productService;

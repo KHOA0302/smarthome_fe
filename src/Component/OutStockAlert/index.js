@@ -9,8 +9,6 @@ function OutStockAlert() {
   const [alerts, setAlerts] = useState([]);
 
   const handleSocketMessage = useCallback((message) => {
-    console.log("Tin nhắn Socket nhận được:", message);
-
     switch (message.type) {
       case "NEW_INVENTORY_ALERT":
         setAlerts((prev) => [message, ...prev]);
@@ -35,19 +33,7 @@ function OutStockAlert() {
 
   const { isConnected } = useWebSocket(handleSocketMessage);
 
-  useEffect(() => {
-    // Gọi API để fetch danh sách alerts ban đầu
-    // fetchAlertsAPI().then(data => setAlerts(data));
-  }, []);
-
-  return (
-    <div className={cx("admin-alerts-container")}>
-      <h3>
-        Trạng thái Socket: {isConnected ? "🟢 Đã kết nối" : "🔴 Mất kết nối"}
-      </h3>
-      {/* Hiển thị danh sách alerts */}
-    </div>
-  );
+  return <div className={cx("wrapper")}></div>;
 }
 
 export default OutStockAlert;

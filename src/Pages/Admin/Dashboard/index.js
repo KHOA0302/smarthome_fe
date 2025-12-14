@@ -5,6 +5,7 @@ import styles from "./Dashboard.module.scss";
 import classNames from "classnames/bind";
 import productService from "../../../api/productService";
 import FilterForProductManagementTable from "../../../Component/FilterForProductManagementTable";
+import ChartForProductPrediction from "../../../Component/ChartForProductPrediction";
 const cx = classNames.bind(styles);
 
 const initialFilterState = {
@@ -48,6 +49,7 @@ function Dashboard() {
         category.id,
         status.id
       );
+
       setProductsDetail(res.data);
     } catch (error) {
       setLoading(false);
@@ -57,20 +59,48 @@ function Dashboard() {
     }
   };
 
-  console.log(productFilter);
-
   useEffect(() => {
     fetchProduct();
   }, [productFilter]);
 
+  const compositeProductPredictedData = productsDetail.reduce((acc, item) => {
+    const brand = item.product.brand.brand_name;
+    const category = item.product.category.category_name;
+    const predicted_order_next_quarter = item.predicted_order_next_quarter;
+
+    const key = `${brand}_${category}`;
+
+    if (!acc[key]) {
+      acc[key] = {
+        brand: brand,
+        category: category,
+        totalStemp: 0,
+      };
+    }
+
+    acc[key].totalStemp += predicted_order_next_quarter;
+
+    return acc;
+  }, {});
+
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
+        <OutStockAlert />
         <FilterForProductManagementTable
           onChangeFilter={handleFilterChange}
           currentFilters={productFilter}
+          fetchProduct={fetchProduct}
         />
-        <ProductManagementTable productsDetail={productsDetail} />
+        <ProductManagementTable
+          productsDetail={productsDetail}
+          loading={loading}
+        />
+        <ChartForProductPrediction
+          compositeProductPredictedData={Object.values(
+            compositeProductPredictedData
+          )}
+        />
       </div>
     </div>
   );

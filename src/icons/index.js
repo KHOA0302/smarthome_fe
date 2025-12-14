@@ -40,6 +40,8 @@ import { BiComment } from "react-icons/bi";
 import { BiSolidCommentCheck } from "react-icons/bi";
 import { GoStar } from "react-icons/go";
 import { GoStarFill } from "react-icons/go";
+import { GrPowerReset } from "react-icons/gr";
+import { PiBellSimpleRingingFill } from "react-icons/pi";
 
 export {
   BiAddToQueue as AddIcon,
@@ -84,4 +86,6 @@ export {
   BiSolidCommentCheck as CommentCheckIcon,
   GoStar as StarIcon,
   GoStarFill as FullStarIcon,
+  GrPowerReset as ResetIcon,
+  PiBellSimpleRingingFill as BellIcon,
 };
