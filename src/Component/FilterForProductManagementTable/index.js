@@ -12,6 +12,13 @@ function FilterForProductManagementTable({
   onChangeFilter,
   currentFilters,
   fetchProduct,
+  promotionMode = false,
+  editMode = false,
+  predictMode = false,
+  exportToExcel,
+  handleAddPromotion = () => {},
+  handleListPromotion = () => {},
+  handleCheckVariants = () => {},
 }) {
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -69,6 +76,11 @@ function FilterForProductManagementTable({
     </li>
   );
 
+  const handleReload = () => {
+    fetchProduct();
+    if (promotionMode) handleCheckVariants({ clear: true });
+  };
+
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
@@ -120,51 +132,57 @@ function FilterForProductManagementTable({
               {categories.map(categoryList)}
             </ul>
           </div>
-          <div
-            className={cx("filter-box")}
-            onMouseEnter={() => setShowFilterList("status")}
-            onMouseLeave={() => setShowFilterList("")}
-          >
-            <span
-              className={cx("filter-title", {
-                show: showFilterList === "status",
-              })}
-            >
-              Trạng thái
-            </span>
-            <span className={cx("filter-chosen")}>
-              {currentFilters.status.name}
-            </span>
-            <ul
-              className={cx("filter-list", {
-                show: showFilterList === "status",
-              })}
-              style={{ width: "fit-content" }}
-            >
-              <li
-                onClick={() => handleChangeStatus({ id: 0, name: "hide" })}
-                className={cx({
-                  chosen: "hide" === currentFilters.status.name,
-                })}
+          {promotionMode}
+          {editMode ||
+            (predictMode && (
+              <div
+                className={cx("filter-box")}
+                onMouseEnter={() => setShowFilterList("status")}
+                onMouseLeave={() => setShowFilterList("")}
               >
-                ẩn
-              </li>
-              <li
-                onClick={() => handleChangeStatus({ id: 1, name: "reveal" })}
-                className={cx({
-                  chosen: "reveal" === currentFilters.status.name,
-                })}
-              >
-                hiện
-              </li>
-            </ul>
-          </div>
+                <span
+                  className={cx("filter-title", {
+                    show: showFilterList === "status",
+                  })}
+                >
+                  Trạng thái
+                </span>
+                <span className={cx("filter-chosen")}>
+                  {currentFilters.status.name}
+                </span>
+                <ul
+                  className={cx("filter-list", {
+                    show: showFilterList === "status",
+                  })}
+                  style={{ width: "fit-content" }}
+                >
+                  <li
+                    onClick={() => handleChangeStatus({ id: 0, name: "hide" })}
+                    className={cx({
+                      chosen: "hide" === currentFilters.status.name,
+                    })}
+                  >
+                    ẩn
+                  </li>
+                  <li
+                    onClick={() =>
+                      handleChangeStatus({ id: 1, name: "reveal" })
+                    }
+                    className={cx({
+                      chosen: "reveal" === currentFilters.status.name,
+                    })}
+                  >
+                    hiện
+                  </li>
+                </ul>
+              </div>
+            ))}
         </div>
       </div>
       <div className={cx("utility")}>
         <Tippy content="Tải lại danh sách">
           <div className={cx("reset-list")}>
-            <button onClick={fetchProduct}>
+            <button onClick={handleReload}>
               <ResetIcon />
             </button>
           </div>
@@ -176,6 +194,25 @@ function FilterForProductManagementTable({
             </button>
           </div>
         </Tippy>
+
+        {promotionMode && (
+          <>
+            <div className={cx("add-promotion")}>
+              <button onClick={handleAddPromotion}>ADD PROMOTION</button>
+            </div>
+            <div className={cx("list-promotion")}>
+              <button onClick={handleListPromotion}>SHOW PROMOTION</button>
+            </div>
+          </>
+        )}
+
+        {predictMode && (
+          <>
+            <div className={cx("export-excel")}>
+              <button onClick={exportToExcel}>XUẤT EXCEL</button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

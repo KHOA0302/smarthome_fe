@@ -6,6 +6,7 @@ import {
   ChartIcon,
   EditIcon,
   InvoiceIcon,
+  PromotionIcon,
   UserInfoIcon,
 } from "../../icons";
 import Navbar from "../../Component/Navbar";
@@ -43,6 +44,11 @@ const navItems = [
     name: "Quản lý đơn hàng",
     icon: InvoiceIcon,
     route: "/admin/invoice",
+  },
+  {
+    name: "Quản lý giảm giá tồn kho",
+    icon: PromotionIcon,
+    route: "/admin/promotion",
   },
 ];
 

@@ -25,6 +25,7 @@ import ProductEdit from "./Pages/Admin/ProductEdit";
 import Order from "./Pages/Customer/Order";
 import ProductList from "./Pages/ProductList";
 import CBOSSedit from "./Pages/Admin/CBOSSedit";
+import Promotion from "./Pages/Admin/Promotion";
 
 const ROLE_ADMIN = 1;
 const ROLE_CUSTOMER = 2;
@@ -45,12 +46,13 @@ function App() {
             <Route path="edit-product/:productId" element={<ProductEdit />} />
 
             <Route path="statistic" element={<Statistic />} />
+
             <Route
               path="brand-category-option-service-spec"
               element={<CBOSSedit />}
             />
             <Route path="invoice" element={<InvoiceManagement />} />
-
+            <Route path="promotion" element={<Promotion />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Route>

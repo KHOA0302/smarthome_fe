@@ -83,6 +83,10 @@ const productService = {
       itemStatus,
     });
   },
+
+  getAllVariants: () => {
+    return axiosClient.get("/product/get-all-variants");
+  },
 };
 
 export default productService;

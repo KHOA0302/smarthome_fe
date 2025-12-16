@@ -42,6 +42,7 @@ import { GoStar } from "react-icons/go";
 import { GoStarFill } from "react-icons/go";
 import { GrPowerReset } from "react-icons/gr";
 import { PiBellSimpleRingingFill } from "react-icons/pi";
+import { MdOutlineDiscount } from "react-icons/md";
 
 export {
   BiAddToQueue as AddIcon,
@@ -88,4 +89,5 @@ export {
   GoStarFill as FullStarIcon,
   GrPowerReset as ResetIcon,
   PiBellSimpleRingingFill as BellIcon,
+  MdOutlineDiscount as PromotionIcon,
 };

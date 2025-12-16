@@ -356,6 +356,14 @@ const lookupColor = {
   completed: "#1bb052",
   cancel: "#fe6347",
 };
+
+const lookupMessageForStatus = {
+  preparing: "Đơn hàng đã được tiếp nhận và đang chuẩn bị",
+  shipping: "Đơn hàng đã sẳn sàng giao đi",
+  completed: "Giao hàng thành công",
+  cancel: "Đơn hàng đã bị hủy",
+};
+
 function OrderList({ orders, setOrders, role = "customer" }) {
   const isAdmin = role === "admin";
   const TableTile = lookupTableTitle[role];
@@ -363,11 +371,34 @@ function OrderList({ orders, setOrders, role = "customer" }) {
   const [showReview, setShowReview] = useState("");
   const [showAddress, setShowAddress] = useState("");
   const [reviewByMap, setReviewByMap] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleOrderStatus = (orderId, status) => {
+  const handleOrderStatus = async (orderId, status) => {
+    if (loading) return;
     try {
+      setLoading(true);
       const editPromise = orderService.editOrderStatus(orderId, status);
+      toast
+        .promise(editPromise, {
+          pending: "Đang thay đổi trạng thái...",
+          success: lookupMessageForStatus[status],
+          error: editPromise.data.message,
+        })
+        .then(() => {
+          const newOrders = orders.map((order) => {
+            if (order.order_id === orderId) {
+              return {
+                ...order,
+                order_status: status,
+              };
+            }
+            return order;
+          });
+          setOrders(newOrders);
+          setLoading(false);
+        });
     } catch (error) {
+      setLoading(false);
       console.error(error);
     }
   };
@@ -445,7 +476,13 @@ function OrderList({ orders, setOrders, role = "customer" }) {
                               xóa
                             </button>
                           ) : (
-                            <button> cancel</button>
+                            <button
+                              onClick={() => {
+                                handleOrderStatus(order.order_id, "cancel");
+                              }}
+                            >
+                              cancel
+                            </button>
                           )}
 
                           {!!lookupOrderNextStage[order.order_status] && (
