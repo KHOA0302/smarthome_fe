@@ -60,7 +60,7 @@ function FilterForProductManagementTable({
       onClick={() => handleChangeBrand(brand)}
       className={cx({ chosen: brand.brand_name === currentFilters.brand.name })}
     >
-      {brand.brand_name}
+      {brand.brand_name.toUpperCase()}
     </li>
   );
 
@@ -72,7 +72,7 @@ function FilterForProductManagementTable({
         chosen: category.category_name === currentFilters.category.name,
       })}
     >
-      {category.category_name}
+      {category.category_name.toUpperCase()}
     </li>
   );
 
@@ -132,51 +132,46 @@ function FilterForProductManagementTable({
               {categories.map(categoryList)}
             </ul>
           </div>
-          {promotionMode}
-          {editMode ||
-            (predictMode && (
-              <div
-                className={cx("filter-box")}
-                onMouseEnter={() => setShowFilterList("status")}
-                onMouseLeave={() => setShowFilterList("")}
+
+          <div
+            className={cx("filter-box")}
+            onMouseEnter={() => setShowFilterList("status")}
+            onMouseLeave={() => setShowFilterList("")}
+          >
+            <span
+              className={cx("filter-title", {
+                show: showFilterList === "status",
+              })}
+            >
+              Trạng thái
+            </span>
+            <span className={cx("filter-chosen")}>
+              {currentFilters.status.name}
+            </span>
+            <ul
+              className={cx("filter-list", {
+                show: showFilterList === "status",
+              })}
+              style={{ width: "fit-content" }}
+            >
+              <li
+                onClick={() => handleChangeStatus({ id: 0, name: "hide" })}
+                className={cx({
+                  chosen: "hide" === currentFilters.status.name,
+                })}
               >
-                <span
-                  className={cx("filter-title", {
-                    show: showFilterList === "status",
-                  })}
-                >
-                  Trạng thái
-                </span>
-                <span className={cx("filter-chosen")}>
-                  {currentFilters.status.name}
-                </span>
-                <ul
-                  className={cx("filter-list", {
-                    show: showFilterList === "status",
-                  })}
-                  style={{ width: "fit-content" }}
-                >
-                  <li
-                    onClick={() => handleChangeStatus({ id: 0, name: "hide" })}
-                    className={cx({
-                      chosen: "hide" === currentFilters.status.name,
-                    })}
-                  >
-                    ẩn
-                  </li>
-                  <li
-                    onClick={() =>
-                      handleChangeStatus({ id: 1, name: "reveal" })
-                    }
-                    className={cx({
-                      chosen: "reveal" === currentFilters.status.name,
-                    })}
-                  >
-                    hiện
-                  </li>
-                </ul>
-              </div>
-            ))}
+                ẩn
+              </li>
+              <li
+                onClick={() => handleChangeStatus({ id: 1, name: "reveal" })}
+                className={cx({
+                  chosen: "reveal" === currentFilters.status.name,
+                })}
+              >
+                hiện
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <div className={cx("utility")}>

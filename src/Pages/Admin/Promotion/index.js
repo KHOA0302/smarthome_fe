@@ -24,16 +24,22 @@ function Promotion() {
   const [variants, setVariants] = useState([]);
   const [productFilter, setProductFilter] = useState(initialFilterState);
   const [checkedVariant, setCheckedVariant] = useState([]);
-  const [showAddPromotionMoral, setShowAddPromotionMoral] = useState(false);
-  const [showListPromotionMoral, setShowListPromotionMoral] = useState(false);
+  const [showAddPromotionMoral, setShowAddPromotionMoral] = useState(null);
+  const [showListPromotionMoral, setShowListPromotionMoral] = useState(null);
   const [promotionEvent, setPromotionEvent] = useState({
     name: "",
     discount: 0,
   });
+
   const fetchVariants = async () => {
     try {
       setLoading(true);
-      const res = await productService.getAllVariants();
+      const { brand, category, status } = productFilter;
+      const res = await productService.getAllVariants(
+        brand.id,
+        category.id,
+        status.id
+      );
       setVariants(res.data);
     } catch (error) {
       console.error(error);
@@ -43,7 +49,7 @@ function Promotion() {
   };
   useEffect(() => {
     fetchVariants();
-  }, []);
+  }, [productFilter]);
 
   const handleFilterChange = (key, value) => {
     if (productFilter[key].name === value.name) {
@@ -86,13 +92,13 @@ function Promotion() {
   const handleAddPromotion = () => {
     if (!variantsAddPromotion.length || loading) return;
     setShowAddPromotionMoral(!showAddPromotionMoral);
-    setShowListPromotionMoral(false);
+    if (showListPromotionMoral !== null) setShowListPromotionMoral(false);
   };
 
   const handleListPromotion = () => {
     if (loading) return;
     setShowListPromotionMoral(!showListPromotionMoral);
-    setShowAddPromotionMoral(false);
+    if (showAddPromotionMoral !== null) setShowAddPromotionMoral(false);
   };
 
   const handleSubmit = async (e) => {
@@ -126,7 +132,26 @@ function Promotion() {
     }
   };
 
-  console.log(checkedVariant);
+  const handleVariantStatus = async (variant, status) => {
+    try {
+      const res = await productService.editVariantStatus(
+        variant.variant_id,
+        status
+      );
+
+      const newStatus = status === true ? "in_stock" : "out_of_stock";
+      const newVariants = variants.map((variantMap) => {
+        if (variantMap.variant_id === variant.variant_id) {
+          return {
+            ...variant,
+            item_status: newStatus,
+          };
+        }
+        return variantMap;
+      });
+      setVariants(newVariants);
+    } catch (error) {}
+  };
 
   return (
     <div className={cx("wrapper")}>
@@ -146,13 +171,15 @@ function Promotion() {
           loading={loading}
           handleCheckVariants={handleCheckVariants}
           checkedVariant={checkedVariant}
+          handleVariantStatus={handleVariantStatus}
+          onButton={true}
         />
 
         <PromotionList showListPromotionMoral={showListPromotionMoral} />
         <div
           className={cx("promotion-wrapper", {
-            show: showAddPromotionMoral,
-            hide: !showAddPromotionMoral,
+            show: showAddPromotionMoral === true,
+            hide: showAddPromotionMoral === false,
           })}
         >
           <div className={cx("promotion-container")}>

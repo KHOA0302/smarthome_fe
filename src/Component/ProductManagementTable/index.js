@@ -25,6 +25,7 @@ function ProductManagementTable({
   editMode = false,
   promotionMode = false,
   handleCheckVariants = () => {},
+  handleVariantStatus = () => {},
   checkedVariant = [],
   loading,
 }) {
@@ -104,7 +105,10 @@ function ProductManagementTable({
                       outStock: !status,
                       checked: checkedVariant?.includes(product.variant_id),
                     })}
-                    onClick={() => handleOnchangeCheckbox(product)}
+                    onClick={() => {
+                      if (!status) return;
+                      handleOnchangeCheckbox(product);
+                    }}
                   >
                     <td>
                       {editMode && predictMode && id + 1}
@@ -119,7 +123,10 @@ function ProductManagementTable({
                             onClick={(e) => {
                               e.stopPropagation();
                             }}
-                            onChange={(e) => handleOnchangeCheckbox(product)}
+                            onChange={(e) => {
+                              if (!status) return;
+                              handleOnchangeCheckbox(product);
+                            }}
                             checked={checkedVariant.includes(
                               product.variant_id
                             )}
@@ -197,7 +204,13 @@ function ProductManagementTable({
                         product?.predicted_order_next_quarter?.toFixed(2)}
                     </td>
                     <td>
-                      <ToggleBtn active={status} onButton={onButton} />
+                      <ToggleBtn
+                        active={status}
+                        onButton={onButton}
+                        handleVariantStatus={() =>
+                          handleVariantStatus(product, !status)
+                        }
+                      />
                     </td>
                   </tr>
                 );

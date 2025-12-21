@@ -15,7 +15,7 @@ import { toast, ToastContainer } from "react-toastify";
 const cx = classNames.bind(styles);
 
 function ProductSection() {
-  const [isSave, setIsSave] = useState(false);
+  const [isSave, setIsSave] = useState(true);
   const [loading, setLoading] = useState(true);
   const [productBase, setProductBase] = useState({
     name: "",

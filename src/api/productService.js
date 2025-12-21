@@ -84,8 +84,17 @@ const productService = {
     });
   },
 
-  getAllVariants: () => {
-    return axiosClient.get("/product/get-all-variants");
+  getAllVariants: (brand, category, status) => {
+    let statusModify = "";
+    if (status === 1) statusModify = "in_stock";
+    if (status === 0) statusModify = "out_of_stock";
+    return axiosClient.get(
+      `/product/get-all-variants?brand=${brand}&category=${category}&status=${statusModify}`
+    );
+  },
+
+  editVariantStatus: (variantId, status) => {
+    return axiosClient.patch("/product/edit-status", { variantId, status });
   },
 };
 

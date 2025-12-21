@@ -16,6 +16,7 @@ import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css";
 import Tippy from "@tippyjs/react";
 import { reviewService } from "../../api/reviewService";
+import { error } from "ajv/dist/vocabularies/applicator/dependencies";
 
 const cx = classNames.bind(styles);
 
@@ -364,7 +365,7 @@ const lookupMessageForStatus = {
   cancel: "Đơn hàng đã bị hủy",
 };
 
-function OrderList({ orders, setOrders, role = "customer" }) {
+function OrderList({ orders = [], setOrders, role = "customer" }) {
   const isAdmin = role === "admin";
   const TableTile = lookupTableTitle[role];
   const [showProduct, setShowProduct] = useState("");
@@ -375,32 +376,37 @@ function OrderList({ orders, setOrders, role = "customer" }) {
 
   const handleOrderStatus = async (orderId, status) => {
     if (loading) return;
-    try {
-      setLoading(true);
-      const editPromise = orderService.editOrderStatus(orderId, status);
-      toast
-        .promise(editPromise, {
-          pending: "Đang thay đổi trạng thái...",
-          success: lookupMessageForStatus[status],
-          error: editPromise.data.message,
-        })
-        .then(() => {
-          const newOrders = orders.map((order) => {
-            if (order.order_id === orderId) {
-              return {
-                ...order,
-                order_status: status,
-              };
-            }
-            return order;
-          });
-          setOrders(newOrders);
-          setLoading(false);
+
+    setLoading(true);
+    const editPromise = orderService.editOrderStatus(orderId, status);
+    toast
+      .promise(editPromise, {
+        pending: "Đang thay đổi trạng thái...",
+        success: lookupMessageForStatus[status],
+        error: "Cập nhật không thành công!!",
+      })
+      .then(() => {
+        const newOrders = orders.map((order) => {
+          if (order.order_id === orderId) {
+            return {
+              ...order,
+              order_status: status,
+            };
+          }
+          return order;
         });
-    } catch (error) {
-      setLoading(false);
-      console.error(error);
-    }
+        setOrders(newOrders);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.response?.data?.message ||
+          error.message ||
+          "Lỗi không xác định.";
+        toast.error(errorMessage);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {

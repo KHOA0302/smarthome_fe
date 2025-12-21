@@ -162,21 +162,23 @@ function Cart() {
       }
     });
 
-    toast.promise(
-      createOrderPromise,
-      {
-        pending: "Đang tạo đơn hàng...",
-        success: "Đơn hàng đã được tạo thành công! 🎉",
-        error: {
-          render({ data }) {
-            return data.response.data.message || "Tạo đơn hàng thất bại";
-          },
+    toast
+      .promise(
+        createOrderPromise,
+        {
+          pending: "Đang tạo đơn hàng...",
+          success: "Đơn hàng đã được tạo thành công! 🎉",
+          error: "Tạo đơn hàng thất bại",
         },
-      },
-      {
-        toastClassName: "custom-toast-position",
-      }
-    );
+        {
+          toastClassName: "custom-toast-position",
+        }
+      )
+
+      .catch((error) => {
+        const errorMess = error?.response.data.message;
+        toast.error(errorMess);
+      });
   };
 
   const isAuth = authService.isAuthenticated();

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import OutStockAlert from "../../../Component/OutStockAlert";
 import ProductManagementTable from "../../../Component/ProductManagementTable";
 import styles from "./Dashboard.module.scss";
 import classNames from "classnames/bind";
@@ -7,6 +6,8 @@ import productService from "../../../api/productService";
 import FilterForProductManagementTable from "../../../Component/FilterForProductManagementTable";
 import ChartForProductPrediction from "../../../Component/ChartForProductPrediction";
 import * as XLSX from "xlsx";
+import { useSocket } from "../../../context/SocketContext";
+import { notificationService } from "../../../api/notificationService";
 
 const cx = classNames.bind(styles);
 
@@ -60,6 +61,8 @@ const exportToExcel = (
 };
 
 function Dashboard() {
+  const { state, isConnected } = useSocket();
+  const [notifications, setNotifications] = useState({ inventoryAlerts: [] });
   const [loading, setLoading] = useState(false);
   const [productsDetail, setProductsDetail] = useState([]);
   const [productFilter, setProductFilter] = useState(initialFilterState);
@@ -88,14 +91,29 @@ function Dashboard() {
     try {
       setLoading(true);
       const { brand, category, status } = productFilter;
-
-      const res = await productService.getProductPrediction(
+      const resProductService = await productService.getProductPrediction(
         brand.id,
         category.id,
         status.id
       );
 
-      setProductsDetail(res.data);
+      setProductsDetail(resProductService.data);
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchNotification = async () => {
+    try {
+      setLoading(true);
+
+      const resNotification = await notificationService.getNotificationAlert();
+      setNotifications({
+        inventoryAlerts: resNotification.data.data.variantsData,
+      });
     } catch (error) {
       setLoading(false);
       console.error(error);
@@ -106,7 +124,20 @@ function Dashboard() {
 
   useEffect(() => {
     fetchProduct();
+    fetchNotification();
   }, [productFilter]);
+
+  useEffect(() => {
+    console.log("state change");
+    const newInventoryAlert = [
+      ...state.inventoryAlerts,
+      ...notifications.inventoryAlerts,
+    ];
+    setNotifications({
+      ...notifications,
+      inventoryAlerts: newInventoryAlert,
+    });
+  }, [state]);
 
   const compositeProductPredictedData = productsDetail.reduce((acc, item) => {
     const brand = item.product.brand.brand_name;
@@ -128,10 +159,11 @@ function Dashboard() {
     return acc;
   }, {});
 
+  console.log("mess: ", state, "noti: ", notifications);
+
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
-        <OutStockAlert />
         <FilterForProductManagementTable
           onChangeFilter={handleFilterChange}
           currentFilters={productFilter}

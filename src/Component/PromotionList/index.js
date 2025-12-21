@@ -40,12 +40,25 @@ function PromotionList({ showListPromotionMoral }) {
     fetchPromotion();
   }, [showListPromotionMoral]);
 
-  console.log(promotions);
+  if (!promotions.length)
+    return (
+      <div
+        className={cx("promotion-wrapper", {
+          show: showListPromotionMoral === true,
+          hide: showListPromotionMoral === false,
+        })}
+      >
+        <div className={cx("promotion-container")}>
+          <h3 className={cx('non-promotion-title')}>Không có chương trình giảm giá nào</h3>
+        </div>
+      </div>
+    );
+
   return (
     <div
       className={cx("promotion-wrapper", {
-        show: showListPromotionMoral,
-        hide: !showListPromotionMoral,
+        show: showListPromotionMoral === true,
+        hide: showListPromotionMoral === false,
       })}
     >
       <div className={cx("promotion-container")}>

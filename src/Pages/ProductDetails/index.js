@@ -260,7 +260,7 @@ function ProductDetails() {
         {
           pending: "Đang thêm sản phẩm...",
           success: "Thêm sản phẩm thành công!",
-          error: "Thêm sản phẩm thất bại! Vui lòng thử lại.",
+          error: "Thêm sản phẩm thất bại!.",
         },
         {
           toastClassName: "custom-toast-position",
@@ -270,6 +270,13 @@ function ProductDetails() {
         if (isNavigate) {
           navigate("/cart");
         }
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.response?.data?.message ||
+          error.message ||
+          "Lỗi không xác định.";
+        toast.error(errorMessage);
       });
   };
 

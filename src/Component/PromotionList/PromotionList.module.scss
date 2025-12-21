@@ -1,3 +1,26 @@
+@keyframes reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hide {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
 .promotion-wrapper {
   position: fixed;
   height: 86%;
@@ -29,6 +52,12 @@
     rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
     rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
   overflow: auto;
+
+  .non-promotion-title {
+    background-color: white;
+    padding: 4px;
+    font-weight: 700;
+  }
 }
 
 .promotion-list {

@@ -33,8 +33,6 @@ function ReviewSection({ productId, productName }) {
     fetchReviews();
   }, []);
 
-  console.log(reviews);
-
   const averageStar =
     reviews.reduce((acc, review) => {
       return acc + review.rating;
@@ -42,6 +40,7 @@ function ReviewSection({ productId, productName }) {
 
   const starBreakdownPercent = (star) =>
     (reviews.reduce((acc, review) => {
+      console.log(review.rating);
       if (review.rating === star) {
         return acc + 1;
       }
@@ -75,7 +74,7 @@ function ReviewSection({ productId, productName }) {
           <div className={cx("rating-average")}>
             <div className={cx("top")}>
               <FullStarIcon />
-              <span>{averageStar.toFixed(1)}</span>
+              <span>{!!averageStar ? averageStar.toFixed(1) : 0}</span>
               <span>/5</span>
             </div>
             <span className={cx("bottom")}>{reviews.length} đánh giá</span>
@@ -92,7 +91,9 @@ function ReviewSection({ productId, productName }) {
                     <div
                       className={cx("fill-bar")}
                       style={{
-                        width: `${starBreakdownPercent(star)}%`,
+                        width: `${
+                          reviews.length && starBreakdownPercent(star)
+                        }%`,
                       }}
                     ></div>
                   </div>
@@ -101,7 +102,7 @@ function ReviewSection({ productId, productName }) {
                       placeContent: "end",
                     }}
                   >
-                    {starBreakdownPercent(star).toFixed(0)}%
+                    {reviews.length && starBreakdownPercent(star).toFixed(0)}%
                   </span>
                 </div>
               );

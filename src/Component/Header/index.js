@@ -145,9 +145,21 @@ function Header() {
                 <span>{cartItemQuant}</span>
               </div>
             </Link>
-            <Link className={cx("avatar", "navbar")} to="/customer">
-              <img src={user.avatar || zaku} />
-            </Link>
+            {user?.role?.role_name === "admin" && (
+              <Link className={cx("avatar", "navbar")} to="/admin">
+                <img src={user.avatar || zaku} />
+              </Link>
+            )}
+            {user?.role?.role_name === "customer" && (
+              <Link className={cx("avatar", "navbar")} to="/customer">
+                <img src={user.avatar || zaku} />
+              </Link>
+            )}
+            {!user?.role?.role_name && (
+              <Link className={cx("avatar", "navbar")} to="/login">
+                <img src={user.avatar || zaku} />
+              </Link>
+            )}
           </div>
         </div>
       </div>
