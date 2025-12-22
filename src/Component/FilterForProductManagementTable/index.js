@@ -3,9 +3,11 @@ import styles from "./FilterForProductManagementTable.module.scss";
 import classNames from "classnames/bind";
 import { brandService } from "../../api/brandService";
 import { categoryService } from "../../api/categoryService";
-import { BellIcon, ResetIcon } from "../../icons";
+import { BellIcon, RemoveIcon, ResetIcon, SpecialArrowIcon } from "../../icons";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
+import { formatNumber } from "../../utils/formatNumber";
+import { notificationService } from "../../api/notificationService";
 
 const cx = classNames.bind(styles);
 function FilterForProductManagementTable({
@@ -16,13 +18,21 @@ function FilterForProductManagementTable({
   editMode = false,
   predictMode = false,
   exportToExcel,
+  notifications = {
+    inventoryAlerts: [],
+    orderAlerts: [],
+  },
   handleAddPromotion = () => {},
   handleListPromotion = () => {},
   handleCheckVariants = () => {},
+  adminDashboard = false,
+  customerDashboard = false,
 }) {
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
   const [showFilterList, setShowFilterList] = useState("");
+  const [showNotification, setShowNotification] = useState(true);
+  const [notifyTab, setNotifyTab] = useState("inventory");
 
   const fetchBrandAndCategory = async () => {
     try {
@@ -79,6 +89,16 @@ function FilterForProductManagementTable({
   const handleReload = () => {
     fetchProduct();
     if (promotionMode) handleCheckVariants({ clear: true });
+  };
+
+  const handleRemoveNotification = async ({ e, id }) => {
+    e.stopPropagation();
+    try {
+      const res = await notificationService.deleteNotification(id);
+      console.log(res);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -182,13 +202,114 @@ function FilterForProductManagementTable({
             </button>
           </div>
         </Tippy>
-        <Tippy content="Thông báo sản phẩm hết hàng">
-          <div className={cx("notification")}>
-            <button>
-              <BellIcon />
-            </button>
+
+        <div
+          className={cx("notification")}
+          // onMouseEnter={() => setShowNotification(!showNotification)}
+          // onMouseLeave={() => setShowNotification(!showNotification)}
+        >
+          <button
+            className={cx("bell", {
+              ring: notifications?.inventoryAlerts.length,
+            })}
+          >
+            <BellIcon />
+          </button>
+
+          <div
+            className={cx("notification-list-wrapper", {
+              show: showNotification === true,
+              hide: showNotification === false,
+            })}
+          >
+            <div className={cx("notification-list-container")}>
+              <div className={cx("notification-title")}>
+                <div
+                  className={cx("title_inventory", {
+                    tab: notifyTab === "inventory",
+                  })}
+                  onClick={() => setNotifyTab("inventory")}
+                >
+                  <span>Tồn kho</span>
+                  <Tippy content={"số lượng thông báo"}>
+                    <span>{notifications?.inventoryAlerts.length || 0}</span>
+                  </Tippy>
+                </div>
+                <div
+                  className={cx("title_order", {
+                    tab: notifyTab === "order",
+                  })}
+                  onClick={() => setNotifyTab("order")}
+                >
+                  <span>Đơn hàng</span>
+                  <Tippy content={"số lượng thông báo"}>
+                    <span>{notifications?.orderAlerts.length || 0}</span>
+                  </Tippy>
+                </div>
+              </div>
+              <div className={cx("blank")}>
+                {adminDashboard && (
+                  <div className={cx("notification-list-inventory")}>
+                    <div className={cx("inventory-wrapper")}>
+                      {!notifications?.inventoryAlerts.length && (
+                        <h3>Không có thông báo</h3>
+                      )}
+                      {notifications?.inventoryAlerts.map((alert, id) => {
+                        const variant = alert.variant;
+                        const [promotion] = variant?.promotions;
+                        const discountPrice =
+                          promotion &&
+                          parseInt(variant.price) -
+                            (parseInt(variant.price) *
+                              parseInt(promotion.discount_value)) /
+                              100;
+
+                        return (
+                          <div className={cx("alert-wrapper")} key={id}>
+                            <div className={cx("alert-item")}>
+                              <div className={cx("alert-variant-img")}>
+                                <img src={variant.image_url} />
+                              </div>
+                              <div className={cx("alert-variant-name-price")}>
+                                <div className={cx("name")}>
+                                  <span>{variant.variant_name}</span>
+                                </div>
+                                <div className={cx("price")}>
+                                  <span className={cx({ discount: promotion })}>
+                                    {formatNumber(parseInt(variant.price))}đ
+                                  </span>
+                                  <span className={cx({ discount: promotion })}>
+                                    {promotion &&
+                                      formatNumber(parseInt(discountPrice)) +
+                                        "đ"}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <Tippy content="Xóa thông báo">
+                              <button
+                                className={cx("alert-remove")}
+                                type="button"
+                                onClick={(e) =>
+                                  handleRemoveNotification({ e, id: alert.id })
+                                }
+                              >
+                                <RemoveIcon />
+                              </button>
+                            </Tippy>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                <div className={cx("notification-list-order")}>
+                  <div className={cx("order-wrapper")}></div>
+                </div>
+              </div>
+            </div>
           </div>
-        </Tippy>
+        </div>
 
         {promotionMode && (
           <>

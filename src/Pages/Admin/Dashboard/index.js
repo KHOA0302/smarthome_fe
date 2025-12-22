@@ -61,8 +61,11 @@ const exportToExcel = (
 };
 
 function Dashboard() {
-  const { state, isConnected } = useSocket();
-  const [notifications, setNotifications] = useState({ inventoryAlerts: [] });
+  const { lastMessage, isConnected } = useSocket();
+  const [notifications, setNotifications] = useState({
+    inventoryAlerts: [],
+    orderAlerts: [],
+  });
   const [loading, setLoading] = useState(false);
   const [productsDetail, setProductsDetail] = useState([]);
   const [productFilter, setProductFilter] = useState(initialFilterState);
@@ -112,6 +115,7 @@ function Dashboard() {
 
       const resNotification = await notificationService.getNotificationAlert();
       setNotifications({
+        ...notifications,
         inventoryAlerts: resNotification.data.data.variantsData,
       });
     } catch (error) {
@@ -124,20 +128,36 @@ function Dashboard() {
 
   useEffect(() => {
     fetchProduct();
-    fetchNotification();
   }, [productFilter]);
 
   useEffect(() => {
-    console.log("state change");
-    const newInventoryAlert = [
-      ...state.inventoryAlerts,
-      ...notifications.inventoryAlerts,
-    ];
-    setNotifications({
-      ...notifications,
-      inventoryAlerts: newInventoryAlert,
-    });
-  }, [state]);
+    fetchNotification();
+  }, []);
+
+  useEffect(() => {
+    switch (lastMessage.type) {
+      case "NEW_INVENTORY_ALERT":
+        const newInventoryAlert = [
+          lastMessage,
+          ...notifications.inventoryAlerts,
+        ];
+        setNotifications({
+          ...notifications,
+          inventoryAlerts: newInventoryAlert,
+        });
+        break;
+      case "DELETE_INVENTORY_ALERT":
+        setNotifications((prev) => ({
+          ...prev,
+          inventoryAlerts: prev.inventoryAlerts.filter(
+            (alert) => alert.id !== lastMessage.id
+          ),
+        }));
+        break;
+      default:
+        break;
+    }
+  }, [lastMessage]);
 
   const compositeProductPredictedData = productsDetail.reduce((acc, item) => {
     const brand = item.product.brand.brand_name;
@@ -159,8 +179,6 @@ function Dashboard() {
     return acc;
   }, {});
 
-  console.log("mess: ", state, "noti: ", notifications);
-
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
@@ -170,6 +188,8 @@ function Dashboard() {
           predictMode={true}
           fetchProduct={fetchProduct}
           exportToExcel={() => exportToExcel(productsDetail)}
+          notifications={notifications}
+          adminDashboard={true}
         />
         <ProductManagementTable
           productsDetail={productsDetail}

@@ -43,6 +43,7 @@ import { GoStarFill } from "react-icons/go";
 import { GrPowerReset } from "react-icons/gr";
 import { PiBellSimpleRingingFill } from "react-icons/pi";
 import { MdOutlineDiscount } from "react-icons/md";
+import { CiCircleRemove } from "react-icons/ci";
 
 export {
   BiAddToQueue as AddIcon,
@@ -90,4 +91,5 @@ export {
   GrPowerReset as ResetIcon,
   PiBellSimpleRingingFill as BellIcon,
   MdOutlineDiscount as PromotionIcon,
+  CiCircleRemove as RemoveIcon,
 };

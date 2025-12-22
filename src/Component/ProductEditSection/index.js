@@ -11,7 +11,6 @@ import VariantEdit from "../VariantEdit";
 import ServiceEdit from "../ServiceEdit";
 import SpecificationEdit from "../SpecificationEdit";
 import productService from "../../api/productService";
-import { toast, ToastContainer } from "react-toastify";
 
 const cx = classNames.bind(styles);
 function ProductEditSection() {

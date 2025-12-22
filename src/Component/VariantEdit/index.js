@@ -38,37 +38,30 @@ function VariantEdit({ variants, dispatch, reFetch }) {
   const fetch = async (e) => {
     e.preventDefault();
 
-    const fullProcessPromise = new Promise(async (resolve, reject) => {
-      try {
-        const updateVariants = await Promise.all(
-          variants.map(async (variant) => {
-            if (variant.file) {
-              const imgUrlFirebase = await uploadImageToFirebase(
-                variant.file,
-                "variant"
-              );
-              return {
-                ...variant,
-                image_url: imgUrlFirebase,
-              };
-            }
-            return variant;
-          })
-        );
+    // 1. Tạo một hàm xử lý logic riêng (không cần bọc new Promise)
+    const processUpdate = async () => {
+      // Xử lý upload ảnh
+      const updateVariants = await Promise.all(
+        variants.map(async (variant) => {
+          if (variant.file) {
+            const imgUrlFirebase = await uploadImageToFirebase(
+              variant.file,
+              "variant"
+            );
+            return { ...variant, image_url: imgUrlFirebase };
+          }
+          return variant;
+        })
+      );
 
-        const res = await productService.editVariants(
-          productId,
-          updateVariants
-        );
+      // Gọi API cập nhật
+      const res = await productService.editVariants(productId, updateVariants);
+      return res; // Trả về kết quả cho Toast success
+    };
 
-        resolve(res);
-      } catch (error) {
-        reject(error);
-      }
-    });
-
+    // 2. Sử dụng toast.promise trực tiếp với hàm xử lý
     try {
-      const res = await toast.promise(fullProcessPromise, {
+      const res = await toast.promise(processUpdate(), {
         pending: "Đang xử lý, vui lòng chờ...",
         success: "Cập nhật sản phẩm thành công! 🎉",
         error: "Đã xảy ra lỗi trong quá trình xử lý! 😔",
@@ -76,7 +69,7 @@ function VariantEdit({ variants, dispatch, reFetch }) {
 
       console.log(res.data);
     } catch (error) {
-      console.error(error);
+      console.error("Lỗi tại đây:", error);
     }
   };
 

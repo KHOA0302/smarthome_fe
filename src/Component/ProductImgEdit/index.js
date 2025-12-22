@@ -52,34 +52,38 @@ function ProductImgsEdit({ productImgs, dispatch, reFetch }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const promiseToast = new Promise(async (resolve, reject) => {
-      let updateProductImgs;
+    // 1. Định nghĩa hàm xử lý logic (hàm này tự động trả về một Promise)
+    const processSubmit = async () => {
+      let updateProductImgs = [...productImgs]; // Bản sao để xử lý
+
+      // Tác vụ 1: Upload ảnh mới lên Firebase
+      updateProductImgs = await Promise.all(
+        productImgs.map(async (img) => {
+          if (!img.isRemove && img.file) {
+            const imgUrlFirebase = await uploadImageToFirebase(
+              img.file,
+              "basic"
+            );
+            return {
+              ...img,
+              image_url: imgUrlFirebase,
+              file: "",
+            };
+          }
+          return img;
+        })
+      );
+
       try {
-        updateProductImgs = await Promise.all(
-          productImgs.map(async (img) => {
-            if (!img.isRemove && img.file) {
-              const imgUrlFirebase = await uploadImageToFirebase(
-                img.file,
-                "basic"
-              );
-              return {
-                ...img,
-                image_url: imgUrlFirebase,
-                file: "",
-              };
-            }
-            return img;
-          })
-        );
-
-        const imgsToDelete = updateProductImgs.filter((img) => img.isRemove);
-
+        // Tác vụ 2: Gọi API cập nhật
         const res = await productService.editProductImgs(
           productId,
           updateProductImgs
         );
 
         if (res.status === 200) {
+          // Tác vụ 3: Xóa ảnh cũ trên Firebase nếu API thành công
+          const imgsToDelete = updateProductImgs.filter((img) => img.isRemove);
           await Promise.all(
             imgsToDelete.map(async (img) => {
               if (typeof img.img_id === "number") {
@@ -87,12 +91,12 @@ function ProductImgsEdit({ productImgs, dispatch, reFetch }) {
               }
             })
           );
+          return res; // Trả về để Toast hiện "success"
+        } else {
+          throw new Error("API_ERROR");
         }
-
-        resolve(res);
       } catch (error) {
-        console.error(error);
-
+        // Tác vụ 4: Cleanup (Xóa ảnh vừa upload nếu API thất bại)
         const newImgsUploaded = updateProductImgs.filter(
           (img) =>
             typeof img.img_id !== "number" &&
@@ -105,15 +109,18 @@ function ProductImgsEdit({ productImgs, dispatch, reFetch }) {
             newImgsUploaded.map(async (img) => {
               try {
                 await deleteImageFromFirebase(img.image_url);
-              } catch (deleteError) {}
+              } catch (cleanupErr) {
+                console.error("Cleanup error:", cleanupErr);
+              }
             })
           );
         }
-        reject(error);
+        throw error; // Quăng lỗi để Toast hiện "error"
       }
-    });
+    };
 
-    toast.promise(promiseToast, {
+    // 2. Thực thi với toast.promise
+    await toast.promise(processSubmit(), {
       pending: "Đang cập nhật sản phẩm...",
       success: "Cập nhật sản phẩm thành công!",
       error: "Cập nhật sản phẩm thất bại! Vui lòng thử lại.",
