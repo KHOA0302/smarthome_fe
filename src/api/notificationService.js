@@ -2,6 +2,7 @@ import axiosClient from "./axiosClient";
 
 const notificationService = {
   getNotificationAlert: () => {
+    console.log("fetch");
     return axiosClient.get("/notification/get-notification-alert");
   },
   deleteNotification: (notificationId) => {

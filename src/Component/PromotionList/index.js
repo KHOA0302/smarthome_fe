@@ -49,7 +49,9 @@ function PromotionList({ showListPromotionMoral }) {
         })}
       >
         <div className={cx("promotion-container")}>
-          <h3 className={cx('non-promotion-title')}>Không có chương trình giảm giá nào</h3>
+          <h3 className={cx("non-promotion-title")}>
+            Không có chương trình giảm giá nào
+          </h3>
         </div>
       </div>
     );
@@ -64,7 +66,7 @@ function PromotionList({ showListPromotionMoral }) {
       <div className={cx("promotion-container")}>
         {promotions.map((promotion, id) => {
           return (
-            <div className={cx("promotion-list")}>
+            <div className={cx("promotion-list")} key={id}>
               <div className={cx("promotion-main")}>
                 <div className={cx("promotion-info")}>
                   <div className={cx("promotion-name")}>

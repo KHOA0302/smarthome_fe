@@ -106,12 +106,30 @@ function Cart() {
     fetchCartItem();
   }, []);
 
-  const totalPrice = state.cartItems.reduce(
-    (accumulator, currentValue) =>
-      accumulator +
-      parseInt(currentValue.price) * parseInt(currentValue.quantity),
-    0
-  );
+  console.log(cartItems);
+
+  const totalPrice = state.cartItems.reduce((accumulator, cartItem) => {
+    const servicesPrice = cartItem.services.reduce((ac, service) => {
+      return ac + parseFloat(service.price || 0);
+    }, 0);
+
+    const price = parseFloat(cartItem.variant.price);
+
+    const discountPrice =
+      (parseInt(cartItem.variant.price) *
+        (100 -
+          parseInt(
+            cartItem.variant?.promotionVariant?.promotion?.discount_value
+          ))) /
+        100 || null;
+
+    const fullPrice = discountPrice
+      ? parseFloat(discountPrice) + parseFloat(servicesPrice)
+      : price + parseFloat(servicesPrice);
+
+    console.log(fullPrice);
+    return accumulator + parseInt(fullPrice) * parseInt(cartItem.quantity);
+  }, 0);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -140,15 +158,15 @@ function Cart() {
       try {
         const res = await orderService.createOrder(state.orderInfo, guestInfo);
         if (res.status === 201) {
-          resolve("Đơn hàng đã được tạo thành công!");
           const redirectToVnPay = res.data?.redirect;
 
           if (res.data?.redirect) {
-            window.location.href = redirectToVnPay;
+            window.open(redirectToVnPay, "_blank");
           }
           setCartItemQuant(0);
           setShowCover(false);
           originalDispatch({ type: "CLEAR_CART" });
+          resolve("Đơn hàng đã được tạo thành công!");
         } else {
           reject(new Error(res.data.message));
           originalDispatch({ type: "FETCH_ERROR", payload: res.data.message });

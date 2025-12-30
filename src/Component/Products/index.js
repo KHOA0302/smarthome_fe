@@ -7,6 +7,7 @@ const cx = classNames.bind(styles);
 function Products({ fetchProduct, title }) {
   const [variants, setVariants] = useState([]);
   const limit = 5;
+
   useEffect(() => {
     const fetch = async () => {
       try {

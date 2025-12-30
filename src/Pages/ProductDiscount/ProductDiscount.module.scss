@@ -1,0 +1,17 @@
+.wrapper {
+  h3 {
+    padding: 4px 8px;
+    margin-bottom: 12px;
+    background-color: white;
+    border-radius: 4px;
+    width: fit-content;
+  }
+}
+
+.container {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(5, 1fr);
+  background-color: white;
+  padding: 20px;
+}

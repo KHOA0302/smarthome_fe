@@ -19,6 +19,9 @@ const orderService = {
   editOrderStatus: (orderId, status) => {
     return axiosClient.put("/order/edit-order-status", { orderId, status });
   },
+  editRevertOrderStatus: (orderId) => {
+    return axiosClient.patch(`/order/edit-revert-order-status/${orderId}`);
+  },
 };
 
 export default orderService;

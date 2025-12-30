@@ -6,12 +6,15 @@ import { useNavigate } from "react-router-dom";
 import { EyeCloseIcon, EyeOpenIcon } from "../../../icons";
 import banner from "../../../images/household-electric-devices.jpg";
 import { GoogleLogin } from "@react-oauth/google";
+import { useAuth } from "../../../context/AuthContext";
 const cx = classNames.bind(styles);
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState("");
+
+  const { login } = useAuth();
 
   const navigate = useNavigate();
 
@@ -48,12 +51,7 @@ function Login() {
     setError("");
 
     try {
-      const response = await authService.login(username, password);
-
-      const { token, user } = response.data;
-
-      localStorage.setItem("jwt_token", token);
-      localStorage.setItem("user_info", JSON.stringify(user));
+      const user = await login(username, password);
 
       if (user && user.role_name) {
         if (user.role_name === "admin") {

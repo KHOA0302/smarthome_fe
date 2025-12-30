@@ -17,7 +17,7 @@ function ProductEditSection() {
   const [state, dispatch] = useReducer(reducer, initState);
   const { productId } = useParams();
 
-  console.log(1);
+
   const fetchProductDetails = async () => {
     dispatch({ type: "FETCH_START" });
     try {

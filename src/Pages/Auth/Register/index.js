@@ -29,9 +29,9 @@ function Register() {
     }));
   };
 
-  console.log(process.env.REACT_APP_GOOGLE_CLIENT_ID);
+  
   const handleSubmit = async (e) => {
-    console.log(process.env.REACT_APP_GOOGLE_CLIENT_ID);
+ 
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -52,12 +52,10 @@ function Register() {
       const data = res.data;
 
       if (res.status === 201) {
-        console.log(data.message);
-        console.log(data.user);
+     
         navigate("/login", { replace: true });
       } else if (res.status === 200) {
-        console.log(data.message);
-        console.log(data.user);
+       
         navigate("/", { replace: true });
       } else {
         setError("Đăng ký thất bại. Vui lòng thử lại.");

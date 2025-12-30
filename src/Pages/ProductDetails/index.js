@@ -23,6 +23,7 @@ import warrant from "../../images/icon bao hanh170837.png";
 import exchange from "../../images/Exchange232102.png";
 import stroke from "../../images/stroke104155.png";
 import ReviewSection from "../../Component/ReviewSection";
+import Tippy from "@tippyjs/react";
 
 const cx = classNames.bind(styles);
 function ProductDetails() {
@@ -54,6 +55,8 @@ function ProductDetails() {
         );
 
         const data = response.data;
+
+        console.log(data);
 
         if (!ignore) {
           dispatch({ type: "FETCH_SUCCESS", payload: data });
@@ -204,59 +207,43 @@ function ProductDetails() {
   const { setCartItemQuant } = useCartItemQuantContext();
 
   const handleAddCart = (isNavigate = false) => {
-    const promiseToast = new Promise(async (resolve, reject) => {
-      try {
-        const optionValuesChoose = allOptions.map((option) => {
-          const newOptionValues = option.optionValues.filter(
-            (value) => value.selected
-          );
+    const addToCartLogic = async () => {
+      const optionValuesChoose = allOptions.map((option) => ({
+        ...option,
+        optionValues: option.optionValues.filter((v) => v.selected),
+      }));
 
-          return {
-            ...option,
-            optionValues: [...newOptionValues],
-          };
-        });
-
-        const servicePackageChoose = servicePackages
-          .filter((sp) => sp.selected)
-          .map((sp) => {
-            const newItems = sp.items.filter((item) => item.selected);
-            return {
-              ...sp,
-              items: newItems,
-            };
-          })[0];
-
-        const cartItems = {
-          selectedVariant,
-          optionValuesChoose,
-          servicePackageChoose,
-        };
-
-        const res = await cartService.createCartItem(cartItems);
-
-        if (res.status === 200) {
-          const resCar = await cartService.getCartItem();
-          if (resCar.status === 200) {
-            setCartItemQuant(
-              resCar.data.cartItems.reduce(
-                (number, item) => item.quantity + number,
-                0
-              )
-            );
+      const selectedPkg = servicePackages.find((sp) => sp.selected);
+      const servicePackageChoose = selectedPkg
+        ? {
+            ...selectedPkg,
+            items: selectedPkg.items.filter((item) => item.selected),
           }
-        }
+        : null;
 
-        resolve(res);
-      } catch (error) {
-        setIsOverQuantity(true);
-        reject(error);
+      const cartItems = {
+        selectedVariant,
+        optionValuesChoose,
+        servicePackageChoose,
+      };
+
+      const res = await cartService.createCartItem(cartItems);
+
+      const resCar = await cartService.getCartItem();
+      if (resCar.status === 200) {
+        const totalQuant = resCar.data.cartItems.reduce(
+          (total, item) => total + item.quantity,
+          0
+        );
+        setCartItemQuant(totalQuant);
       }
-    });
+
+      return res;
+    };
 
     toast
       .promise(
-        promiseToast,
+        addToCartLogic(),
         {
           pending: "Đang thêm sản phẩm...",
           success: "Thêm sản phẩm thành công!",
@@ -283,6 +270,8 @@ function ProductDetails() {
   const handleChangeDisplayImg = (newDisplayImg) => {
     dispatch({ type: "CHANGE_DISPLAY_IMG", payload: newDisplayImg });
   };
+
+  const discountValue = selectedVariant?.promotions?.discountValue;
 
   return (
     <div className={cx("wrapper")}>
@@ -339,6 +328,13 @@ function ProductDetails() {
                 <div className={cx("product-img_nav")}></div>
                 <div className={cx("product-img_display")}>
                   <img src={displayImg?.imageUrl} />
+                  {discountValue > 0 && (
+                    <Tippy content="Giảm giá">
+                      <div className={cx("discount-tag")}>
+                        <span>-{parseInt(discountValue)}%</span>
+                      </div>
+                    </Tippy>
+                  )}
                 </div>
               </div>
               <div className={cx("product-imgs-choice_area")}>
@@ -441,6 +437,22 @@ function ProductDetails() {
                               }
                               return totalItemsPrice;
                             }, 0) + selectedVariant?.price;
+
+                          const totalPriceAfterDiscount =
+                            selectedVariant?.promotions?.discountValue &&
+                            sPackage.items.reduce((totalItemsPrice, item) => {
+                              if (item.selected) {
+                                return totalItemsPrice + item.itemPriceImpact;
+                              }
+                              return totalItemsPrice;
+                            }, 0) +
+                              (selectedVariant?.price *
+                                (100 -
+                                  parseInt(
+                                    selectedVariant?.promotions?.discountValue
+                                  ))) /
+                                100;
+
                           return (
                             <div
                               className={cx("variant-service_package", {
@@ -461,9 +473,21 @@ function ProductDetails() {
                                   />
                                   <span>{sPackage.packageName}</span>
                                 </div>
-                                <span className={cx("total-price")}>
-                                  {formatNumber(totalPrice) + "đ"}
-                                </span>
+                                <div className={cx("total-price")}>
+                                  <span
+                                    className={cx({
+                                      discount: totalPriceAfterDiscount,
+                                    })}
+                                  >
+                                    {formatNumber(totalPrice) + "đ"}
+                                  </span>
+                                  {totalPriceAfterDiscount && (
+                                    <span>
+                                      {formatNumber(totalPriceAfterDiscount) +
+                                        "đ"}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
                               <div className={cx("variant-service_items")}>
                                 {sPackage.items.map((item, i) => {
@@ -608,7 +632,14 @@ function ProductDetails() {
                                         >
                                           <span>Tổng tiền</span>
                                           <span>
-                                            {formatNumber(totalPrice)}đ
+                                            {totalPriceAfterDiscount
+                                              ? formatNumber(
+                                                  parseInt(
+                                                    totalPriceAfterDiscount
+                                                  )
+                                                )
+                                              : formatNumber(totalPrice)}
+                                            đ
                                           </span>
                                         </div>
                                       </div>

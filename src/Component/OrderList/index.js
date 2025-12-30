@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
 import styles from "./OrderList.module.scss";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { formatNumber } from "../../utils/formatNumber";
 import {
   ArrowRightIcon,
@@ -8,6 +8,7 @@ import {
   CommentIcon,
   ExistIcon,
   FullStarIcon,
+  IconUndo,
   StarIcon,
 } from "../../icons";
 import orderService from "../../api/orderService";
@@ -16,7 +17,7 @@ import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css";
 import Tippy from "@tippyjs/react";
 import { reviewService } from "../../api/reviewService";
-import { error } from "ajv/dist/vocabularies/applicator/dependencies";
+import { useLocation, useNavigate } from "react-router";
 
 const cx = classNames.bind(styles);
 
@@ -32,6 +33,7 @@ function TableTitleAdmin() {
       <th>Số điện thoại</th>
       <th>Địa chỉ</th>
       <th>Email</th>
+      <th></th>
       <th></th>
     </tr>
   );
@@ -365,7 +367,12 @@ const lookupMessageForStatus = {
   cancel: "Đơn hàng đã bị hủy",
 };
 
-function OrderList({ orders = [], setOrders, role = "customer" }) {
+function OrderList({
+  orders = [],
+  setOrders,
+  loadListOrder,
+  role = "customer",
+}) {
   const isAdmin = role === "admin";
   const TableTile = lookupTableTitle[role];
   const [showProduct, setShowProduct] = useState("");
@@ -373,6 +380,39 @@ function OrderList({ orders = [], setOrders, role = "customer" }) {
   const [showAddress, setShowAddress] = useState("");
   const [reviewByMap, setReviewByMap] = useState([]);
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const rowRefs = useRef({});
+
+  const orderFromNotification = location.state;
+
+  useEffect(() => {
+    let timeOutId = null;
+    if (!loadListOrder) {
+      if (
+        orderFromNotification?.order_id &&
+        rowRefs.current[orderFromNotification.order_id]
+      ) {
+        rowRefs.current[orderFromNotification.order_id]?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        const row = rowRefs.current[orderFromNotification.order_id];
+        row.style.backgroundColor = "#ffeccd";
+
+        timeOutId = setTimeout(() => {
+          row.style.backgroundColor = "";
+          navigate(location.pathname, {
+            replace: true,
+            state: {},
+          });
+        }, 5000);
+      }
+    }
+    return () => clearTimeout(timeOutId);
+  }, [loadListOrder, orderFromNotification]);
 
   const handleOrderStatus = async (orderId, status) => {
     if (loading) return;
@@ -419,6 +459,42 @@ function OrderList({ orders = [], setOrders, role = "customer" }) {
     setReviewByMap(reviewsMap);
   }, [orders]);
 
+  const handleRevertOrderStatus = async (order) => {
+    if (order.order_status === "pending") {
+      toast.warning("Không thể chuyển trạng thái đơn hàng pending!!");
+      return;
+    }
+
+    toast
+      .promise(orderService.editRevertOrderStatus(order.order_id), {
+        pending: "Đang xử lý yêu cầu...",
+        success: "Hoàn tác trạng thái thành công",
+        error: {
+          render({ data }) {
+            return (
+              data.response?.data?.message || "Có lỗi xảy ra khi hoàn tác!"
+            );
+          },
+        },
+      })
+      .then((res) => {
+        const { order_id, old_status, new_status } = res.data.data;
+        const newOrders = orders.map((order) => {
+          if (
+            order.order_id === order_id &&
+            order.order_status === old_status
+          ) {
+            return {
+              ...order,
+              order_status: new_status,
+            };
+          }
+          return order;
+        });
+        setOrders(newOrders);
+      });
+  };
+
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
@@ -429,9 +505,14 @@ function OrderList({ orders = [], setOrders, role = "customer" }) {
             </thead>
             <tbody>
               {orders.map((order, id) => {
+                if (loadListOrder) return;
                 const allowReview = order.order_status === "completed";
+
                 return (
-                  <tr key={id}>
+                  <tr
+                    key={id}
+                    ref={(el) => (rowRefs.current[order.order_id] = el)}
+                  >
                     <td>{order.order_id}</td>
                     <td>
                       <button onClick={() => setShowProduct(id)}>
@@ -482,34 +563,49 @@ function OrderList({ orders = [], setOrders, role = "customer" }) {
                               xóa
                             </button>
                           ) : (
-                            <button
-                              onClick={() => {
-                                handleOrderStatus(order.order_id, "cancel");
-                              }}
-                            >
-                              cancel
-                            </button>
+                            <Tippy content="Hủy đơn hàng">
+                              <button
+                                onClick={() => {
+                                  handleOrderStatus(order.order_id, "cancel");
+                                }}
+                              >
+                                cancel
+                              </button>
+                            </Tippy>
                           )}
 
                           {!!lookupOrderNextStage[order.order_status] && (
-                            <button
-                              onClick={() =>
-                                handleOrderStatus(
-                                  order.order_id,
-                                  lookupOrderNextStage[order.order_status]
-                                )
-                              }
-                              style={{
-                                background: `${
-                                  lookupColor[
+                            <Tippy content="Chuyển đơn hàng sang trạng thái mới">
+                              <button
+                                onClick={() =>
+                                  handleOrderStatus(
+                                    order.order_id,
                                     lookupOrderNextStage[order.order_status]
-                                  ]
-                                }`,
-                              }}
-                            >
-                              {lookupOrderNextStage[order.order_status]}
-                            </button>
+                                  )
+                                }
+                                style={{
+                                  background: `${
+                                    lookupColor[
+                                      lookupOrderNextStage[order.order_status]
+                                    ]
+                                  }`,
+                                }}
+                              >
+                                {lookupOrderNextStage[order.order_status]}
+                              </button>
+                            </Tippy>
                           )}
+                        </td>
+                        <td>
+                          <Tippy content="trở về trạng thái trước đó">
+                            <button
+                              className={cx("revert-precious-status")}
+                              type="button"
+                              onClick={() => handleRevertOrderStatus(order)}
+                            >
+                              <IconUndo />
+                            </button>
+                          </Tippy>
                         </td>
                       </Fragment>
                     )}
@@ -617,6 +713,70 @@ function OrderList({ orders = [], setOrders, role = "customer" }) {
                   </tr>
                 );
               })}
+              {loadListOrder && (
+                <>
+                  <tr className={cx("skeleton-loading")}>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr className={cx("skeleton-loading")}>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr className={cx("skeleton-loading")}>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr className={cx("skeleton-loading")}>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr className={cx("skeleton-loading")}>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </>
+              )}
             </tbody>
           </table>
         </div>

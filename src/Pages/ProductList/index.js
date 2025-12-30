@@ -11,6 +11,7 @@ import {
 import productService from "../../api/productService";
 import { formatNumber } from "../../utils/formatNumber";
 import { ArrowCircleLeftIcon, ArrowCircleRightIcon } from "../../icons";
+import Tippy from "@tippyjs/react";
 
 const cx = classNames.bind(styles);
 
@@ -40,6 +41,15 @@ function PagesNavigate({ currentPage, totalPages }) {
 function Product({ variant, saleVolume }) {
   const navigate = useNavigate();
 
+  let discount = 0;
+  if (variant.promotionVariants) {
+    discount =
+      variant.promotionVariants.length > 0 &&
+      variant.promotionVariants[0].promotion.discount_value;
+  } else {
+    discount = variant["promotionVariants.promotion.discount_value"] || 0;
+  }
+
   return (
     <div className={cx("variant-wrapper")}>
       <div className={cx("variant-container")}>
@@ -57,11 +67,31 @@ function Product({ variant, saleVolume }) {
           <div className={cx("variant-main")}>
             <span className={cx("variant-name")}>{variant.variant_name}</span>
             <div className={cx("variant-sold")}>
-              <span>{formatNumber(parseInt(variant.price))}đ</span>
+              <div className={cx("variant-price")}>
+                <span className={cx({ discount: discount > 0 })}>
+                  {formatNumber(parseInt(variant.price))}đ
+                </span>
+                {discount > 0 && (
+                  <span>
+                    {formatNumber(
+                      (parseInt(variant.price) * (100 - parseFloat(discount))) /
+                        100
+                    )}
+                    đ
+                  </span>
+                )}
+              </div>
               <span> {saleVolume} đã bán</span>
             </div>
           </div>
         </div>
+        {discount > 0 && (
+          <Tippy content="Giảm giá">
+            <div className={cx("discount-tag")}>
+              <span>-{parseInt(discount)}%</span>
+            </div>
+          </Tippy>
+        )}
       </div>
     </div>
   );
@@ -117,6 +147,8 @@ function ProductList() {
       </div>
     );
   }
+
+  console.log(products);
 
   return (
     <div className={cx("wrapper")}>

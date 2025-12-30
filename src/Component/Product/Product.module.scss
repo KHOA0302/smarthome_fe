@@ -1,14 +1,29 @@
 .wrapper {
   margin-top: 20px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  border-radius: 8px;
-  overflow: hidden;
   cursor: pointer;
+  border-radius: 8px;
 }
 
 .container {
+  position: relative;
   height: 100%;
   padding: 4px 8px;
+  border-radius: 8px;
+  .discount-tag {
+    position: absolute;
+    top: 2%;
+    right: 6%;
+    background-color: red;
+    border-radius: 4px;
+    padding: 0 2px;
+    cursor: default;
+    span {
+      color: white;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+  }
 }
 
 .variant {
@@ -21,6 +36,7 @@
     }
     img {
       scale: 1.1;
+      border-radius: 8px;
     }
   }
 }
@@ -54,19 +70,36 @@
 
 .variant-sold {
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: space-between;
   margin-top: 16px;
   text-align: end;
-  span:nth-child(1) {
-    font-weight: 900;
-    font-size: 1.4rem;
-    color: var(--color-primary-2);
-  }
 
   span:nth-child(2) {
     font-weight: 800;
     font-size: 1.2rem;
     color: var(--color-primary-3);
+  }
+
+  .variant-price {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: self-start;
+
+    span {
+      color: var(--color-primary-2);
+      &:first-child {
+        &.discount {
+          font-size: 1.2rem;
+          text-decoration: line-through;
+          color: var(--color-text-primary);
+        }
+      }
+
+      &:last-child {
+        font-weight: 900;
+        font-size: 1.4rem;
+      }
+    }
   }
 }

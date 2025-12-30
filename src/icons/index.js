@@ -44,6 +44,8 @@ import { GrPowerReset } from "react-icons/gr";
 import { PiBellSimpleRingingFill } from "react-icons/pi";
 import { MdOutlineDiscount } from "react-icons/md";
 import { CiCircleRemove } from "react-icons/ci";
+import { HiOutlineShoppingBag } from "react-icons/hi2";
+import { IoArrowUndo } from "react-icons/io5";
 
 export {
   BiAddToQueue as AddIcon,
@@ -92,4 +94,6 @@ export {
   PiBellSimpleRingingFill as BellIcon,
   MdOutlineDiscount as PromotionIcon,
   CiCircleRemove as RemoveIcon,
+  HiOutlineShoppingBag as IconShoppingBag,
+  IoArrowUndo as IconUndo,
 };

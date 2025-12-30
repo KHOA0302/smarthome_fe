@@ -47,7 +47,7 @@ const reducer = (state, action) => {
       };
     case "EDIT-DISTRICT":
       const newDistrict = action.payload;
-      console.log(newDistrict);
+     
       return {
         ...state,
         district: newDistrict,

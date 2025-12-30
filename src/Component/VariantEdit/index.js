@@ -38,9 +38,7 @@ function VariantEdit({ variants, dispatch, reFetch }) {
   const fetch = async (e) => {
     e.preventDefault();
 
-    // 1. Tạo một hàm xử lý logic riêng (không cần bọc new Promise)
     const processUpdate = async () => {
-      // Xử lý upload ảnh
       const updateVariants = await Promise.all(
         variants.map(async (variant) => {
           if (variant.file) {
@@ -54,12 +52,10 @@ function VariantEdit({ variants, dispatch, reFetch }) {
         })
       );
 
-      // Gọi API cập nhật
       const res = await productService.editVariants(productId, updateVariants);
-      return res; // Trả về kết quả cho Toast success
+      return res;
     };
 
-    // 2. Sử dụng toast.promise trực tiếp với hàm xử lý
     try {
       const res = await toast.promise(processUpdate(), {
         pending: "Đang xử lý, vui lòng chờ...",

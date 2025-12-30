@@ -52,7 +52,7 @@ export const uploadMultipleImagesToFirebase = async (files, type) => {
 };
 
 export const deleteImageFromFirebase = async (imageURL) => {
-  console.log(imageURL);
+
   if (!imageURL) {
     throw new Error("URL ảnh không được rỗng.");
   }

@@ -80,8 +80,7 @@ function Dashboard() {
           login_method: res2.data.login_method,
         };
 
-        console.log(res2.data);
-
+       
         dispatch({ type: "FETCH_SUCCESS", payload: newUser });
       } catch (error) {
         console.error(error);

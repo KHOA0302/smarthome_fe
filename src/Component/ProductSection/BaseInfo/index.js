@@ -6,7 +6,7 @@ const cx = classNames.bind(styles);
 function BaseInfo({ productBase, setProductBase }) {
   const { brands, categories } = useProductInfoFormGetContext();
 
-  console.log(productBase);
+
 
   const handleChange = (e) => {
     let newProduct;

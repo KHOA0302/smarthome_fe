@@ -26,6 +26,7 @@ import Order from "./Pages/Customer/Order";
 import ProductList from "./Pages/ProductList";
 import CBOSSedit from "./Pages/Admin/CBOSSedit";
 import Promotion from "./Pages/Admin/Promotion";
+import ProductDiscount from "./Pages/ProductDiscount";
 
 const ROLE_ADMIN = 1;
 const ROLE_CUSTOMER = 2;
@@ -72,6 +73,7 @@ function App() {
             element={<ProductList />}
           />
           <Route path="order" element={<Order />} />
+          <Route path="promotion" element={<ProductDiscount />} />
           <Route path="unauthorized" element={<Unauthorized />} />
           <Route path="*" element={<NotFound />} />
         </Route>

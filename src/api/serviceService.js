@@ -12,8 +12,11 @@ const serviceService = {
     });
   },
 
-  editService: () => {
-    return axiosClient.put("/service-package/update", {});
+  editService: ({ service_id, service_name }) => {
+    return axiosClient.post("/service-package/update", {
+      service_id,
+      service_name,
+    });
   },
 };
 

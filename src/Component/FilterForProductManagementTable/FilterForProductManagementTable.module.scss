@@ -1,7 +1,7 @@
 .wrapper {
   position: fixed;
   top: 0;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   align-items: stretch;
   margin-top: 20px;
@@ -133,6 +133,8 @@
   gap: 8px;
   .reset-list {
     button {
+      display: flex;
+      align-items: center;
       height: 100%;
       padding: 0 10px;
       background-color: white;
@@ -168,8 +170,15 @@
         svg {
           animation: ring-bell-animation 0.5s infinite;
           color: tomato;
+          scale: 1;
+          transition: all 0.1s ease-in-out;
+          &:hover {
+            scale: 1.2;
+          }
         }
       }
+      display: flex;
+      align-items: center;
       height: 100%;
       padding: 0 10px;
       background-color: white;
@@ -251,6 +260,109 @@
   }
 }
 
+////////////////////////////// ORDER FILTER //////////////////////////
+
+.filter-order {
+  display: flex;
+  width: fit-content;
+  border-radius: 4px;
+
+  ul {
+    display: flex;
+    gap: 8px;
+
+    &.active {
+      margin-left: 16px;
+    }
+
+    li {
+      display: flex;
+      gap: 4px;
+      background: var(--color-primary-1);
+      padding: 0 4px;
+      border-radius: 4px;
+      cursor: pointer;
+      span {
+        display: flex;
+        align-items: center;
+      }
+      button {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-color: transparent;
+        border: none;
+        font-size: 1.6rem;
+        font-weight: 900;
+        cursor: pointer;
+        &:hover {
+          color: red;
+        }
+      }
+    }
+  }
+}
+
+.filter-order-main {
+  position: relative;
+  display: flex;
+  width: fit-content;
+}
+
+.filter-order-btn {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-weight: 900;
+  color: white;
+  border: none;
+  background-color: var(--color-primary-2);
+  padding: 14px 12px;
+
+  cursor: pointer;
+  svg {
+    font-size: 1.6rem;
+  }
+}
+
+.filter-order-option {
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: all 0.2s ease-in-out;
+  &.show {
+    height: 150px;
+  }
+}
+
+.filter-order-option-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 0 4px 4px 4px;
+  background-color: var(--color-primary-2);
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  button {
+    pointer-events: all;
+    background-color: transparent;
+    border: none;
+    background-color: white;
+    transition: all 0.1s ease-in-out;
+    padding: 4px 0;
+    font-size: 1.4rem;
+    cursor: pointer;
+    &:hover {
+      background-color: #eaeaea;
+    }
+    &.active {
+      background-color: var(--color-primary-1);
+    }
+  }
+}
+
 //////////////////////////// NOTIFICATION ////////////////////////////
 
 @keyframes reveal {
@@ -284,13 +396,11 @@
   position: absolute;
   top: 115%;
   left: 50%;
-  width: 400px;
-  max-height: 500px;
   padding: 12px;
   background-color: #b8b8b8c4;
   border-radius: 8px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-
+  opacity: 0;
   pointer-events: none;
   &.show {
     opacity: 1;
@@ -301,16 +411,20 @@
   &.hide {
     animation: hide 0.2s ease-in-out forwards;
   }
+
+  h3 {
+    font-size: 1.6rem;
+  }
   z-index: 1;
 }
 
 .notification-list-container {
-  max-height: 100%;
   overflow: hidden;
   .blank {
-    max-height: 95%;
+    width: 400px;
+    max-height: 500px;
     overflow: auto;
-
+    border-radius: 8px;
     scroll-behavior: smooth;
     &::-webkit-scrollbar {
       width: 4px;
@@ -342,7 +456,7 @@
     background-color: transparent;
     transition: all 0.2s ease-in-out;
     &.tab {
-      background-color: #fff4f4;
+      background-color: white;
     }
     span:first-child {
       margin-right: 24px;
@@ -377,8 +491,9 @@
 
 .inventory-wrapper {
   padding: 8px;
-  background-color: #fff4f4;
+  background-color: white;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 .alert-wrapper {
@@ -408,6 +523,8 @@
 .alert-variant-img {
   img {
     max-height: 60px;
+    width: 50px;
+    object-fit: contain;
   }
 }
 
@@ -460,5 +577,44 @@
 
 /////////order/////////
 
+.order-wrapper {
+  padding: 8px;
+  background-color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 .notification-list-order {
+}
+
+.alert-order-icon {
+  padding: 8px;
+  border-radius: 2px;
+}
+
+.alert-order-customer-id-status {
+  .customer {
+    display: flex;
+    font-weight: 700;
+    gap: 12px;
+    margin-top: 4px;
+    span {
+      &:first-child {
+        font-weight: 700;
+      }
+    }
+  }
+
+  .id-status {
+    display: flex;
+    gap: 12px;
+    span {
+      &:last-child {
+        padding: 0 4px;
+        border-radius: 4px;
+        font-weight: 800;
+        font-size: 1.4rem;
+      }
+    }
+  }
 }

@@ -2,14 +2,26 @@ import styles from "./Navbar.module.scss";
 import classNames from "classnames/bind";
 import logo from "../../images/logo.png";
 import zaku from "../../images/zaku.png";
-import { NavLink, replace, useNavigate } from "react-router-dom";
-import authService from "../../api/authService";
+import { NavLink, useNavigate } from "react-router-dom";
 import { memo } from "react";
+import { useWebSocket } from "../../hooks/useWebSocket";
+import { useAuth } from "../../context/AuthContext";
 
 const cx = classNames.bind(styles);
 
+const emptyCallback = () => {};
+
 function Navbar({ navItems }) {
   const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const { closeSocket } = useWebSocket(emptyCallback);
+
+  const handleLogout = async () => {
+    closeSocket();
+    logout();
+    navigate("/", { replace: true });
+  };
   return (
     <nav className={cx("wrapper")}>
       <div className={cx("logo")} onClick={() => navigate("/")}>
@@ -42,10 +54,7 @@ function Navbar({ navItems }) {
       </div>
       <button
         className={cx("log-out-btn")}
-        onClick={() => {
-          authService.logout();
-          navigate("/", { replace: true });
-        }}
+        onClick={handleLogout}
         type="button"
       >
         Đăng xuất

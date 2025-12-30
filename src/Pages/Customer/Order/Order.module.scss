@@ -2,19 +2,8 @@
   position: relative;
   width: 100%;
   height: 100vh;
-  padding: 10px;
   border-radius: 8px;
-}
-
-.container {
-  width: 100%;
-  height: 100%;
-  padding: 20px;
-  background-color: white;
-}
-
-.orders {
-  height: 90%;
+  padding-right: 10px;
   overflow: auto;
   scroll-behavior: smooth;
   &::-webkit-scrollbar {
@@ -31,6 +20,18 @@
     background: #7e7e7e;
     border-radius: 10px;
   }
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border-radius: 8px;
+}
+
+.orders {
+  height: 100%;
+  margin-top: 80px;
 }
 
 .filter {

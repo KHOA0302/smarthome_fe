@@ -3,6 +3,7 @@ import classNames from "classnames/bind";
 import { formatNumber } from "../../utils/formatNumber";
 import { ArrowRightIcon, TrashIcon } from "../../icons";
 import { useNavigate } from "react-router-dom";
+import Tippy from "@tippyjs/react";
 
 const cx = classNames.bind(styles);
 
@@ -18,6 +19,21 @@ function CartItem({
   const handleNavigator = (productId, variantId) => {
     navigate(`/product/${productId}/variant/${variantId}`);
   };
+
+  const discountValue =
+    variant?.promotionVariant?.promotion?.discount_value || 0;
+
+  const servicesPrice =
+    services.reduce((ac, service) => {
+      return ac + parseFloat(service.price);
+    }, 0) || 0;
+
+  const fullPrice = parseFloat(variant.price) + servicesPrice;
+
+  const discountPrice =
+    (parseInt(variant.price) * (100 - parseInt(discountValue))) / 100 +
+      servicesPrice || null;
+
   return (
     <div className={cx("wrapper")}>
       <div className={cx("container")}>
@@ -26,6 +42,14 @@ function CartItem({
           onClick={() => handleNavigator(variant.productId, variant.variantId)}
         >
           <img src={variant.imageUrl} />
+
+          {discountValue > 0 && (
+            <Tippy content="Giảm giá">
+              <div className={cx("discount-tag")}>
+                <span>-{parseInt(discountValue)}%</span>
+              </div>
+            </Tippy>
+          )}
         </div>
         <div className={cx("cart-item-main")}>
           <div
@@ -35,7 +59,14 @@ function CartItem({
             }
           >
             <span>{variant.variantName}</span>
-            <span>{formatNumber(parseInt(cartItem.price))}đ</span>
+            <div className={cx("variant-price")}>
+              <span className={cx({ discount: discountValue > 0 })}>
+                {formatNumber(parseInt(fullPrice))}đ
+              </span>
+              {discountValue > 0 && (
+                <span>{formatNumber(parseInt(discountPrice)) + "đ"}</span>
+              )}
+            </div>
           </div>
           <div className={cx("cart-item-option")}>
             {options.map((option, id) => (

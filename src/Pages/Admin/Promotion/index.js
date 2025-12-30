@@ -10,6 +10,7 @@ import "tippy.js/dist/tippy.css";
 import { promotionService } from "../../../api/promotionService";
 import { toast, ToastContainer } from "react-toastify";
 import PromotionList from "../../../Component/PromotionList";
+import { useSocket } from "../../../context/SocketContext";
 
 const cx = classNames.bind(styles);
 
@@ -30,6 +31,7 @@ function Promotion() {
     name: "",
     discount: 0,
   });
+  const { notificationState, isConnected } = useSocket();
 
   const fetchVariants = async () => {
     try {
@@ -77,8 +79,6 @@ function Promotion() {
       return;
     }
     if (allowCheck || loading) return;
-
-    console.log(id);
 
     if (checkedVariant.includes(id))
       setCheckedVariant((prev) => prev.filter((variant) => variant !== id));
@@ -164,6 +164,8 @@ function Promotion() {
           handleAddPromotion={handleAddPromotion}
           handleListPromotion={handleListPromotion}
           handleCheckVariants={handleCheckVariants}
+          notifications={notificationState}
+          adminDashboard={true}
         />
         <ProductManagementTable
           productsDetail={variants}

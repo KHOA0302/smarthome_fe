@@ -6,11 +6,17 @@ const optionService = {
   },
 
   createOption: (categoryId, optionValue) => {
-    console.log(optionValue);
     return axiosClient.post("/option/create-option", {
       categoryId,
       optionName: optionValue.name,
       isFilterable: optionValue.isFilter,
+    });
+  },
+
+  editOption: ({ option_id, option_name }) => {
+    return axiosClient.post("/option/update", {
+      option_id,
+      option_name,
     });
   },
 };

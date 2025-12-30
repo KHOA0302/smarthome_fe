@@ -96,6 +96,10 @@ const productService = {
   editVariantStatus: (variantId, status) => {
     return axiosClient.patch("/product/edit-status", { variantId, status });
   },
+
+  getProductDiscount: () => {
+    return axiosClient.get("/product/promotion-product");
+  },
 };
 
 export default productService;

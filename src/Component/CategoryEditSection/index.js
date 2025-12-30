@@ -91,8 +91,6 @@ function CategoryEditSection() {
     setCategorySelected(newCategorySelected);
   };
 
-  console.log(categorySelected);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!categorySelected.category_id) {
@@ -207,6 +205,7 @@ function CategoryEditSection() {
                   <li
                     onClick={() => handleSetCategorySelected(category)}
                     onMouseDown={(e) => e.preventDefault()}
+                    key={id}
                   >
                     {category.category_name}
                   </li>

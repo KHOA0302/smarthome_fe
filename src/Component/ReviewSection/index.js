@@ -40,7 +40,7 @@ function ReviewSection({ productId, productName }) {
 
   const starBreakdownPercent = (star) =>
     (reviews.reduce((acc, review) => {
-      console.log(review.rating);
+      
       if (review.rating === star) {
         return acc + 1;
       }

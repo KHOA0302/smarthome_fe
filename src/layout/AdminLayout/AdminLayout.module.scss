@@ -13,7 +13,7 @@
 
 .container-content {
   flex: 5;
-  min-width: 80%;
+  max-width: 80%;
   &::-webkit-scrollbar {
     width: 4px;
     height: 0;

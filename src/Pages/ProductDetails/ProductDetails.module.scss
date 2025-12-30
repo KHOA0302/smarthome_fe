@@ -34,7 +34,22 @@
 .product-imgs-display_area {
   margin-bottom: 20px;
   .product-img_display {
+    position: relative;
     height: 50vh;
+    .discount-tag {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-color: red;
+      border-radius: 4px;
+      padding: 2px 4px;
+      cursor: default;
+      span {
+        color: white;
+        font-size: 1.6rem;
+        font-weight: 800;
+      }
+    }
     img {
       width: 100%;
       height: 100%;
@@ -414,8 +429,21 @@
 }
 
 .total-price {
-  font-weight: 600;
-  color: orangered;
+  span {
+    &:first-child {
+      font-weight: 600;
+      color: orangered;
+      &.discount {
+        font-size: 1.2rem;
+        text-decoration: line-through;
+        color: var(--color-text-primary);
+      }
+    }
+    &:last-child {
+      font-weight: 800;
+      color: orangered;
+    }
+  }
 }
 
 .service-overplay {

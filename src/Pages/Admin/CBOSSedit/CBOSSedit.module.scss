@@ -1,6 +1,7 @@
 .wrapper {
   width: 100%;
   overflow: auto;
+  width: fit-content;
 }
 
 .container {
@@ -10,7 +11,6 @@
 .edit-section {
   display: flex;
   width: 100%;
-  overflow: auto;
   transition: all 0.2s ease-in-out;
   &::-webkit-scrollbar {
     width: 4px;
@@ -73,6 +73,94 @@
     &.active {
       background-color: var(--color-primary-2);
       color: white;
+    }
+  }
+}
+
+.categories-selector {
+  position: relative;
+  width: fit-content;
+  z-index: 2;
+}
+
+@keyframes reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hide {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.chosen-category {
+  display: flex;
+  gap: 8px;
+  background-color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  width: fit-content;
+  cursor: pointer;
+  h4 {
+  }
+  span {
+    background-color: var(--color-primary-2);
+    padding: 2px 4px;
+    color: white;
+    border-radius: 2px;
+  }
+}
+
+.list-category {
+  position: absolute;
+  top: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: rgba(160, 160, 160, 0.492);
+  width: 230px;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  &.show {
+    opacity: 1;
+    pointer-events: auto;
+    animation: reveal 0.3s ease-in-out forwards;
+  }
+
+  &.hide {
+    animation: hide 0.3s ease-in-out forwards;
+  }
+  li {
+    background-color: white;
+    padding: 0 4px;
+    border-radius: 4px;
+    scale: 1;
+    transition: all 0.2s ease-in-out;
+    font-size: 1.4rem;
+    cursor: pointer;
+    &:hover {
+      scale: 1.08;
+      background-color: var(--color-primary-1);
+    }
+    &.active {
+      background-color: var(--color-primary-2);
+      color: white;
+      font-weight: 800;
     }
   }
 }

@@ -1,0 +1,123 @@
+.wrapper {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.form {
+  display: flex;
+  width: 80%;
+  padding: 20px;
+  background-color: white;
+  justify-content: space-between;
+  border-radius: 8px;
+  gap: 20px;
+  h4 {
+    font-weight: 700;
+  }
+  .input-box {
+    flex: 1;
+    display: flex;
+    gap: 12px;
+
+    label {
+      font-weight: 800;
+    }
+    input {
+      width: 60%;
+      font-size: 1.6rem;
+      font-weight: 700;
+      border-bottom: 2px solid var(--color-primary-4);
+      transition: all 0.2s ease-in-out;
+      opacity: 0.8;
+      &:focus {
+        opacity: 1;
+        width: 90%;
+      }
+    }
+  }
+  .delete-save-btn {
+    display: flex;
+    gap: 12px;
+    button {
+      border: none;
+      outline: none;
+
+      padding: 0 7px;
+      border-radius: 4px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: white;
+      scale: 1;
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+      &:hover {
+        scale: 1.1;
+      }
+    }
+  }
+  .save {
+    background-color: darkorange;
+  }
+  .delete {
+    background-color: red;
+  }
+}
+
+.container {
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 8px;
+  background-color: white;
+  padding: 10px;
+  max-height: 300px;
+  overflow: auto;
+  transition: all 0.2s ease-in-out;
+  scroll-behavior: smooth;
+}
+
+.option-wrapper {
+  background-color: white;
+  padding: 12px;
+  transition: all 0.2s ease-in-out;
+  border-radius: 8px;
+  cursor: pointer;
+  &:hover {
+    background-color: var(--color-primary-1);
+  }
+  &.active {
+    background-color: var(--color-primary-2);
+  }
+}
+
+.option-container {
+  display: grid;
+  grid-template-columns: 4% 1fr 20%;
+  gap: 12px;
+  &.active {
+    .id {
+      font-weight: 800;
+      color: white;
+    }
+
+    .option-name {
+      font-weight: 800;
+      color: white;
+    }
+  }
+  .id {
+    color: #bbb;
+  }
+
+  .option-name {
+  }
+
+  .category-name {
+    padding: 2px 8px;
+    background-color: var(--color-primary-4);
+    color: white;
+    border-radius: 8px;
+    width: fit-content;
+    font-size: 1.4rem;
+  }
+}

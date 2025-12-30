@@ -52,11 +52,9 @@ function ProductImgsEdit({ productImgs, dispatch, reFetch }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 1. Định nghĩa hàm xử lý logic (hàm này tự động trả về một Promise)
     const processSubmit = async () => {
-      let updateProductImgs = [...productImgs]; // Bản sao để xử lý
+      let updateProductImgs = [...productImgs];
 
-      // Tác vụ 1: Upload ảnh mới lên Firebase
       updateProductImgs = await Promise.all(
         productImgs.map(async (img) => {
           if (!img.isRemove && img.file) {
@@ -75,14 +73,12 @@ function ProductImgsEdit({ productImgs, dispatch, reFetch }) {
       );
 
       try {
-        // Tác vụ 2: Gọi API cập nhật
         const res = await productService.editProductImgs(
           productId,
           updateProductImgs
         );
 
         if (res.status === 200) {
-          // Tác vụ 3: Xóa ảnh cũ trên Firebase nếu API thành công
           const imgsToDelete = updateProductImgs.filter((img) => img.isRemove);
           await Promise.all(
             imgsToDelete.map(async (img) => {
@@ -91,12 +87,11 @@ function ProductImgsEdit({ productImgs, dispatch, reFetch }) {
               }
             })
           );
-          return res; // Trả về để Toast hiện "success"
+          return res;
         } else {
           throw new Error("API_ERROR");
         }
       } catch (error) {
-        // Tác vụ 4: Cleanup (Xóa ảnh vừa upload nếu API thất bại)
         const newImgsUploaded = updateProductImgs.filter(
           (img) =>
             typeof img.img_id !== "number" &&
@@ -115,11 +110,10 @@ function ProductImgsEdit({ productImgs, dispatch, reFetch }) {
             })
           );
         }
-        throw error; // Quăng lỗi để Toast hiện "error"
+        throw error;
       }
     };
 
-    // 2. Thực thi với toast.promise
     await toast.promise(processSubmit(), {
       pending: "Đang cập nhật sản phẩm...",
       success: "Cập nhật sản phẩm thành công!",
